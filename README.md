@@ -1,3 +1,11 @@
+# SoftDesk (Web)
+
+SoftDesk 的纯网页版本,基于 React + Vite 构建,仅面向浏览器端运行。
+
+> **命名说明**:本仓库原名 `soft-desk`,因主名 `soft-desk` 已让位给 Electron 桌面版,故更名为 `soft-desk-web`,以 `-web` 后缀明确区分「网页版 / 桌面版」。两者共享同一套 React 源码;桌面版见 [soft-desk](https://github.com/bayernjf/soft-desk)。
+
+---
+
 # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
