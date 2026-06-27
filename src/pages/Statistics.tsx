@@ -5,7 +5,7 @@ import { CATEGORIES } from '@/data/categories';
 import { formatMinutes } from '@/services/software.service';
 import { WEEKLY_USAGE } from '@/data/software.mock';
 
-const COLORS = ['#8b5cf6', '#06b6d4', '#f59e0b', '#10b981', '#ef4444', '#ec4899', '#3b82f6'];
+const COLORS = ['#7c3aed', '#ec4899', '#f59e0b', '#8b5cf6', '#f472b6', '#fbbf24', '#a78bfa'];
 
 export function Statistics() {
   const { software } = useSoftwareStore();
@@ -61,7 +61,7 @@ export function Statistics() {
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={WEEKLY_USAGE} margin={{ left: -15, right: 0, top: 10, bottom: 0 }}>
-                <Bar dataKey="hours" fill="#8b5cf6" radius={[6, 6, 0, 0]} barSize={32} opacity={0.85}>
+                <Bar dataKey="hours" fill="#7c3aed" radius={[6, 6, 0, 0]} barSize={32} opacity={0.85}>
                 </Bar>
                 <XAxis
                   dataKey="day"

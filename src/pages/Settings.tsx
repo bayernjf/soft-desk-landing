@@ -29,7 +29,7 @@ function Toggle({ checked, onChange, label, description }: ToggleProps) {
         onClick={() => onChange(!checked)}
         className={cn(
           'relative w-11 h-6 rounded-full transition-colors shrink-0 mt-0.5',
-          checked ? 'bg-violet-500' : 'bg-slate-700'
+          checked ? 'bg-primary-500' : 'bg-slate-700'
         )}
       >
         <span
@@ -79,7 +79,7 @@ export function Settings() {
                 className={cn(
                   'w-full flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl text-sm font-medium text-left transition-all',
                   activeTab === tab.id
-                    ? 'bg-violet-500/15 text-violet-300 border border-violet-500/30'
+                    ? 'bg-primary-500/15 text-primary-300 border border-primary-500/30'
                     : 'text-slate-400 hover:bg-slate-800/50 hover:text-slate-200 border border-transparent'
                 )}
               >

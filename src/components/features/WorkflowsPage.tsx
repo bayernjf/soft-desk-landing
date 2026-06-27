@@ -100,7 +100,7 @@ export function WorkflowsPage() {
           <h1 className="text-2xl font-bold text-white tracking-tight">工作流</h1>
           <p className="text-sm text-slate-500 mt-1">一键启动你的高效工作组合</p>
         </div>
-        <button className="px-4 py-2 rounded-xl bg-violet-500/20 text-violet-300 text-sm font-medium border border-violet-500/30 hover:bg-violet-500/30 transition-colors">
+        <button className="px-4 py-2 rounded-xl bg-primary-500/20 text-primary-300 text-sm font-medium border border-primary-500/30 hover:bg-primary-500/30 transition-colors">
           + 创建工作流
         </button>
       </div>

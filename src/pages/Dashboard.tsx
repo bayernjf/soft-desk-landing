@@ -58,7 +58,7 @@ export function Dashboard() {
           </h1>
           <p className="text-sm text-slate-500 mt-1.5">这是你的软件使用概览</p>
         </div>
-        <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-violet-500/10 border border-violet-500/20 text-violet-300">
+        <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-primary-500/10 border border-primary-500/20 text-primary-300">
           <Sparkles className="w-4 h-4" />
           <span className="text-xs font-medium">AI 分析已更新</span>
         </div>
@@ -70,14 +70,14 @@ export function Dashboard() {
           title="总应用数"
           value={String(software.length)}
           hint="个已安装应用"
-          color="#8b5cf6"
+          color="#7c3aed"
         />
         <StatCard
           icon={Clock}
           title="本周使用时长"
           value={`${(totalMinutes / 60).toFixed(1)}h`}
           hint={`${perDay} 分钟 / 天`}
-          color="#06b6d4"
+          color="#ec4899"
         />
         <StatCard
           icon={Sparkles}
@@ -179,9 +179,9 @@ export function Dashboard() {
 
           <section>
             <h2 className="text-sm font-semibold text-slate-200 mb-4">AI 建议</h2>
-            <div className="p-4 rounded-2xl bg-gradient-to-br from-violet-500/10 via-slate-900/40 to-amber-500/5 border border-violet-500/20">
+            <div className="p-4 rounded-2xl bg-gradient-to-br from-primary-500/10 via-surface/40 to-accent-500/5 border border-primary-500/20">
               <div className="flex items-start gap-2.5 mb-3">
-                <Sparkles className="w-4 h-4 text-violet-400 shrink-0 mt-0.5" />
+                <Sparkles className="w-4 h-4 text-primary-400 shrink-0 mt-0.5" />
                 <div>
                   <h3 className="text-sm font-semibold text-slate-200">优化你的工作流</h3>
                   <p className="text-xs text-slate-400 mt-1 leading-relaxed">
@@ -189,7 +189,7 @@ export function Dashboard() {
                   </p>
                 </div>
               </div>
-              <button className="w-full py-2.5 rounded-xl bg-violet-500/15 text-violet-300 text-xs font-medium hover:bg-violet-500/25 transition-colors">
+              <button className="w-full py-2.5 rounded-xl bg-primary-500/15 text-primary-300 text-xs font-medium hover:bg-primary-500/25 transition-colors">
                 创建工作流 +
               </button>
             </div>

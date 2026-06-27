@@ -85,7 +85,7 @@ export function LibraryPage() {
           className={cn(
             'w-full pl-11 pr-10 py-3.5 rounded-2xl bg-slate-900/60 border border-slate-800',
             'text-sm text-slate-100 placeholder:text-slate-600',
-            'focus:outline-none focus:border-violet-500/50 focus:ring-2 focus:ring-violet-500/20 transition-all'
+            'focus:outline-none focus:border-primary-500/50 focus:ring-2 focus:ring-primary-500/20 transition-all'
           )}
         />
         {searchQuery && (
@@ -105,7 +105,7 @@ export function LibraryPage() {
             className={cn(
               'px-3 py-1.5 rounded-lg text-xs font-medium transition-all',
               selectedCategory === 'all'
-                ? 'bg-violet-500/20 text-violet-300 border border-violet-500/30'
+                ? 'bg-primary-500/20 text-primary-300 border border-primary-500/30'
                 : 'bg-slate-800/50 text-slate-400 border border-slate-800/60 hover:bg-slate-800 hover:text-slate-300'
             )}
           >
@@ -118,7 +118,7 @@ export function LibraryPage() {
               className={cn(
                 'px-3 py-1.5 rounded-lg text-xs font-medium transition-all',
                 selectedCategory === cat.id
-                  ? 'bg-violet-500/20 text-violet-300 border border-violet-500/30'
+                  ? 'bg-primary-500/20 text-primary-300 border border-primary-500/30'
                   : 'bg-slate-800/50 text-slate-400 border border-slate-800/60 hover:bg-slate-800 hover:text-slate-300'
               )}
             >

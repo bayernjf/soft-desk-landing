@@ -92,7 +92,7 @@ export function SoftwareCard({ software, variant = 'default' }: SoftwareCardProp
           <div
             className={cn(
               'w-12 h-12 rounded-xl flex items-center justify-center shrink-0 transition-all duration-200',
-              'bg-slate-800/60 text-slate-400 group-hover:bg-violet-500/20 group-hover:text-violet-300'
+              'bg-slate-800/60 text-slate-400 group-hover:bg-primary-500/20 group-hover:text-primary-300'
             )}
           >
             <Play className="w-5 h-5 ml-0.5" />
@@ -126,7 +126,7 @@ export function SoftwareCard({ software, variant = 'default' }: SoftwareCardProp
             <span>{formatMinutes(software.usageMinutes)}</span>
           </div>
         </div>
-        <Play className="w-4 h-4 text-slate-600 group-hover:text-violet-400 transition-colors shrink-0" />
+        <Play className="w-4 h-4 text-slate-600 group-hover:text-primary-400 transition-colors shrink-0" />
       </div>
     </button>
   );

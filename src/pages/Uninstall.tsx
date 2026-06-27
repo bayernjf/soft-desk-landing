@@ -82,7 +82,7 @@ export function Uninstall() {
           <section className="p-5 rounded-2xl bg-slate-900/40 border border-slate-800/60">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2.5">
-                <Search className="w-4 h-4 text-violet-400" />
+                <Search className="w-4 h-4 text-primary-400" />
                 <h2 className="text-sm font-semibold text-slate-200">最近未使用</h2>
               </div>
               <span className="text-xs text-slate-500">{unused.length} 个软件 · 7+ 天未使用</span>
@@ -168,8 +168,8 @@ export function Uninstall() {
           <button
             className={cn(
               'w-full py-3.5 rounded-2xl text-sm font-semibold transition-all',
-              'bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white',
-              'hover:shadow-lg hover:shadow-violet-500/20 active:scale-[0.99]'
+              'bg-gradient-to-r from-primary-500 to-primary-500 text-white',
+              'hover:shadow-lg hover:shadow-primary-500/20 active:scale-[0.99]'
             )}
           >
             {unused.length > 0 ? `一键清理 ${unused.length} 个未使用应用` : '暂无待清理项'}

@@ -6,13 +6,13 @@ export function Layout() {
   const location = useLocation();
 
   return (
-    <div className="min-h-screen bg-[#0a0a0f] text-slate-100 font-sans antialiased flex overflow-hidden">
+    <div className="min-h-screen bg-[#0d1117] text-slate-100 font-sans antialiased flex overflow-hidden">
       <Sidebar />
 
       <main
         className={cn(
           'flex-1 flex flex-col overflow-hidden',
-          'bg-gradient-to-br from-[#0a0a0f] via-[#0d0d14] to-[#0a0a0f]'
+          'bg-gradient-to-br from-[#0d1117] via-[#161b22] to-[#0d1117]'
         )}
       >
         <div className="flex-1 overflow-y-auto">
