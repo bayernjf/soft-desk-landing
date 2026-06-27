@@ -1,5 +1,6 @@
 import { createBrowserRouter, Navigate } from 'react-router-dom';
 import { Layout } from '@/components/layout/Layout';
+import { Landing } from '@/pages/Landing';
 import { Dashboard } from '@/pages/Dashboard';
 import { Library } from '@/pages/Library';
 import { Workflows } from '@/pages/Workflows';
@@ -10,6 +11,10 @@ import { Settings } from '@/pages/Settings';
 export const router = createBrowserRouter([
   {
     path: '/',
+    element: <Landing />,
+  },
+  {
+    path: '/app',
     element: <Layout />,
     children: [
       { index: true, element: <Dashboard /> },
@@ -18,7 +23,7 @@ export const router = createBrowserRouter([
       { path: 'statistics', element: <Statistics /> },
       { path: 'uninstall', element: <Uninstall /> },
       { path: 'settings', element: <Settings /> },
-      { path: '*', element: <Navigate to="/" replace /> },
     ],
   },
+  { path: '*', element: <Navigate to="/" replace /> },
 ]);
