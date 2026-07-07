@@ -2,28 +2,39 @@ import { NavLink, useLocation } from 'react-router-dom';
 import {
   LayoutDashboard,
   Library,
+  Star,
   Workflow,
   BarChart3,
   Trash2,
   Settings,
   Sparkles,
   ChevronRight,
+  CircleDot,
+  Share2,
 } from 'lucide-react';
 import { BrandMark } from '@/components/BrandMark';
 import { useSoftwareStore } from '@/stores/software.store';
 import { CATEGORIES } from '@/data/categories';
 import { cn } from '@/lib/utils';
+import { track } from '@/lib/analytics';
+
+interface SidebarProps {
+  onOpenRadialMenu?: () => void;
+}
 
 const navItems = [
   { path: '/app', icon: LayoutDashboard, label: '工作台' },
   { path: '/app/library', icon: Library, label: '软件库' },
+  { path: '/app/favorites', icon: Star, label: '收藏夹' },
   { path: '/app/workflows', icon: Workflow, label: '工作流' },
+  { path: '/app/radial', icon: CircleDot, label: '径向菜单', badge: '中键' },
+  { path: '/app/my-shares', icon: Share2, label: '我的分享' },
   { path: '/app/statistics', icon: BarChart3, label: '统计分析' },
   { path: '/app/uninstall', icon: Trash2, label: '软件清理' },
 ];
 
-export function Sidebar() {
-  const { software } = useSoftwareStore();
+export function Sidebar({ onOpenRadialMenu }: SidebarProps) {
+  const { software, favoriteIds } = useSoftwareStore();
   const location = useLocation();
 
   return (
@@ -44,13 +55,35 @@ export function Sidebar() {
 
       <div className="flex-1 overflow-y-auto px-3 pb-4 space-y-6">
         <div className="space-y-0.5">
-          {navItems.map((item) => {
+          {navItems.map((item, index) => {
             const Icon = item.icon;
             const isActive = location.pathname === item.path;
+            const isRadial = item.path === '/app/radial';
+            if (isRadial) {
+              return (
+                <button
+                  key={item.path}
+                  onClick={onOpenRadialMenu}
+                  className={cn(
+                    'w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 group text-left',
+                    'text-slate-400 border border-transparent hover:bg-slate-800/60 hover:text-white'
+                  )}
+                >
+                  <Icon className="w-4 h-4 text-slate-500 group-hover:text-slate-300" />
+                  <span className="flex-1">{item.label}</span>
+                  {item.badge && (
+                    <span className="text-[10px] text-slate-600 bg-slate-800/60 px-1.5 py-0.5 rounded">
+                      {item.badge}
+                    </span>
+                  )}
+                </button>
+              );
+            }
             return (
               <NavLink
                 key={item.path}
                 to={item.path}
+                onClick={() => track('sidebar_nav_click', { nav_item: item.label, nav_index: index })}
                 className={cn(
                   'flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 group',
                   'hover:bg-slate-800/60 hover:text-white',
@@ -66,6 +99,9 @@ export function Sidebar() {
                   )}
                 />
                 <span className="flex-1">{item.label}</span>
+                {item.path === '/app/favorites' && favoriteIds.length > 0 && (
+                  <span className="text-[10px] text-slate-500 tabular-nums">{favoriteIds.length}</span>
+                )}
                 {isActive && <ChevronRight className="w-3.5 h-3.5 text-primary-400" />}
               </NavLink>
             );
