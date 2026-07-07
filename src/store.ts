@@ -1,6 +1,6 @@
 import { create } from 'zustand';
-import { Software, Category, PageType, Stats } from './types';
-import { mockSoftware, mockCategories, mockStats } from './mockData';
+import { Software, Category, PageType, Stats, Workflow } from './types';
+import { mockSoftware, mockCategories, mockStats, mockWorkflows } from './mockData';
 
 interface AppState {
   currentPage: PageType;
@@ -10,6 +10,7 @@ interface AppState {
   software: Software[];
   categories: Category[];
   stats: Stats;
+  workflows: Workflow[];
   viewMode: 'grid' | 'list';
   setCurrentPage: (page: PageType) => void;
   setSelectedCategory: (category: string | null) => void;
@@ -17,6 +18,8 @@ interface AppState {
   setIsSearching: (isSearching: boolean) => void;
   setViewMode: (mode: 'grid' | 'list') => void;
   launchApp: (softwareId: string) => void;
+  launchWorkflow: (workflowId: string) => void;
+  toggleWorkflowFavorite: (workflowId: string) => void;
 }
 
 export const useStore = create<AppState>((set, get) => ({
@@ -27,6 +30,7 @@ export const useStore = create<AppState>((set, get) => ({
   software: mockSoftware,
   categories: mockCategories,
   stats: mockStats,
+  workflows: mockWorkflows,
   viewMode: 'grid',
 
   setCurrentPage: (page) => set({ currentPage: page, selectedCategory: null }),
@@ -44,5 +48,24 @@ export const useStore = create<AppState>((set, get) => ({
     );
     set({ software: updated });
     console.log(`Launched app: ${softwareId}`);
+  },
+
+  launchWorkflow: (workflowId) => {
+    const { workflows } = get();
+    const updated = workflows.map(w =>
+      w.id === workflowId
+        ? { ...w, usageCount: w.usageCount + 1, lastUsed: new Date().toISOString() }
+        : w
+    );
+    set({ workflows: updated });
+    console.log(`Launched workflow: ${workflowId}`);
+  },
+
+  toggleWorkflowFavorite: (workflowId) => {
+    const { workflows } = get();
+    const updated = workflows.map(w =>
+      w.id === workflowId ? { ...w, isFavorite: !w.isFavorite } : w
+    );
+    set({ workflows: updated });
   },
 }));
