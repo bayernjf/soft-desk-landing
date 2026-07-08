@@ -80,7 +80,7 @@ jobs:
           retention-days: 7
 
   preview-deploy:
-    name: Preview Deploy (Vercel)
+    name: Preview Deploy (CF + Vercel)
     needs: build
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
@@ -99,31 +99,45 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
 
-      - name: Install Vercel CLI
-        run: npm install -g vercel@latest
+      - name: Install Wrangler & Vercel CLI
+        run: npm install -g wrangler@3 vercel@latest
+
+      - name: Deploy to Cloudflare Pages (Preview)
+        id: cf-deploy
+        continue-on-error: true
+        run: |
+          OUTPUT=$(wrangler pages deploy dist --project-name=soft-desk-landing --branch=pr-${{ github.event.pull_request.number }} --commit-dirty=true 2>&1)
+          echo "$OUTPUT"
+          URL=$(echo "$OUTPUT" | grep -oE 'https://[a-zA-Z0-9-]+\.pages\.dev' | head -1)
+          echo "url=$URL" >> $GITHUB_OUTPUT
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
 
       - name: Pull Vercel environment
         run: vercel pull --yes --environment=preview --token=$VERCEL_TOKEN
 
       - name: Deploy to Vercel (Preview)
         id: vercel-deploy
+        continue-on-error: true
         run: |
           URL=$(vercel deploy --prebuilt --token=$VERCEL_TOKEN)
           echo "url=$URL" >> $GITHUB_OUTPUT
 
-      - name: Comment PR with preview URL
-        if: steps.vercel-deploy.outcome == 'success'
+      - name: Comment PR with preview URLs
         uses: actions/github-script@v7
         with:
           script: |
-            const url = process.env.VERCEL_URL || 'Check Vercel dashboard';
+            const cfUrl = process.env.CF_URL || '_Deployment failed_';
+            const vercelUrl = process.env.VERCEL_URL || '_Deployment failed_';
             github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: `🚀 Preview deployment ready!  \n**Preview URL**: ${url}`
+              body: `🚀 Preview deployments ready!\n\n| Platform | URL |\n|----------|-----|\n| Cloudflare Pages | ${cfUrl} |\n| Vercel | ${vercelUrl} |`
             });
         env:
+          CF_URL: ${{ steps.cf-deploy.outputs.url }}
           VERCEL_URL: ${{ steps.vercel-deploy.outputs.url }}
 
   deploy-staging:
