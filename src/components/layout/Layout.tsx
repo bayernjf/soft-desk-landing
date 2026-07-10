@@ -30,8 +30,10 @@ export function Layout() {
   }, [location.pathname]);
 
   return (
-    <div className="min-h-screen bg-[#0d1117] text-slate-100 font-sans antialiased flex overflow-hidden">
-      <Sidebar onOpenRadialMenu={() => setRadialOpen(true)} />
+    <div className="min-h-screen bg-[#0d1117] text-slate-100 font-sans antialiased flex">
+      <div className="flex-shrink-0 overflow-y-auto">
+        <Sidebar onOpenRadialMenu={() => setRadialOpen(true)} />
+      </div>
 
       <main
         className={cn(
