@@ -2047,22 +2047,11 @@ function Footer({ theme }: { theme: 'light' | 'dark' }) {
             工作流
           </a>
           <a
-            href="https://github.com/bayernjf/soft-desk/releases"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={cn(
-              'transition-colors',
-              theme === 'light' ? 'hover:text-slate-700' : 'hover:text-slate-300'
-            )}
-          >
-            下载
-          </a>
-          <a
             href="https://github.com/bayernjf/soft-desk"
             target="_blank"
             rel="noopener noreferrer"
             className={cn(
-              'flex items-center gap-1 transition-colors',
+              'hidden flex items-center gap-1 transition-colors',
               theme === 'light' ? 'hover:text-slate-700' : 'hover:text-slate-300'
             )}
           >
