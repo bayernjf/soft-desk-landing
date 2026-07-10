@@ -1927,6 +1927,44 @@ const StatisticsSection = React.forwardRef<HTMLElement, {
 
 // CTA 区域
 const CTA = React.forwardRef<HTMLElement, { theme: 'light' | 'dark' }>(({ theme }, ref) => {
+  const [downloadUrls, setDownloadUrls] = useState<{ mac: string; win: string }>({ mac: '', win: '' });
+
+  useEffect(() => {
+    const fetchLatestRelease = async () => {
+      try {
+        const response = await fetch('https://api.github.com/repos/bayernjf/soft-desk/releases/latest');
+        const data = await response.json();
+        const assets = data.assets || [];
+        const macAsset = assets.find((a: { name: string }) => a.name.endsWith('.dmg'));
+        const winAsset = assets.find((a: { name: string }) => a.name.endsWith('.exe'));
+        setDownloadUrls({
+          mac: macAsset?.browser_download_url || '',
+          win: winAsset?.browser_download_url || '',
+        });
+      } catch {
+        setDownloadUrls({ mac: '', win: '' });
+      }
+    };
+    fetchLatestRelease();
+  }, []);
+
+  const handleDownloadMac = () => {
+    track('cta_click', { cta_text: '下载Mac', cta_location: 'bottom' });
+    if (downloadUrls.mac) {
+      window.location.href = downloadUrls.mac;
+    } else {
+      window.open('https://github.com/bayernjf/soft-desk/releases', '_blank');
+    }
+  };
+
+  const handleDownloadWin = () => {
+    track('cta_click', { cta_text: '下载Win', cta_location: 'bottom' });
+    if (downloadUrls.win) {
+      window.location.href = downloadUrls.win;
+    } else {
+      window.open('https://github.com/bayernjf/soft-desk/releases', '_blank');
+    }
+  };
   return (
     <section ref={ref} id="cta" className={cn('px-6 py-24')}>
       <div className="max-w-4xl mx-auto">
