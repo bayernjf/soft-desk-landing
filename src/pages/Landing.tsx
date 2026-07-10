@@ -330,12 +330,9 @@ function Hero({ theme }: { theme: 'light' | 'dark' }) {
             >
               下载Mac
               <ArrowRight className="w-4 h-4" />
-            </a>
-            <a
-              href="https://github.com/bayernjf/soft-desk/releases"
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={() => track('cta_click', { cta_text: '下载Win', cta_location: 'hero' })}
+            </button>
+            <button
+              onClick={handleDownloadWin}
               className={cn(
                 'w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl text-sm font-semibold transition-all shadow-glow-brand hover:scale-[1.02]',
                 theme === 'light'
