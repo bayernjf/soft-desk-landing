@@ -28,6 +28,7 @@ import { formatMinutes, formatTimeAgo } from '@/services/software.service';
 import { cn } from '@/lib/utils';
 import { track } from '@/lib/analytics';
 import { useSectionVisibility, useScrollDepthTracking } from '@/hooks/useAnalytics';
+import { useDownloadUrls } from '@/hooks/useDownloadUrls';
 import type { Software, Workflow as WorkflowType } from '@/types';
 
 // 主题切换 Hook
@@ -197,18 +198,16 @@ function Nav({ theme, toggleTheme }: { theme: 'light' | 'dark'; toggleTheme: () 
           </button>
           <Link
             to="/app"
-            onClick={() => track('cta_click', { cta_text: '进入工作台', cta_location: 'nav' })}
+            onClick={() => track('cta_click', { cta_text: '进入演示', cta_location: 'nav' })}
             className={cn(
               'hidden sm:inline-flex text-sm transition-colors',
               theme === 'light' ? 'text-slate-500 hover:text-slate-800' : 'text-slate-400 hover:text-white'
             )}
           >
-            进入工作台
+            进入演示
           </Link>
           <a
-            href="https://github.com/bayernjf/soft-desk/releases"
-            target="_blank"
-            rel="noopener noreferrer"
+            href="#cta"
             onClick={() => track('cta_click', { cta_text: '免费下载', cta_location: 'nav' })}
             className={cn(
               'inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-medium transition-all shadow-glow-brand hover:scale-[1.02]',
@@ -228,6 +227,18 @@ function Nav({ theme, toggleTheme }: { theme: 'light' | 'dark'; toggleTheme: () 
 
 // Hero 区域
 function Hero({ theme }: { theme: 'light' | 'dark' }) {
+  const { downloadMac, downloadWin } = useDownloadUrls();
+
+  const handleDownloadMac = () => {
+    track('cta_click', { cta_text: '下载Mac', cta_location: 'hero' });
+    downloadMac();
+  };
+
+  const handleDownloadWin = () => {
+    track('cta_click', { cta_text: '下载Win', cta_location: 'hero' });
+    downloadWin();
+  };
+
   return (
     <section className="relative pt-40 pb-24 px-6 overflow-hidden">
       <div className="absolute inset-0 -z-10">
@@ -281,21 +292,32 @@ function Hero({ theme }: { theme: 'light' | 'dark' }) {
         </p>
 
         <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
-          <a
-            href="https://github.com/bayernjf/soft-desk/releases"
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={() => track('cta_click', { cta_text: '免费下载 SoftDesk', cta_location: 'hero' })}
-            className={cn(
-              'w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl text-sm font-semibold transition-all shadow-glow-brand hover:scale-[1.02]',
-              theme === 'light'
-                ? 'bg-primary-500 hover:bg-primary-600 text-white'
-                : 'bg-primary-500 hover:bg-primary-600 text-white'
-            )}
-          >
-            免费下载 SoftDesk
-            <ArrowRight className="w-4 h-4" />
-          </a>
+          <div className="flex flex-col sm:flex-row gap-3">
+            <button
+              onClick={handleDownloadMac}
+              className={cn(
+                'w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl text-sm font-semibold transition-all shadow-glow-brand hover:scale-[1.02]',
+                theme === 'light'
+                  ? 'bg-primary-500 hover:bg-primary-600 text-white'
+                  : 'bg-primary-500 hover:bg-primary-600 text-white'
+              )}
+            >
+              下载Mac
+              <ArrowRight className="w-4 h-4" />
+            </button>
+            <button
+              onClick={handleDownloadWin}
+              className={cn(
+                'w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl text-sm font-semibold transition-all shadow-glow-brand hover:scale-[1.02]',
+                theme === 'light'
+                  ? 'bg-primary-500 hover:bg-primary-600 text-white'
+                  : 'bg-primary-500 hover:bg-primary-600 text-white'
+              )}
+            >
+              下载Win
+              <ArrowRight className="w-4 h-4" />
+            </button>
+          </div>
           <Link
             to="/app"
             onClick={() => track('cta_click', { cta_text: '查看在线演示', cta_location: 'hero' })}
@@ -1879,6 +1901,18 @@ const StatisticsSection = React.forwardRef<HTMLElement, {
 
 // CTA 区域
 const CTA = React.forwardRef<HTMLElement, { theme: 'light' | 'dark' }>(({ theme }, ref) => {
+  const { downloadMac, downloadWin } = useDownloadUrls();
+
+  const handleDownloadMac = () => {
+    track('cta_click', { cta_text: '下载Mac', cta_location: 'bottom' });
+    downloadMac();
+  };
+
+  const handleDownloadWin = () => {
+    track('cta_click', { cta_text: '下载Win', cta_location: 'bottom' });
+    downloadWin();
+  };
+
   return (
     <section ref={ref} id="cta" className={cn('px-6 py-24')}>
       <div className="max-w-4xl mx-auto">
@@ -1924,21 +1958,32 @@ const CTA = React.forwardRef<HTMLElement, { theme: 'light' | 'dark' }>(({ theme 
             重度用户每周多出近 1 小时专注工作时间。免费下载，开箱即用。
           </p>
           <div className="mt-9 flex flex-col sm:flex-row items-center justify-center gap-4">
-            <a
-              href="https://github.com/bayernjf/soft-desk/releases"
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={() => track('cta_click', { cta_text: '免费下载 SoftDesk', cta_location: 'bottom' })}
-              className={cn(
-                'w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-xl text-sm font-semibold transition-all shadow-glow-brand hover:scale-[1.02]',
-                theme === 'light'
-                  ? 'bg-primary-500 hover:bg-primary-600 text-white'
-                  : 'bg-primary-500 hover:bg-primary-600 text-white'
-              )}
-            >
-              免费下载 SoftDesk
-              <ArrowRight className="w-4 h-4" />
-            </a>
+            <div className="flex flex-col sm:flex-row gap-3">
+              <button
+                onClick={handleDownloadMac}
+                className={cn(
+                  'w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-xl text-sm font-semibold transition-all shadow-glow-brand hover:scale-[1.02]',
+                  theme === 'light'
+                    ? 'bg-primary-500 hover:bg-primary-600 text-white'
+                    : 'bg-primary-500 hover:bg-primary-600 text-white'
+                )}
+              >
+                下载Mac
+                <ArrowRight className="w-4 h-4" />
+              </button>
+              <button
+                onClick={handleDownloadWin}
+                className={cn(
+                  'w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-xl text-sm font-semibold transition-all shadow-glow-brand hover:scale-[1.02]',
+                  theme === 'light'
+                    ? 'bg-primary-500 hover:bg-primary-600 text-white'
+                    : 'bg-primary-500 hover:bg-primary-600 text-white'
+                )}
+              >
+                下载Win
+                <ArrowRight className="w-4 h-4" />
+              </button>
+            </div>
             <Link
               to="/app"
               onClick={() => track('cta_click', { cta_text: '进入在线演示', cta_location: 'bottom' })}
@@ -2002,24 +2047,10 @@ function Footer({ theme }: { theme: 'light' | 'dark' }) {
             工作流
           </a>
           <a
-            href="https://github.com/bayernjf/soft-desk/releases"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={cn(
-              'transition-colors',
-              theme === 'light' ? 'hover:text-slate-700' : 'hover:text-slate-300'
-            )}
-          >
-            下载
-          </a>
-          <a
             href="https://github.com/bayernjf/soft-desk"
             target="_blank"
             rel="noopener noreferrer"
-            className={cn(
-              'flex items-center gap-1 transition-colors',
-              theme === 'light' ? 'hover:text-slate-700' : 'hover:text-slate-300'
-            )}
+            className="hidden"
           >
             <Github className="w-3.5 h-3.5" />
             GitHub
