@@ -2034,7 +2034,7 @@ const CTA = React.forwardRef<HTMLElement, { theme: 'light' | 'dark' }>(({ theme 
               >
                 下载Win
                 <ArrowRight className="w-4 h-4" />
-              </a>
+              </button>
             </div>
             <Link
               to="/app"
