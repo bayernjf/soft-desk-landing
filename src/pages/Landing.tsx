@@ -319,11 +319,8 @@ function Hero({ theme }: { theme: 'light' | 'dark' }) {
 
         <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
           <div className="flex flex-col sm:flex-row gap-3">
-            <a
-              href="https://github.com/bayernjf/soft-desk/releases"
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={() => track('cta_click', { cta_text: '下载Mac', cta_location: 'hero' })}
+            <button
+              onClick={handleDownloadMac}
               className={cn(
                 'w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl text-sm font-semibold transition-all shadow-glow-brand hover:scale-[1.02]',
                 theme === 'light'
