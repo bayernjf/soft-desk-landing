@@ -41,17 +41,24 @@ export function initAnalytics() {
 
   // Clarity
   if (CLARITY_PROJECT_ID) {
-    window.clarity =
-      window.clarity ||
+    const c = window as unknown as Record<string, unknown>;
+    const l = document;
+    const a = 'clarity';
+    const r = 'script';
+    const i = CLARITY_PROJECT_ID;
+    c[a] =
+      c[a] ||
       function () {
+        const clarityObj = c as Record<string, { q?: unknown[] }>;
+        clarityObj[a].q = clarityObj[a].q || [];
         // eslint-disable-next-line prefer-rest-params
-        (window.clarity.q = window.clarity.q || []).push(arguments);
-      } as ((...args: unknown[]) => void) & { q?: unknown[] };
-    window.clarity.q = window.clarity.q || [];
-    const script = document.createElement('script');
-    script.async = true;
-    script.src = `https://www.clarity.ms/tag/${CLARITY_PROJECT_ID}`;
-    document.head.appendChild(script);
+        clarityObj[a].q!.push(arguments);
+      };
+    const t = l.createElement(r) as HTMLScriptElement;
+    t.async = true;
+    t.src = 'https://www.clarity.ms/tag/' + i;
+    const y = l.getElementsByTagName(r)[0];
+    y.parentNode?.insertBefore(t, y);
   }
 }
 
