@@ -39,14 +39,16 @@ export function initAnalytics() {
     document.head.appendChild(script);
   }
 
-  // Clarity
+  // Clarity (官方标准安装方式)
   if (CLARITY_PROJECT_ID) {
-    const clarityUrl = `https://www.clarity.ms/tag/${CLARITY_PROJECT_ID}`;
-    console.debug('[analytics] Clarity URL:', clarityUrl);
+    window.clarity = window.clarity || function (...args: unknown[]) {
+      (window.clarity!.q = window.clarity!.q || []).push(args);
+    };
     const script = document.createElement('script');
     script.async = true;
-    script.src = clarityUrl;
-    document.head.appendChild(script);
+    script.src = `https://www.clarity.ms/tag/${CLARITY_PROJECT_ID}`;
+    const firstScript = document.getElementsByTagName('script')[0];
+    firstScript.parentNode?.insertBefore(script, firstScript);
   }
 }
 
