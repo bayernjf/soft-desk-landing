@@ -41,9 +41,11 @@ export function initAnalytics() {
 
   // Clarity
   if (CLARITY_PROJECT_ID) {
+    const clarityUrl = `https://www.clarity.ms/tag/${CLARITY_PROJECT_ID}`;
+    console.debug('[analytics] Clarity URL:', clarityUrl);
     const script = document.createElement('script');
     script.async = true;
-    script.src = `https://www.clarity.ms/tag/${CLARITY_PROJECT_ID}`;
+    script.src = clarityUrl;
     document.head.appendChild(script);
   }
 }
