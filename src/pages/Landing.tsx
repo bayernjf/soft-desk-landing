@@ -22,11 +22,12 @@ import {
 import { Link } from 'react-router-dom';
 import { BrandMark } from '@/components/BrandMark';
 import { RadialMenu } from '@/components/RadialMenu';
+import { MacInstallGuide } from '@/components/MacInstallGuide';
 import { useSoftwareStore } from '@/stores/software.store';
 import { CATEGORIES } from '@/data/categories';
 import { formatMinutes, formatTimeAgo } from '@/services/software.service';
 import { cn } from '@/lib/utils';
-import { track } from '@/lib/analytics';
+import { track, trackPageView } from '@/lib/analytics';
 import { useSectionVisibility, useScrollDepthTracking } from '@/hooks/useAnalytics';
 import { useDownloadUrls } from '@/hooks/useDownloadUrls';
 import type { Software, Workflow as WorkflowType } from '@/types';
@@ -59,6 +60,7 @@ function useClassifyProgress() {
   const [classifiedCount, setClassifiedCount] = useState(0);
 
   const startClassify = () => {
+    track('ai_classify_demo_click');
     setIsClassifying(true);
     setProgress(0);
     setClassifiedCount(0);
@@ -172,6 +174,7 @@ function Nav({ theme, toggleTheme }: { theme: 'light' | 'dark'; toggleTheme: () 
             <a
               key={l.href}
               href={l.href}
+              onClick={() => track('nav_anchor_click', { section: l.label })}
               className={cn(
                 'text-sm transition-colors',
                 theme === 'light'
@@ -226,12 +229,13 @@ function Nav({ theme, toggleTheme }: { theme: 'light' | 'dark'; toggleTheme: () 
 }
 
 // Hero 区域
-function Hero({ theme }: { theme: 'light' | 'dark' }) {
+function Hero({ theme, onMacDownload }: { theme: 'light' | 'dark'; onMacDownload?: () => void }) {
   const { downloadMac, downloadWin } = useDownloadUrls();
 
   const handleDownloadMac = () => {
     track('cta_click', { cta_text: '下载Mac', cta_location: 'hero' });
     downloadMac();
+    onMacDownload?.();
   };
 
   const handleDownloadWin = () => {
@@ -755,6 +759,7 @@ const RadialMenuSection = React.forwardRef<HTMLElement, {
               <button
                 onClick={() => {
                   if (animPhase === 'idle') {
+                    track('radial_preview_page_switch', { from: previewPage, to: 0 });
                     wheelDirRef.current = -1;
                     setAnimPhase('out');
                   }
@@ -773,6 +778,7 @@ const RadialMenuSection = React.forwardRef<HTMLElement, {
               <button
                 onClick={() => {
                   if (animPhase === 'idle') {
+                    track('radial_preview_page_switch', { from: previewPage, to: 1 });
                     wheelDirRef.current = 1;
                     setAnimPhase('out');
                   }
@@ -1201,7 +1207,12 @@ const SearchSection = React.forwardRef<HTMLElement, {
             />
             <input
               value={query}
-              onChange={(e) => search(e.target.value)}
+              onChange={(e) => {
+                search(e.target.value);
+                if (e.target.value.length === 1) {
+                  track('search_demo_start');
+                }
+              }}
               placeholder="输入描述来搜索软件，如「截屏工具」「修图」..."
               className={cn(
                 'w-full pl-12 pr-10 py-4 rounded-xl text-sm transition-all',
@@ -1230,7 +1241,10 @@ const SearchSection = React.forwardRef<HTMLElement, {
             {quickQueries.map((q) => (
               <button
                 key={q}
-                onClick={() => search(q)}
+                onClick={() => {
+                  track('search_demo_quick_click', { query: q });
+                  search(q);
+                }}
                 className={cn(
                   'px-3 py-1.5 rounded-lg text-xs font-medium transition-colors',
                   theme === 'light'
@@ -1900,12 +1914,16 @@ const StatisticsSection = React.forwardRef<HTMLElement, {
 });
 
 // CTA 区域
-const CTA = React.forwardRef<HTMLElement, { theme: 'light' | 'dark' }>(({ theme }, ref) => {
+const CTA = React.forwardRef<HTMLElement, {
+  theme: 'light' | 'dark';
+  onMacDownload?: () => void;
+}>(({ theme, onMacDownload }, ref) => {
   const { downloadMac, downloadWin } = useDownloadUrls();
 
   const handleDownloadMac = () => {
     track('cta_click', { cta_text: '下载Mac', cta_location: 'bottom' });
     downloadMac();
+    onMacDownload?.();
   };
 
   const handleDownloadWin = () => {
@@ -2030,6 +2048,7 @@ function Footer({ theme }: { theme: 'light' | 'dark' }) {
         >
           <a
             href="#ai-classify"
+            onClick={() => track('footer_link_click', { link: '功能' })}
             className={cn(
               'transition-colors',
               theme === 'light' ? 'hover:text-slate-700' : 'hover:text-slate-300'
@@ -2039,6 +2058,7 @@ function Footer({ theme }: { theme: 'light' | 'dark' }) {
           </a>
           <a
             href="#workflow"
+            onClick={() => track('footer_link_click', { link: '工作流' })}
             className={cn(
               'transition-colors',
               theme === 'light' ? 'hover:text-slate-700' : 'hover:text-slate-300'
@@ -2047,10 +2067,26 @@ function Footer({ theme }: { theme: 'light' | 'dark' }) {
             工作流
           </a>
           <a
+            href="https://github.com/bayernjf/soft-desk/releases"
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => track('outbound_click', { destination: 'releases', location: 'footer' })}
+            className={cn(
+              'transition-colors',
+              theme === 'light' ? 'hover:text-slate-700' : 'hover:text-slate-300'
+            )}
+          >
+            下载
+          </a>
+          <a
             href="https://github.com/bayernjf/soft-desk"
             target="_blank"
             rel="noopener noreferrer"
-            className="hidden"
+            onClick={() => track('outbound_click', { destination: 'github_repo', location: 'footer' })}
+            className={cn(
+              'flex items-center gap-1 transition-colors',
+              theme === 'light' ? 'hover:text-slate-700' : 'hover:text-slate-300'
+            )}
           >
             <Github className="w-3.5 h-3.5" />
             GitHub
@@ -2065,6 +2101,13 @@ function Footer({ theme }: { theme: 'light' | 'dark' }) {
 export function Landing() {
   const { theme, toggle: toggleTheme } = useTheme();
   const { software, workflows, launchSoftware, launchWorkflow } = useSoftwareStore();
+  const [macGuideOpen, setMacGuideOpen] = useState(false);
+
+  const handleMacDownload = () => setMacGuideOpen(true);
+
+  useEffect(() => {
+    trackPageView('/', 'SoftDesk · AI 驱动的桌面软件智能指挥中心');
+  }, []);
 
   useScrollDepthTracking();
 
@@ -2085,7 +2128,7 @@ export function Landing() {
     >
       <Nav theme={theme} toggleTheme={toggleTheme} />
       <main>
-        <Hero theme={theme} />
+        <Hero theme={theme} onMacDownload={handleMacDownload} />
         <RadialMenuSection ref={radialMenuRef} theme={theme} software={software} workflows={workflows} />
         <Stats theme={theme} />
         <AIClassifySection ref={aiClassifyRef} theme={theme} software={software} />
@@ -2093,9 +2136,12 @@ export function Landing() {
         <WorkflowSection ref={workflowRef} theme={theme} workflows={workflows} software={software} />
         <FavoritesSection ref={favoritesRef} theme={theme} workflows={workflows} software={software} />
         <StatisticsSection ref={statisticsRef} theme={theme} software={software} />
-        <CTA ref={ctaRef} theme={theme} />
+        <CTA ref={ctaRef} theme={theme} onMacDownload={handleMacDownload} />
       </main>
       <Footer theme={theme} />
+
+      {/* macOS 安装引导弹窗 */}
+      <MacInstallGuide open={macGuideOpen} onClose={() => setMacGuideOpen(false)} theme={theme} />
 
       {/* 径向菜单 */}
       <RadialMenu
