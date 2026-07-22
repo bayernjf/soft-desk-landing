@@ -236,9 +236,11 @@ jobs:
           VITE_CLARITY_PROJECT_ID: ${{ secrets.VITE_CLARITY_PROJECT_ID }}
 
       - name: Install Playwright Chromium
+        continue-on-error: true
         run: npx --yes playwright@1.54.0 install --with-deps chromium
 
       - name: Generate production preview image
+        continue-on-error: true
         run: |
           npm run preview -- --host 127.0.0.1 --port 4173 > /tmp/softdesk-preview.log 2>&1 &
           for attempt in $(seq 1 30); do
