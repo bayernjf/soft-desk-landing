@@ -1,0 +1,14 @@
+---
+import FeaturePage from '@/components/FeaturePage.astro';
+import { features } from '@/data/features';
+
+export function getStaticPaths() {
+  return features.map((f) => ({
+    params: { slug: f.slug },
+  }));
+}
+
+const { slug } = Astro.params;
+---
+
+<FeaturePage slug={slug!} lang="en" />
