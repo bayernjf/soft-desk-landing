@@ -1,0 +1,58 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { useTranslations, localizedPath } from '@/i18n/utils';
+import type { Language } from '@/i18n/ui';
+
+interface Props {
+  lang: Language;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+const isZh = lang === 'zh';
+
+const sections = isZh ? [
+  { title: '数据收集范围', body: 'SoftDesk 是一款本地桌面软件管理工具。软件扫描数据、使用时长统计、工作流配置等均存储在本地 SQLite 数据库中，不上传至任何服务器。' },
+  { title: '云同步功能', body: '云同步为可选功能，使用 Supabase 进行加密传输。启用后，软件列表、收藏夹、工作流等数据将同步到你的账户，以便跨设备访问。同步数据不包含敏感个人信息。' },
+  { title: '网站分析', body: '本网站（soft-desk-landing.pages.dev）使用 Google Analytics 4 和 Microsoft Clarity 进行流量分析。在您授予分析授权前，不会加载任何分析脚本。您随时可以撤回授权。' },
+  { title: 'Cookie 使用', body: '本网站使用 Cookie 存储你的分析授权偏好。不使用 Cookie 进行跨站追踪或广告投放。' },
+  { title: 'AI 分类功能', body: 'AI 软件分类功能通过你配置的 AI 模型（如 OpenAI、Anthropic 等）在本地发起 API 请求。软件名称和描述会发送到 AI 服务商进行分类，但不会存储在其服务器上。' },
+  { title: '第三方服务', body: '本应用涉及以下第三方服务：GitHub（发布下载）、Supabase（可选云同步）、Google Analytics（网站分析）、Microsoft Clarity（热力图分析）。各服务均有独立的隐私政策。' },
+  { title: '数据删除', body: '你可以随时通过应用内设置清除本地数据。如需删除云端同步数据，登录 Supabase 账户管理即可。卸载应用将自动清除本地数据。' },
+  { title: '联系方式', body: '如有隐私相关问题，请通过 GitHub Issues 联系我们。' },
+] : [
+  { title: 'Data Collection Scope', body: 'SoftDesk is a local desktop software management tool. Software scan data, usage statistics, and workflow configurations are stored in a local SQLite database and are not uploaded to any server.' },
+  { title: 'Cloud Sync', body: 'Cloud sync is an optional feature that uses Supabase for encrypted transport. When enabled, software lists, favorites, and workflows sync to your account for cross-device access. Synced data does not contain sensitive personal information.' },
+  { title: 'Website Analytics', body: 'This website (soft-desk-landing.pages.dev) uses Google Analytics 4 and Microsoft Clarity for traffic analysis. No analytics scripts are loaded until you grant analytics permission. You can revoke permission at any time.' },
+  { title: 'Cookie Usage', body: 'This website uses cookies to store your analytics consent preference. We do not use cookies for cross-site tracking or advertising.' },
+  { title: 'AI Classification', body: 'The AI software classification feature makes API requests through your configured AI models (e.g., OpenAI, Anthropic) locally. Software names and descriptions are sent to the AI provider for classification but are not stored on their servers.' },
+  { title: 'Third-Party Services', body: 'This application involves the following third-party services: GitHub (release downloads), Supabase (optional cloud sync), Google Analytics (website analytics), Microsoft Clarity (heatmap analysis). Each service has its own privacy policy.' },
+  { title: 'Data Deletion', body: 'You can clear local data at any time through the in-app settings. To delete cloud-synced data, log in to your Supabase account management. Uninstalling the app automatically clears local data.' },
+  { title: 'Contact', body: 'For privacy-related questions, please contact us via GitHub Issues.' },
+];
+---
+
+<BaseLayout
+  title={`${t('footer.privacy')} — SoftDesk`}
+  description={isZh ? 'SoftDesk 隐私政策 - 了解我们如何收集、使用和保护你的数据' : 'SoftDesk Privacy Policy - Learn how we collect, use, and protect your data'}
+  path="/privacy"
+  lang={lang}
+>
+  <article class="mx-auto max-w-3xl px-4 py-16 sm:px-6">
+    <h1 class="mb-8 text-3xl font-bold text-white">{t('footer.privacy')}</h1>
+    <div class="space-y-8">
+      {sections.map((section) => (
+        <section>
+          <h2 class="mb-3 text-xl font-semibold text-white">{section.title}</h2>
+          <p class="text-gray-400 leading-relaxed">{section.body}</p>
+        </section>
+      ))}
+    </div>
+    <div class="mt-12 border-t border-gray-800 pt-6">
+      <a href={localizedPath('/', lang)} class="text-sm text-brand hover:text-brand-dark">
+        ← {t('error.404.back')}
+      </a>
+    </div>
+  </article>
+</BaseLayout>

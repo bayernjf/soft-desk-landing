@@ -1,0 +1,7 @@
+---
+import AppLayout from '@/layouts/AppLayout.astro';
+import SettingsApp from '@/components/app/SettingsApp.tsx';
+---
+<AppLayout title="设置" activePage="settings">
+  <SettingsApp client:load />
+</AppLayout>

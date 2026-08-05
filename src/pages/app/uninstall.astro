@@ -1,0 +1,8 @@
+---
+import AppLayout from '@/layouts/AppLayout.astro';
+import UninstallApp from '@/components/app/UninstallApp.tsx';
+import { mockSoftware } from '@/data/software';
+---
+<AppLayout title="卸载清理" activePage="uninstall">
+  <UninstallApp client:load software={mockSoftware} />
+</AppLayout>

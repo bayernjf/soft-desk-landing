@@ -1,0 +1,8 @@
+---
+import AppLayout from '@/layouts/AppLayout.astro';
+import LibraryApp from '@/components/app/LibraryApp.tsx';
+import { mockSoftware } from '@/data/software';
+---
+<AppLayout title="软件库" activePage="library">
+  <LibraryApp client:load software={mockSoftware} />
+</AppLayout>

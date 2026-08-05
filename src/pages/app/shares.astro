@@ -1,0 +1,7 @@
+---
+import AppLayout from '@/layouts/AppLayout.astro';
+import MySharesApp from '@/components/app/MySharesApp.tsx';
+---
+<AppLayout title="我的分享" activePage="shares">
+  <MySharesApp client:load />
+</AppLayout>
