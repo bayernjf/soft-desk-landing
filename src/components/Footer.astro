@@ -15,7 +15,19 @@ const year = new Date().getFullYear();
 <footer class="border-t border-gray-800 bg-[#0d1117]">
   <div class="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-4 py-8 sm:flex-row sm:px-6">
     <div class="flex items-center gap-2">
-      <span class="flex h-6 w-6 items-center justify-center rounded-md bg-brand text-white font-bold text-xs">S</span>
+      <svg viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 rounded-md">
+        <rect width="512" height="512" rx="115" fill="url(#softdesk-footer)" />
+        <path d="M156 136 H266 a120 120 0 0 1 0 240 H156 Z" fill="none" stroke="#ffffff" stroke-width="40" stroke-linejoin="round" />
+        <path d="M214 206 L300 256 L214 306 Z" fill="#ffffff" />
+        <rect x="150" y="392" width="212" height="20" rx="10" fill="#ffffff" fill-opacity="0.9" />
+        <defs>
+          <linearGradient id="softdesk-footer" x1="0" y1="0" x2="512" y2="512" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#7c3aed" />
+            <stop offset="50%" stop-color="#ec4899" />
+            <stop offset="100%" stop-color="#f59e0b" />
+          </linearGradient>
+        </defs>
+      </svg>
       <span class="text-sm text-gray-400">© {year} {t('footer.copyright')}</span>
     </div>
 
