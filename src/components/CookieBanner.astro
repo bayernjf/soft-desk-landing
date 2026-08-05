@@ -1,0 +1,63 @@
+---
+import { useTranslations } from '@/i18n/utils';
+import type { Language } from '@/i18n/ui';
+
+interface Props {
+  lang: Language;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+---
+
+<div id="cookie-banner" class="fixed bottom-0 left-0 right-0 z-50 hidden">
+  <div class="mx-auto max-w-4xl m-4 rounded-xl border border-gray-700 bg-[#161b22] p-4 shadow-2xl">
+    <div class="flex flex-col items-center gap-4 sm:flex-row">
+      <p class="flex-1 text-sm text-gray-300">{t('cookie.text')}</p>
+      <div class="flex gap-3">
+        <button
+          id="cookie-reject"
+          class="rounded-lg px-4 py-2 text-sm text-gray-400 hover:text-gray-200 transition-colors"
+        >
+          {t('cookie.reject')}
+        </button>
+        <button
+          id="cookie-accept"
+          class="rounded-lg bg-brand px-4 py-2 text-sm font-medium text-white hover:bg-brand-dark transition-colors"
+        >
+          {t('cookie.accept')}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  import { getStoredConsent, setStoredConsent, updateConsent, DEFAULT_CONSENT } from '@/lib/analytics';
+
+  const banner = document.getElementById('cookie-banner');
+  const acceptBtn = document.getElementById('cookie-accept');
+  const rejectBtn = document.getElementById('cookie-reject');
+
+  const stored = getStoredConsent();
+  if (!stored && banner) {
+    banner.classList.remove('hidden');
+  }
+
+  function handleAccept() {
+    const consent = { ...DEFAULT_CONSENT, analytics_storage: 'granted' as const };
+    setStoredConsent(consent);
+    updateConsent(consent);
+    banner?.classList.add('hidden');
+  }
+
+  function handleReject() {
+    const consent = { ...DEFAULT_CONSENT, analytics_storage: 'denied' as const };
+    setStoredConsent(consent);
+    updateConsent(consent);
+    banner?.classList.add('hidden');
+  }
+
+  acceptBtn?.addEventListener('click', handleAccept);
+  rejectBtn?.addEventListener('click', handleReject);
+</script>

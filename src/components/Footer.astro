@@ -1,0 +1,33 @@
+---
+import { useTranslations, localizedPath } from '@/i18n/utils';
+import type { Language } from '@/i18n/ui';
+import LanguageSwitcher from './LanguageSwitcher.astro';
+
+interface Props {
+  lang: Language;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const year = new Date().getFullYear();
+---
+
+<footer class="border-t border-gray-800 bg-[#0d1117]">
+  <div class="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-4 py-8 sm:flex-row sm:px-6">
+    <div class="flex items-center gap-2">
+      <span class="flex h-6 w-6 items-center justify-center rounded-md bg-brand text-white font-bold text-xs">S</span>
+      <span class="text-sm text-gray-400">© {year} {t('footer.copyright')}</span>
+    </div>
+
+    <div class="flex items-center gap-6">
+      <a
+        href={localizedPath('/privacy', lang)}
+        class="text-sm text-gray-400 transition-colors hover:text-white"
+      >
+        {t('footer.privacy')}
+      </a>
+      <LanguageSwitcher lang={lang} path={Astro.url.pathname} />
+      <span class="text-xs text-gray-600">{t('footer.made_with')}</span>
+    </div>
+  </div>
+</footer>
