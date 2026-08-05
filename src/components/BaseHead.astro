@@ -1,0 +1,60 @@
+---
+import { buildCanonicalUrl, buildHreflangTags, type SeoMeta } from '@/lib/seo';
+
+interface Props extends SeoMeta {}
+
+const { title, description, path, lang, image = '/og/default.png', noindex = false } = Astro.props;
+const canonical = buildCanonicalUrl(path, lang);
+const hreflangs = buildHreflangTags(path);
+const ogImage = new URL(image, Astro.site).toString();
+---
+
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="generator" content={Astro.generator} />
+
+<title>{title}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={canonical} />
+{noindex && <meta name="robots" content="noindex,nofollow" />}
+
+<!-- hreflang -->
+{hreflangs.map((h) => <link rel="alternate" hreflang={h.hreflang} href={h.href} />)}
+
+<!-- Open Graph -->
+<meta property="og:type" content="website" />
+<meta property="og:url" content={canonical} />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:image" content={ogImage} />
+<meta property="og:locale" content={lang === 'zh' ? 'zh_CN' : 'en_US'} />
+<meta property="og:site_name" content="SoftDesk" />
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={ogImage} />
+
+<!-- Favicon -->
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+<!-- Theme color -->
+<meta name="theme-color" content="#0d1117" />
+
+<!-- Consent Mode v2 (must load before GA4) -->
+<script is:inline>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  window.gtag = gtag;
+  gtag('consent', 'default', {
+    analytics_storage: 'denied',
+    ad_storage: 'denied',
+    ad_user_data: 'denied',
+    ad_personalization: 'denied',
+  });
+</script>
+
+<!-- Preconnect -->
+<link rel="preconnect" href="https://www.googletagmanager.com" />
+<link rel="preconnect" href="https://www.clarity.ms" />

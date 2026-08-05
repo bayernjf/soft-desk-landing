@@ -1,0 +1,27 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { useTranslations, localizedPath } from '@/i18n/utils';
+
+const lang = Astro.url.pathname.startsWith('/en') ? 'en' : 'zh';
+const t = useTranslations(lang);
+---
+
+<BaseLayout
+  title={`404 — SoftDesk`}
+  description={t('error.404.desc')}
+  path="/404"
+  lang={lang}
+  noindex={true}
+>
+  <section class="mx-auto flex min-h-[60vh] max-w-2xl flex-col items-center justify-center px-4 text-center">
+    <h1 class="text-6xl font-bold text-gray-700">404</h1>
+    <h2 class="mt-4 text-2xl font-semibold text-white">{t('error.404.title')}</h2>
+    <p class="mt-2 text-gray-400">{t('error.404.desc')}</p>
+    <a
+      href={localizedPath('/', lang)}
+      class="mt-8 rounded-lg bg-brand px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-brand-dark"
+    >
+      {t('error.404.back')}
+    </a>
+  </section>
+</BaseLayout>

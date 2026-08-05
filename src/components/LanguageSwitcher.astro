@@ -1,0 +1,30 @@
+---
+import { getAltLangPath } from '@/i18n/utils';
+import type { Language } from '@/i18n/ui';
+
+interface Props {
+  lang: Language;
+  path: string;
+}
+
+const { lang, path } = Astro.props;
+const altPath = getAltLangPath(path, lang === 'zh' ? 'en' : 'zh');
+---
+
+<div class="flex items-center gap-1 text-sm">
+  <a
+    href={lang === 'zh' ? '#' : getAltLangPath(path, 'zh')}
+    class={`rounded px-2 py-1 transition-colors ${lang === 'zh' ? 'text-brand font-medium' : 'text-gray-400 hover:text-gray-200'}`}
+    aria-current={lang === 'zh' ? 'true' : undefined}
+  >
+    中
+  </a>
+  <span class="text-gray-600">/</span>
+  <a
+    href={lang === 'en' ? '#' : altPath}
+    class={`rounded px-2 py-1 transition-colors ${lang === 'en' ? 'text-brand font-medium' : 'text-gray-400 hover:text-gray-200'}`}
+    aria-current={lang === 'en' ? 'true' : undefined}
+  >
+    EN
+  </a>
+</div>

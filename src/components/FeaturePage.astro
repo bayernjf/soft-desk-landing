@@ -1,0 +1,89 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import DownloadButtons from '@/components/DownloadButtons.astro';
+import { getFeatureBySlug } from '@/data/features';
+import { useTranslations, localizedPath } from '@/i18n/utils';
+import type { Language } from '@/i18n/ui';
+import { breadcrumbSchema } from '@/lib/seo';
+
+interface Props {
+  slug: string;
+  lang: Language;
+}
+
+const { slug, lang } = Astro.props;
+const feature = getFeatureBySlug(slug);
+
+if (!feature) {
+  return Astro.redirect(localizedPath('/404', lang));
+}
+
+const t = useTranslations(lang);
+const isZh = lang === 'zh';
+
+const breadcrumb = breadcrumbSchema([
+  { name: isZh ? '首页' : 'Home', path: '/' },
+  { name: isZh ? '功能特性' : 'Features', path: '/features' },
+  { name: feature.title[lang], path: `/features/${slug}` },
+], lang);
+---
+
+<BaseLayout
+  title={`${feature.title[lang]} — SoftDesk`}
+  description={feature.description[lang]}
+  path={`/features/${slug}`}
+  lang={lang}
+>
+  <article class="mx-auto max-w-3xl px-4 py-16 sm:px-6">
+    <!-- Breadcrumb -->
+    <nav class="mb-8 flex items-center gap-2 text-sm text-gray-500">
+      <a href={localizedPath('/', lang)} class="hover:text-gray-300">{isZh ? '首页' : 'Home'}</a>
+      <span>/</span>
+      <a href={localizedPath('/', lang)} class="hover:text-gray-300">{t('nav.features')}</a>
+      <span>/</span>
+      <span class="text-gray-300">{feature.title[lang]}</span>
+    </nav>
+
+    <!-- Header -->
+    <header class="mb-10">
+      <div class="mb-4 flex h-14 w-14 items-center justify-center rounded-xl" style={`background-color: ${feature.color}20; color: ${feature.color}`}>
+        <span class="text-3xl font-bold">{feature.icon}</span>
+      </div>
+      <h1 class="text-3xl font-bold text-white sm:text-4xl">{feature.title[lang]}</h1>
+      <p class="mt-3 text-lg text-gray-400">{feature.tagline[lang]}</p>
+    </header>
+
+    <!-- Description (TL;DR for AI engines) -->
+    <p class="mb-10 rounded-xl border border-gray-800 bg-[#161b22] p-4 text-gray-300 leading-relaxed">
+      {feature.description[lang]}
+    </p>
+
+    <!-- Sections -->
+    <div class="space-y-8">
+      {feature.sections.map((section) => (
+        <section>
+          <h2 class="mb-3 text-xl font-semibold text-white">{section.heading[lang]}</h2>
+          <p class="text-gray-400 leading-relaxed">{section.body[lang]}</p>
+        </section>
+      ))}
+    </div>
+
+    <!-- CTA -->
+    <div class="mt-12 rounded-xl border border-gray-800 bg-[#161b22] p-8 text-center">
+      <h2 class="text-2xl font-bold text-white">{t('cta.title')}</h2>
+      <p class="mt-2 text-gray-400">{t('cta.subtitle')}</p>
+      <div class="mt-6">
+        <DownloadButtons lang={lang} />
+      </div>
+    </div>
+
+    <!-- Back -->
+    <div class="mt-8">
+      <a href={localizedPath('/', lang)} class="text-sm text-brand hover:text-brand-dark">
+        ← {isZh ? '返回首页' : 'Back to home'}
+      </a>
+    </div>
+  </article>
+
+  <script type="application/ld+json" is:inline set:html={JSON.stringify(breadcrumb)} />
+</BaseLayout>

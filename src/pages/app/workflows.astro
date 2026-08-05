@@ -1,0 +1,8 @@
+---
+import AppLayout from '@/layouts/AppLayout.astro';
+import WorkflowsApp from '@/components/app/WorkflowsApp.tsx';
+import { mockSoftware, mockWorkflows } from '@/data/software';
+---
+<AppLayout title="工作流" activePage="workflows">
+  <WorkflowsApp client:load software={mockSoftware} workflows={mockWorkflows} />
+</AppLayout>

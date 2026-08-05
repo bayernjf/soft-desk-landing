@@ -1,5 +1,5 @@
-const GA_MEASUREMENT_ID = import.meta.env.VITE_GA_MEASUREMENT_ID as string | undefined;
-const CLARITY_PROJECT_ID = import.meta.env.VITE_CLARITY_PROJECT_ID as string | undefined;
+const GA_MEASUREMENT_ID = import.meta.env.PUBLIC_GA_MEASUREMENT_ID as string | undefined;
+const CLARITY_PROJECT_ID = import.meta.env.PUBLIC_CLARITY_PROJECT_ID as string | undefined;
 
 const isProd = import.meta.env.PROD;
 const COOKIE_CONSENT_KEY = 'soft_desk_consent';
