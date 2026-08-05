@@ -3,6 +3,12 @@
 @theme {
   --color-brand: #00d4aa;
   --color-brand-dark: #00b894;
+  --color-primary-400: #a78bfa;
+  --color-primary-500: #8b5cf6;
+  --color-primary-600: #7c3aed;
+  --color-accent-400: #f472b6;
+  --color-accent-500: #ec4899;
+  --color-success: #10b981;
 }
 
 html {
