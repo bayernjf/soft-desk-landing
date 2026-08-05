@@ -16,7 +16,7 @@ SoftDesk 落地页是 AI 驱动的桌面软件管理效率工具官方网站，�
 - **SEO**：@astrojs/sitemap、结构化数据（JSON-LD）、llms.txt（GEO）
 - **演示 App**：React 19 岛屿（client:load）
 - **图标**：astro-icon + @iconify-json/lucide
-- **Node 版本**：20（CI 固定使用 Node 20）
+- **Node 版本**：22（CI 固定使用 Node 22，Astro 7 要求 >= 22.12.0）
 
 ### 项目结构
 
@@ -191,7 +191,7 @@ npm run check && npm run build
 - Framework preset: Astro
 - Build command: `npm run build`
 - Build output: `dist`
-- Node version: 20
+- Node version: 22
 - 环境变量在 CF Dashboard 配置
 - `main` 分支 → 生产域名
 - `dev` 分支 → 预览域名
