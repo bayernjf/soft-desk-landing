@@ -36,11 +36,11 @@ export const mockSoftware: Software[] = [
   mk({ id: '3', name: 'Chrome', description: '网页浏览器', category: 'browsers', publisher: 'Google', size: 680, usageMinutes: 124560, launchCount: 2156, color: '#ef4444', tags: ['浏览器'] }),
   mk({ id: '4', name: 'Slack', description: '团队沟通协作', category: 'communication', publisher: 'Salesforce', size: 245, usageMinutes: 45620, launchCount: 1892, color: '#a855f7', tags: ['团队'] }),
   mk({ id: '5', name: 'Notion', description: '知识库与协作工作区', category: 'productivity', publisher: 'Notion Labs', size: 286, usageMinutes: 124500, launchCount: 789, color: '#8b949e', tags: ['笔记'] }),
-  mk({ id: '6', name: 'Terminal', description: '系统终端', category: 'utilities', publisher: 'Apple', size: 48, usageMinutes: 56780, launchCount: 3456, color: '#1f2937', tags: ['终端'] }),
-  mk({ id: '7', name: 'Finder', description: '文件管理器', category: 'utilities', publisher: 'Apple', size: 120, usageMinutes: 23450, launchCount: 5678, color: '#58a6ff', tags: ['文件'] }),
-  mk({ id: '8', name: 'Photoshop', description: '专业图像处理软件', category: 'design', publisher: 'Adobe', size: 2450, usageMinutes: 17890, launchCount: 234, color: '#f87171', tags: ['设计', '图像处理'] }),
-  mk({ id: '9', name: 'Safari', description: '系统默认浏览器', category: 'browsers', publisher: 'Apple', size: 180, usageMinutes: 34560, launchCount: 1234, color: '#0ea5e9', tags: ['浏览器'] }),
-  mk({ id: '10', name: 'Xcode', description: '苹果开发工具', category: 'dev-tools', publisher: 'Apple', size: 8420, usageMinutes: 42310, launchCount: 567, color: '#3b82f6', tags: ['代码', '开发'] }),
+  mk({ id: '6', name: 'Photoshop', description: '专业图像处理软件', category: 'design', publisher: 'Adobe', size: 2450, usageMinutes: 17890, launchCount: 234, color: '#f87171', tags: ['设计', '图像处理'] }),
+  mk({ id: '7', name: 'Safari', description: '系统默认浏览器', category: 'browsers', publisher: 'Apple', size: 180, usageMinutes: 34560, launchCount: 1234, color: '#0ea5e9', tags: ['浏览器'] }),
+  mk({ id: '8', name: 'Xcode', description: '苹果开发工具', category: 'dev-tools', publisher: 'Apple', size: 8420, usageMinutes: 42310, launchCount: 567, color: '#3b82f6', tags: ['代码', '开发'] }),
+  mk({ id: '9', name: 'Snipaste', description: '截图与贴图工具', category: 'utilities', publisher: 'Snipaste', size: 45, usageMinutes: 8920, launchCount: 892, color: '#10b981', tags: ['截屏', '截图', '贴图'] }),
+  mk({ id: '10', name: 'CleanShot X', description: '截图与录屏工具', category: 'utilities', publisher: 'CleanShot', size: 58, usageMinutes: 3450, launchCount: 234, color: '#f59e0b', tags: ['截屏', '录屏', '截图'] }),
 ];
 
 export const mockStats: Stats = {
