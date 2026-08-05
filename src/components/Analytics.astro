@@ -1,0 +1,54 @@
+---
+import { getStoredConsent } from "@/lib/analytics";
+import type { Language } from '@/i18n/ui';
+
+interface Props {
+  lang: Language;
+}
+
+const storedConsent = getStoredConsent();
+---
+
+<script is:inline define:vars={{ storedConsent }}>
+  // Initialize analytics with stored consent (if any)
+  if (storedConsent) {
+    import('/src/lib/analytics.ts').then(({ initAnalytics }) => {
+      initAnalytics(storedConsent);
+    });
+  }
+</script>
+
+<!-- Scroll depth & section visibility tracking -->
+<script>
+  import { trackScrollDepth, trackElementView, trackPageView } from '@/lib/analytics';
+
+  // Track page view
+  trackPageView();
+
+  // Scroll depth tracking
+  let scrollTicking = false;
+  window.addEventListener('scroll', () => {
+    if (!scrollTicking) {
+      requestAnimationFrame(() => {
+        trackScrollDepth();
+        scrollTicking = false;
+      });
+      scrollTicking = true;
+    }
+  }, { passive: true });
+
+  // Section visibility tracking
+  const sections = document.querySelectorAll('[data-analytics-section]');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        const sectionName = entry.target.getAttribute('data-analytics-section');
+        if (sectionName) {
+          trackElementView(sectionName);
+          observer.unobserve(entry.target);
+        }
+      }
+    });
+  }, { threshold: 0.2, rootMargin: '-50px' });
+  sections.forEach((s) => observer.observe(s));
+</script>

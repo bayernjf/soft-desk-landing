@@ -1,0 +1,43 @@
+---
+import { useTranslations } from '@/i18n/utils';
+import type { Language } from '@/i18n/ui';
+import { faqSchema } from '@/lib/seo';
+
+interface Props {
+  lang: Language;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+const faqs = [
+  { q: t('faq.q1'), a: t('faq.a1') },
+  { q: t('faq.q2'), a: t('faq.a2') },
+  { q: t('faq.q3'), a: t('faq.a3') },
+  { q: t('faq.q4'), a: t('faq.a4') },
+  { q: t('faq.q5'), a: t('faq.a5') },
+];
+
+const schema = faqSchema(faqs.map(f => ({ question: f.q, answer: f.a })));
+---
+
+<section class="mx-auto max-w-3xl px-4 py-16 sm:px-6" data-analytics-section="faq">
+  <h2 class="mb-2 text-center text-3xl font-bold text-white">{t('faq.title')}</h2>
+  <p class="mb-8 text-center text-gray-400">{t('faq.subtitle')}</p>
+
+  <div class="space-y-3">
+    {faqs.map((faq) => (
+      <details class="group rounded-xl border border-gray-800 bg-[#161b22] p-4">
+        <summary class="flex cursor-pointer items-center justify-between text-white font-medium">
+          {faq.q}
+          <svg class="h-5 w-5 text-gray-500 transition-transform group-open:rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M6 9l6 6 6-6"/>
+          </svg>
+        </summary>
+        <p class="mt-3 text-sm text-gray-400">{faq.a}</p>
+      </details>
+    ))}
+  </div>
+</section>
+
+<script type="application/ld+json" is:inline set:html={JSON.stringify(schema)} />

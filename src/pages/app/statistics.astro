@@ -1,0 +1,8 @@
+---
+import AppLayout from '@/layouts/AppLayout.astro';
+import StatisticsApp from '@/components/app/StatisticsApp.tsx';
+import { mockSoftware, mockStats } from '@/data/software';
+---
+<AppLayout title="统计分析" activePage="statistics">
+  <StatisticsApp client:load software={mockSoftware} stats={mockStats} />
+</AppLayout>

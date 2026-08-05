@@ -1,0 +1,39 @@
+---
+import { useTranslations, localizedPath } from '@/i18n/utils';
+import type { Language } from '@/i18n/ui';
+
+interface Props {
+  lang: Language;
+  feature: 'ai' | 'radial' | 'usage' | 'cross_platform';
+  icon: string;
+  color: string;
+}
+
+const { lang, feature, icon, color } = Astro.props;
+const t = useTranslations(lang);
+
+const featureMap = {
+  ai: { titleKey: 'features.ai.title' as const, descKey: 'features.ai.desc' as const, path: '/features/ai-classification' },
+  radial: { titleKey: 'features.radial.title' as const, descKey: 'features.radial.desc' as const, path: '/features/radial-menu' },
+  usage: { titleKey: 'features.usage.title' as const, descKey: 'features.usage.desc' as const, path: '/features/usage-tracking' },
+  cross_platform: { titleKey: 'features.cross_platform.title' as const, descKey: 'features.cross_platform.desc' as const, path: '/features/cross-platform' },
+};
+
+const meta = featureMap[feature];
+---
+
+<a
+  href={localizedPath(meta.path, lang)}
+  class="group relative overflow-hidden rounded-xl border border-gray-800 bg-[#161b22] p-6 transition-all hover:border-gray-700 hover:bg-[#1c2330]"
+  data-analytics-section={`feature_${feature}`}
+>
+  <div class="mb-4 flex h-12 w-12 items-center justify-center rounded-lg" style={`background-color: ${color}20; color: ${color}`}>
+    <span class="text-2xl font-bold">{icon}</span>
+  </div>
+  <h3 class="mb-2 text-lg font-semibold text-white">{t(meta.titleKey)}</h3>
+  <p class="text-sm text-gray-400">{t(meta.descKey)}</p>
+  <span class="mt-4 inline-flex items-center gap-1 text-sm text-brand opacity-0 transition-opacity group-hover:opacity-100">
+    {t('features.learn_more')}
+    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+  </span>
+</a>

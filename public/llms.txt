@@ -1,0 +1,37 @@
+# SoftDesk
+
+> AI-powered desktop software management & smart launcher for macOS and Windows.
+> Open source, free, cross-platform.
+
+## Product Summary
+
+SoftDesk is a desktop application that helps you manage and launch software efficiently.
+It scans installed applications, uses AI to automatically classify them, provides a radial
+menu for quick launching via mouse middle-click, tracks usage time per app, and supports
+one-click workflows to launch multiple apps together.
+
+## Key Features
+
+- [AI Smart Classification](/zh/features/ai-classification) - Automatically categorize apps using AI models
+- [Radial Menu Launcher](/zh/features/radial-menu) - Middle-click to summon radial menu for instant app launch
+- [Usage Time Tracking](/zh/features/usage-tracking) - Track per-app usage time and productivity insights
+- [Cross-Platform](/zh/features/cross-platform) - Support for macOS (Intel/Apple Silicon) and Windows 10/11
+
+## Download
+
+- macOS: https://github.com/bayernjf/soft-desk/releases/latest
+- Windows: https://github.com/bayernjf/soft-desk/releases/latest
+- GitHub Releases: https://github.com/bayernjf/soft-desk/releases
+
+## Documentation
+
+- Privacy Policy: /zh/privacy
+- GitHub Repository: https://github.com/bayernjf/soft-desk
+
+## Technical Details
+
+- Desktop Framework: Electron 31 + React 18 + TypeScript
+- Local Database: better-sqlite3
+- Cloud Sync: Supabase (optional)
+- AI Models: OpenAI, Anthropic, and other configurable providers
+- License: Open Source

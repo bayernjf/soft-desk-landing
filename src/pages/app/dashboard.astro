@@ -1,0 +1,9 @@
+---
+import AppLayout from '@/layouts/AppLayout.astro';
+import DashboardApp from '@/components/app/DashboardApp.tsx';
+import { mockSoftware, mockWorkflows } from '@/data/software';
+---
+
+<AppLayout title="仪表盘" activePage="dashboard">
+  <DashboardApp client:load software={mockSoftware} workflows={mockWorkflows} />
+</AppLayout>

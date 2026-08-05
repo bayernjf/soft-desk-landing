@@ -1,0 +1,135 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import DownloadButtons from '@/components/DownloadButtons.astro';
+import FeatureSection from '@/components/FeatureSection.astro';
+import FAQ from '@/components/FAQ.astro';
+import RadialMenuSection from '@/components/RadialMenuSection.tsx';
+import AIClassifySection from '@/components/AIClassifySection.tsx';
+import SearchSection from '@/components/SearchSection.tsx';
+import WorkflowSection from '@/components/WorkflowSection.tsx';
+import FavoritesSection from '@/components/FavoritesSection.tsx';
+import StatisticsSection from '@/components/StatisticsSection.tsx';
+import { useTranslations } from '@/i18n/utils';
+import type { Language } from '@/i18n/ui';
+import { softwareApplicationSchema } from '@/lib/seo';
+import { mockSoftware, mockWorkflows } from '@/data/software';
+
+interface Props {
+  lang: Language;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+const features = [
+  { feature: 'ai' as const, icon: 'AI', color: '#00d4aa' },
+  { feature: 'radial' as const, icon: '◎', color: '#a371f7' },
+  { feature: 'usage' as const, icon: '⏱', color: '#58a6ff' },
+  { feature: 'cross_platform' as const, icon: '⌘', color: '#d29922' },
+];
+
+const stats = [
+  { value: '5000+', key: 'hero.stat_apps' as const },
+  { value: '2', key: 'hero.stat_platforms' as const },
+  { value: 'MIT', key: 'hero.stat_open_source' as const },
+];
+
+const appSchema = softwareApplicationSchema(lang);
+---
+
+<BaseLayout
+  title={`${t('hero.title')} — SoftDesk`}
+  description={t('hero.subtitle')}
+  path="/"
+  lang={lang}
+>
+  <!-- Hero -->
+  <section class="relative overflow-hidden" data-analytics-section="hero">
+    <div class="absolute inset-0 bg-gradient-to-b from-brand/5 to-transparent"></div>
+    <div class="relative mx-auto max-w-6xl px-4 py-20 text-center sm:px-6 sm:py-32">
+      <span class="mb-6 inline-block rounded-full border border-brand/30 bg-brand/10 px-4 py-1.5 text-sm text-brand">
+        {t('hero.badge')}
+      </span>
+      <h1 class="mx-auto max-w-4xl text-4xl font-bold leading-tight text-white sm:text-6xl">
+        {t('hero.title')}
+      </h1>
+      <p class="mx-auto mt-6 max-w-2xl text-lg text-gray-400">
+        {t('hero.subtitle')}
+      </p>
+      <div class="mt-10 flex flex-col items-center gap-4">
+        <DownloadButtons lang={lang} />
+        <a
+          href="/app/dashboard"
+          class="text-sm text-gray-400 transition-colors hover:text-white"
+        >
+          {t('hero.cta_secondary')} →
+        </a>
+      </div>
+
+      <!-- Stats -->
+      <div class="mt-16 grid grid-cols-3 gap-4 sm:gap-8">
+        {stats.map((stat) => (
+          <div class="text-center">
+            <div class="text-2xl font-bold text-white sm:text-4xl">{stat.value}</div>
+            <div class="mt-1 text-xs text-gray-500 sm:text-sm">{t(stat.key)}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section id="features" class="mx-auto max-w-6xl px-4 py-16 sm:px-6" data-analytics-section="features">
+    <h2 class="mb-2 text-center text-3xl font-bold text-white">{t('features.title')}</h2>
+    <p class="mb-10 text-center text-gray-400">{t('features.subtitle')}</p>
+    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      {features.map((f) => (
+        <FeatureSection lang={lang} feature={f.feature} icon={f.icon} color={f.color} />
+      ))}
+    </div>
+  </section>
+
+  <!-- Radial Menu Demo -->
+  <RadialMenuSection
+    client:visible
+    software={mockSoftware}
+    workflows={mockWorkflows}
+  />
+
+  <!-- AI Classification Demo -->
+  <AIClassifySection client:visible software={mockSoftware} />
+
+  <!-- Natural Language Search Demo -->
+  <SearchSection client:visible software={mockSoftware} />
+
+  <!-- Workflow Demo -->
+  <WorkflowSection client:visible software={mockSoftware} workflows={mockWorkflows} />
+
+  <!-- Favorites Demo -->
+  <FavoritesSection client:visible software={mockSoftware} workflows={mockWorkflows} />
+
+  <!-- Usage Statistics Demo -->
+  <StatisticsSection client:visible software={mockSoftware} />
+
+  <!-- FAQ -->
+  <FAQ lang={lang} />
+
+  <!-- CTA -->
+  <section class="mx-auto max-w-4xl px-4 py-20 text-center sm:px-6" data-analytics-section="cta">
+    <h2 class="text-3xl font-bold text-white sm:text-4xl">{t('cta.title')}</h2>
+    <p class="mt-4 text-gray-400">{t('cta.subtitle')}</p>
+    <div class="mt-8 flex flex-col items-center gap-4">
+      <DownloadButtons lang={lang} />
+      <a
+        href="https://github.com/bayernjf/soft-desk"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="text-sm text-gray-400 transition-colors hover:text-white"
+      >
+        {t('cta.view_github')} →
+      </a>
+    </div>
+  </section>
+
+  <script type="application/ld+json" is:inline set:html={JSON.stringify(appSchema)} />
+</BaseLayout>
