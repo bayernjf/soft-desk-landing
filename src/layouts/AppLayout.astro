@@ -1,0 +1,84 @@
+---
+import '@/styles/global.css';
+
+interface Props {
+  title?: string;
+  activePage?: string;
+}
+
+const { title = 'SoftDesk Demo', activePage = 'dashboard' } = Astro.props;
+
+const navItems = [
+  { key: 'dashboard', label: '仪表盘', href: '/app/dashboard', icon: 'M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z' },
+  { key: 'library', label: '软件库', href: '/app/library', icon: 'M4 6a2 2 0 012-2h12a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2V6z' },
+  { key: 'favorites', label: '收藏夹', href: '/app/favorites', icon: 'M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.539 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.196-1.539-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.783-.57-.38-1.81.588-1.81h4.915a1 1 0 00.95-.69l1.519-4.674z' },
+  { key: 'workflows', label: '工作流', href: '/app/workflows', icon: 'M13 10V3L4 14h7v7l9-11h-7z' },
+  { key: 'statistics', label: '统计', href: '/app/statistics', icon: 'M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z' },
+  { key: 'uninstall', label: '卸载清理', href: '/app/uninstall', icon: 'M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16' },
+  { key: 'settings', label: '设置', href: '/app/settings', icon: 'M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z' },
+];
+---
+
+<!doctype html>
+<html lang="zh-CN" class="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="robots" content="noindex,nofollow" />
+    <title>{title}</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="theme-color" content="#0d1117" />
+    <script is:inline>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      window.gtag = gtag;
+      gtag('consent', 'default', {
+        analytics_storage: 'denied',
+        ad_storage: 'denied',
+        ad_user_data: 'denied',
+        ad_personalization: 'denied',
+      });
+    </script>
+  </head>
+  <body class="min-h-screen bg-[#0d1117] text-gray-100 antialiased">
+    <div class="flex min-h-screen">
+      <!-- Sidebar -->
+      <aside class="fixed inset-y-0 left-0 z-30 hidden w-60 border-r border-gray-800 bg-[#161b22] md:flex md:flex-col">
+        <div class="flex h-16 items-center gap-2 border-b border-gray-800 px-4">
+          <a href="/" class="flex items-center gap-2">
+            <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-brand text-white font-bold text-sm">S</span>
+            <span class="text-lg font-semibold text-white">SoftDesk</span>
+          </a>
+        </div>
+        <nav class="flex-1 space-y-1 p-3">
+          {navItems.map((item) => (
+            <a
+              href={item.href}
+              class={`flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors ${activePage === item.key ? 'bg-brand/10 text-brand' : 'text-gray-400 hover:bg-gray-800 hover:text-white'}`}
+            >
+              <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d={item.icon} /></svg>
+              {item.label}
+            </a>
+          ))}
+        </nav>
+        <div class="border-t border-gray-800 p-3">
+          <a href="/" class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-gray-400 hover:bg-gray-800 hover:text-white">
+            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
+            返回官网
+          </a>
+        </div>
+      </aside>
+
+      <!-- Main content -->
+      <main class="flex-1 md:ml-60">
+        <div class="border-b border-gray-800 px-6 py-4 md:px-8">
+          <h1 class="text-xl font-semibold text-white">{title}</h1>
+        </div>
+        <div class="p-6 md:p-8">
+          <slot />
+        </div>
+      </main>
+    </div>
+  </body>
+</html>
