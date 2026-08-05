@@ -1,9 +1,8 @@
 ---
 import AppLayout from '@/layouts/AppLayout.astro';
-import { mockSoftware, mockWorkflows, mockStats } from '@/data/software';
+import UninstallApp from '@/components/app/UninstallApp.tsx';
+import { mockSoftware } from '@/data/software';
 ---
-<AppLayout title="uninstall" activePage="uninstall">
-  <div class="rounded-xl border border-gray-800 bg-[#161b22] p-8 text-center">
-    <p class="text-gray-400">演示页面 — 完整功能迁移中</p>
-  </div>
+<AppLayout title="卸载清理" activePage="uninstall">
+  <UninstallApp client:load software={mockSoftware} />
 </AppLayout>
