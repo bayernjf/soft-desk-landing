@@ -1,4 +1,4 @@
-const SITE_URL = 'https://soft-desk-landing.pages.dev';
+const SITE_URL = (import.meta.env.PUBLIC_SITE_URL || 'https://soft-desk-landing.pages.dev').replace(/\/$/, '');
 
 export interface SeoMeta {
   title: string;
@@ -9,15 +9,21 @@ export interface SeoMeta {
   noindex?: boolean;
 }
 
+function withTrailingSlash(url: string): string {
+  return url.endsWith('/') ? url : `${url}/`;
+}
+
 export function buildCanonicalUrl(path: string, lang: string): string {
-  return `${SITE_URL}/${lang}${path === '/' ? '' : path}`;
+  const base = `${SITE_URL}/${lang}`;
+  if (path === '/') return withTrailingSlash(base);
+  return withTrailingSlash(`${base}${path}`);
 }
 
 export function buildHreflangTags(path: string) {
   const zhUrl = buildCanonicalUrl(path, 'zh');
   const enUrl = buildCanonicalUrl(path, 'en');
   return [
-    { rel: 'alternate', hreflang: 'zh', href: zhUrl },
+    { rel: 'alternate', hreflang: 'zh-CN', href: zhUrl },
     { rel: 'alternate', hreflang: 'en', href: enUrl },
     { rel: 'alternate', hreflang: 'x-default', href: zhUrl },
   ];
@@ -42,7 +48,7 @@ export function softwareApplicationSchema(lang: 'zh' | 'en') {
     featureList: lang === 'zh'
       ? ['AI 智能分类', '径向菜单快速启动', '使用时长统计', '工作流自动化', '跨平台支持']
       : ['AI Smart Classification', 'Radial Menu Quick Launch', 'Usage Time Tracking', 'Workflow Automation', 'Cross-Platform Support'],
-    url: SITE_URL,
+    url: buildCanonicalUrl('/', lang),
   };
 }
 

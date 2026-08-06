@@ -1,4 +1,4 @@
 ---
-// Redirect root to default language
-return Astro.redirect('/zh/', 302);
+// Permanently redirect root to the default language (301 for SEO weight consolidation)
+return Astro.redirect('/zh/', 301);
 ---
