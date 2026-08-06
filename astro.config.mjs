@@ -6,6 +6,10 @@ import tailwindcss from '@tailwindcss/vite';
 
 const SITE_URL = process.env.PUBLIC_SITE_URL || 'https://soft-desk-landing.pages.dev';
 
+function swapLocale(url, from, to) {
+  return url.replace(`/${from}/`, `/${to}/`);
+}
+
 // https://astro.build/config
 // Cloudflare adapter will be added in Phase 5 when demo app SSR pages are introduced.
 export default defineConfig({
@@ -18,6 +22,27 @@ export default defineConfig({
         !page.endsWith('/404') &&
         page !== `${SITE_URL}/` &&
         page !== `${SITE_URL}`,
+      serialize: (item) => {
+        const url = item.url;
+        const links = [];
+        if (url.includes('/zh/')) {
+          links.push(
+            { hreflang: 'zh-CN', url },
+            { hreflang: 'en', url: swapLocale(url, 'zh', 'en') },
+            { hreflang: 'x-default', url }
+          );
+        } else if (url.includes('/en/')) {
+          links.push(
+            { hreflang: 'zh-CN', url: swapLocale(url, 'en', 'zh') },
+            { hreflang: 'en', url },
+            { hreflang: 'x-default', url: swapLocale(url, 'en', 'zh') }
+          );
+        }
+        if (links.length > 0) {
+          return { ...item, links };
+        }
+        return item;
+      },
     }),
     icon(),
   ],
