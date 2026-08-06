@@ -1,5 +1,9 @@
 const SITE_URL = (import.meta.env.PUBLIC_SITE_URL || 'https://soft-desk-landing.pages.dev').replace(/\/$/, '');
 
+const GITHUB_REPO = 'https://github.com/bayernjf/soft-desk';
+const GITHUB_RELEASES = `${GITHUB_REPO}/releases`;
+const DEFAULT_OG_IMAGE = `${SITE_URL}/og/default.png`;
+
 export interface SeoMeta {
   title: string;
   description: string;
@@ -29,6 +33,32 @@ export function buildHreflangTags(path: string) {
   ];
 }
 
+const organization = {
+  '@type': 'Organization',
+  name: 'SoftDesk',
+  url: SITE_URL,
+  logo: `${SITE_URL}/favicon.svg`,
+  sameAs: [GITHUB_REPO],
+};
+
+/** Organization + WebSite structured data, safe for every page */
+export function baseSchema(lang: 'zh' | 'en') {
+  return [
+    {
+      '@context': 'https://schema.org',
+      '@type': 'WebSite',
+      name: 'SoftDesk',
+      url: SITE_URL,
+      inLanguage: lang === 'zh' ? 'zh-CN' : 'en',
+      publisher: organization,
+    },
+    {
+      '@context': 'https://schema.org',
+      ...organization,
+    },
+  ];
+}
+
 /** SoftwareApplication structured data for the homepage */
 export function softwareApplicationSchema(lang: 'zh' | 'en') {
   return {
@@ -40,6 +70,12 @@ export function softwareApplicationSchema(lang: 'zh' | 'en') {
     description: lang === 'zh'
       ? 'AI 驱动的桌面软件管理效率工具，支持智能分类、径向菜单启动、使用时长统计和工作流自动化。'
       : 'AI-powered desktop software manager with smart classification, radial menu launcher, usage tracking, and workflow automation.',
+    url: buildCanonicalUrl('/', lang),
+    image: DEFAULT_OG_IMAGE,
+    downloadUrl: GITHUB_RELEASES,
+    softwareVersion: 'latest',
+    author: organization,
+    publisher: organization,
     offers: {
       '@type': 'Offer',
       price: '0',
@@ -48,7 +84,6 @@ export function softwareApplicationSchema(lang: 'zh' | 'en') {
     featureList: lang === 'zh'
       ? ['AI 智能分类', '径向菜单快速启动', '使用时长统计', '工作流自动化', '跨平台支持']
       : ['AI Smart Classification', 'Radial Menu Quick Launch', 'Usage Time Tracking', 'Workflow Automation', 'Cross-Platform Support'],
-    url: buildCanonicalUrl('/', lang),
   };
 }
 
@@ -82,4 +117,4 @@ export function breadcrumbSchema(items: Array<{ name: string; path: string }>, l
   };
 }
 
-export { SITE_URL };
+export { SITE_URL, GITHUB_REPO, GITHUB_RELEASES, DEFAULT_OG_IMAGE };
