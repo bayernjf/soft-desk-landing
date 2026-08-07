@@ -5,6 +5,7 @@ import Header from '@/components/Header.astro';
 import Footer from '@/components/Footer.astro';
 import Analytics from '@/components/Analytics.astro';
 import CookieBanner from '@/components/CookieBanner.astro';
+import { baseSchema } from '@/lib/seo';
 import type { Language } from '@/i18n/ui';
 
 interface Props {
@@ -17,6 +18,7 @@ interface Props {
 }
 
 const { title, description, path, lang, image, noindex } = Astro.props;
+const orgSchema = baseSchema(lang);
 ---
 
 <!doctype html>
@@ -31,6 +33,7 @@ const { title, description, path, lang, image, noindex } = Astro.props;
       noindex={noindex}
     />
     <slot name="head" />
+    <script type="application/ld+json" is:inline set:html={JSON.stringify(orgSchema)} />
   </head>
   <body class="min-h-screen bg-[#0d1117] text-gray-100 antialiased">
     <Header lang={lang} path={path} />

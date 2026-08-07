@@ -3,6 +3,8 @@
 > AI-powered desktop software management & smart launcher for macOS and Windows.
 > Open source, free, cross-platform.
 
+Last Updated: 2026-08-06
+
 ## Product Summary
 
 SoftDesk is a desktop application that helps you manage and launch software efficiently.
@@ -12,10 +14,10 @@ one-click workflows to launch multiple apps together.
 
 ## Key Features
 
-- [AI Smart Classification](/zh/features/ai-classification) - Automatically categorize apps using AI models
-- [Radial Menu Launcher](/zh/features/radial-menu) - Middle-click to summon radial menu for instant app launch
-- [Usage Time Tracking](/zh/features/usage-tracking) - Track per-app usage time and productivity insights
-- [Cross-Platform](/zh/features/cross-platform) - Support for macOS (Intel/Apple Silicon) and Windows 10/11
+- [AI Smart Classification](/en/features/ai-classification) / [中文](/zh/features/ai-classification) - Automatically categorize apps using AI models
+- [Radial Menu Launcher](/en/features/radial-menu) / [中文](/zh/features/radial-menu) - Middle-click to summon radial menu for instant app launch
+- [Usage Time Tracking](/en/features/usage-tracking) / [中文](/zh/features/usage-tracking) - Track per-app usage time and productivity insights
+- [Cross-Platform](/en/features/cross-platform) / [中文](/zh/features/cross-platform) - Support for macOS (Intel/Apple Silicon) and Windows 10/11
 
 ## Download
 
@@ -25,8 +27,16 @@ one-click workflows to launch multiple apps together.
 
 ## Documentation
 
-- Privacy Policy: /zh/privacy
+- Privacy Policy: [English](/en/privacy) / [中文](/zh/privacy)
 - GitHub Repository: https://github.com/bayernjf/soft-desk
+- Full content for AI context: /llms-full.txt
+
+## Frequently Asked Questions
+
+- What is SoftDesk? An AI-powered desktop software manager for macOS and Windows, offering smart classification, radial menu quick-launch, usage tracking, and workflow automation.
+- Which platforms does SoftDesk support? macOS (Intel and Apple Silicon) and Windows 10/11.
+- How does SoftDesk protect privacy? It runs entirely locally with data in a local SQLite database; no personal data is uploaded. Cloud sync via Supabase is optional and encrypted.
+- Is SoftDesk free? Yes, it is open-source and completely free.
 
 ## Technical Details
 

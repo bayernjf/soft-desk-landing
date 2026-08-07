@@ -1,0 +1,176 @@
+# SoftDesk — Full Content
+
+> AI-powered desktop software management & smart launcher for macOS and Windows.
+> Open source, free, cross-platform.
+> This file contains the full content of all marketing pages for AI context.
+
+Last Updated: 2026-08-06
+
+## Product Overview
+
+SoftDesk is a desktop application that helps you manage and launch software efficiently.
+It scans installed applications, uses AI to automatically classify them, provides a radial
+menu for quick launching via mouse middle-click, tracks usage time per app, and supports
+one-click workflows to launch multiple apps together.
+
+- Website: https://soft-desk-landing.pages.dev
+- Repository: https://github.com/bayernjf/soft-desk
+- Download: https://github.com/bayernjf/soft-desk/releases
+- License: Open Source
+- Platforms: macOS 11+ (Intel & Apple Silicon), Windows 10/11
+
+---
+
+## Feature: AI Smart Classification
+
+Slug: ai-classification
+Links: /en/features/ai-classification · /zh/features/ai-classification
+
+Tagline: Let AI organize your software library automatically.
+
+SoftDesk uses your configured AI models to automatically identify and categorize all installed
+software. No manual sorting needed — AI assigns each app to the most appropriate category based
+on its name, description, and purpose.
+
+### How It Works
+
+SoftDesk scans installed software, extracts name, version, publisher and other metadata, then
+classifies them through your configured AI models (e.g., OpenAI GPT, Anthropic Claude). Results
+are stored in a local SQLite database.
+
+### Supported Categories
+
+Development Tools, Design & Creative, Productivity, Communication, Browsers, System Utilities,
+Media & Entertainment, Security. You can also customize the category system.
+
+### Privacy Protection
+
+AI classification requests are initiated locally, sending only software names and descriptions
+to the AI provider for categorization. No personal data, file contents, or other sensitive
+information is sent. Data is not stored by the AI provider after classification.
+
+---
+
+## Feature: Radial Menu Launcher
+
+Slug: radial-menu
+Links: /en/features/radial-menu · /zh/features/radial-menu
+
+Tagline: Middle-click to launch instantly.
+
+SoftDesk's radial menu is an innovative quick launcher. Press the middle mouse button anywhere
+to summon a circular menu with your favorite apps at your fingertips. Supports paging,
+drag-to-reorder, and smart recommendations.
+
+### Usage
+
+Press the middle mouse button (or a configured shortcut) anywhere in the system, and the radial
+menu appears at the cursor position. Move the mouse to the corresponding sector to select an app,
+then click to launch. Scroll to page through more apps.
+
+### Customization
+
+Drag apps into radial menu sectors to reorder. Each sector can hold one app or one folder
+(containing multiple apps). Supports up to 8 sectors with unlimited pages.
+
+### System Permissions
+
+macOS requires Accessibility permission to monitor middle-click. Windows requires no additional
+permissions.
+
+---
+
+## Feature: Usage Time Tracking
+
+Slug: usage-tracking
+Links: /en/features/usage-tracking · /zh/features/usage-tracking
+
+Tagline: Know where your time goes.
+
+SoftDesk precisely tracks usage time, launch count, and active periods for each application.
+Visualize your usage patterns and discover productivity bottlenecks through charts.
+
+### Tracking Dimensions
+
+Total usage time, daily usage time, launch count, last used time, category-based statistics,
+and daily/weekly/monthly trend analysis.
+
+### Data Storage
+
+All usage data is stored in a local SQLite database with no server uploads. You can clear
+statistics or export data at any time.
+
+### Visual Reports
+
+The built-in dashboard provides bar charts, pie charts, line charts and more. View top app
+rankings, category distribution, and trend changes.
+
+---
+
+## Feature: Cross-Platform Support
+
+Slug: cross-platform
+Links: /en/features/cross-platform · /zh/features/cross-platform
+
+Tagline: macOS and Windows, consistent experience.
+
+SoftDesk supports both macOS (Intel and Apple Silicon) and Windows 10/11. Enjoy the same
+interface design and feature set across platforms, with cloud sync to share configurations
+between devices.
+
+### System Requirements
+
+macOS 11 (Big Sur) or later, supporting Intel and Apple Silicon (M1/M2/M3). Windows 10 64-bit
+or Windows 11.
+
+### Software Scanning
+
+macOS scans /Applications and ~/Applications directories. Windows scans the registry and common
+install paths. Cross-platform software identity is aligned via bundleId.
+
+### Cloud Sync
+
+Optionally enable Supabase cloud sync to synchronize software library, favorites, workflows, and
+configurations across multiple devices. Synced data is encrypted and contains no sensitive
+information.
+
+---
+
+## Frequently Asked Questions
+
+### What is SoftDesk?
+
+SoftDesk is an AI-powered desktop software manager for macOS and Windows. It offers smart
+classification, radial menu quick-launch, usage time tracking, and workflow automation to help
+you manage desktop apps more efficiently.
+
+### How does SoftDesk work?
+
+SoftDesk scans installed software and uses AI to auto-classify them. You can summon a radial
+menu via middle-click for quick launches, view usage statistics, and create workflows to start
+multiple apps at once.
+
+### Which platforms does SoftDesk support?
+
+SoftDesk supports macOS (Intel and Apple Silicon) and Windows 10/11.
+
+### How does SoftDesk protect my privacy?
+
+SoftDesk runs entirely locally. Software data is stored in a local SQLite database and no
+personal data is uploaded. Cloud sync is optional and uses Supabase encrypted transport.
+
+### Is SoftDesk free?
+
+Yes, SoftDesk is open-source software and completely free to use. The source code is hosted on
+GitHub under an open-source license.
+
+---
+
+## Technical Stack
+
+- Desktop Framework: Electron 31 + React 18 + TypeScript
+- Local Database: better-sqlite3
+- Cloud Sync: Supabase (optional)
+- AI Models: OpenAI, Anthropic, and other configurable providers
+- Landing Page: Astro 7, Tailwind CSS v4, React 19 islands
+- License: Open Source
