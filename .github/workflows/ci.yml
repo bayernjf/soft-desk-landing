@@ -18,7 +18,7 @@ env:
 
 jobs:
   ci:
-    name: Lint, Type Check & Build
+    name: Lint, Test, Type Check & Build
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -37,7 +37,9 @@ jobs:
 
       - name: Lint
         run: npm run lint
-        continue-on-error: true
+
+      - name: Test
+        run: npm run test
 
       - name: Type check
         run: npm run check
