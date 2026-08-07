@@ -51,6 +51,7 @@ export type UIKey =
   | 'cta.view_github'
   | 'footer.copyright'
   | 'footer.privacy'
+  | 'footer.terms'
   | 'footer.made_with'
   | 'cookie.text'
   | 'cookie.accept'
@@ -118,6 +119,7 @@ export const ui: Record<Language, UIDict> = {
     'cta.view_github': '在 GitHub 查看',
     'footer.copyright': 'SoftDesk. 保留所有权利。',
     'footer.privacy': '隐私政策',
+    'footer.terms': '服务条款',
     'footer.made_with': '使用 Astro 构建',
     'cookie.text': '本网站使用 Cookie 进行分析以改善体验。继续浏览即表示你同意使用 Cookie。',
     'cookie.accept': '接受',
@@ -182,6 +184,7 @@ export const ui: Record<Language, UIDict> = {
     'cta.view_github': 'View on GitHub',
     'footer.copyright': 'SoftDesk. All rights reserved.',
     'footer.privacy': 'Privacy Policy',
+    'footer.terms': 'Terms of Service',
     'footer.made_with': 'Built with Astro',
     'cookie.text': 'This website uses cookies for analytics to improve your experience. By continuing to browse, you agree to the use of cookies.',
     'cookie.accept': 'Accept',
