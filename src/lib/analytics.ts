@@ -44,9 +44,8 @@ export function setStoredConsent(consent: ConsentState): void {
 function ensureGtag() {
   window.dataLayer = window.dataLayer || [];
   window.gtag = window.gtag || function gtag() {
-    // eslint-disable-next-line prefer-rest-params
     window.dataLayer!.push(arguments);
-  } as (...args: unknown[]) => void;
+  } as (..._args: unknown[]) => void;
 }
 
 function loadGa4() {
@@ -190,9 +189,10 @@ export function trackElementView(sectionName: string) {
 }
 
 declare global {
+  // eslint-disable-next-line no-unused-vars
   interface Window {
     dataLayer?: unknown[];
-    gtag?: (...args: unknown[]) => void;
-    clarity?: ((...args: unknown[]) => void) & { q?: unknown[] };
+    gtag?: (..._args: unknown[]) => void;
+    clarity?: ((..._args: unknown[]) => void) & { q?: unknown[] };
   }
 }
