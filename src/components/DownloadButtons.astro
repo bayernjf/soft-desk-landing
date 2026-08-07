@@ -31,12 +31,25 @@ const t = useTranslations(lang);
   </a>
 </div>
 
+<!-- Toast for download fetch errors -->
+<div id="download-toast" class="fixed bottom-6 left-1/2 z-50 hidden -translate-x-1/2 rounded-lg border border-amber-500/30 bg-amber-500/10 px-4 py-2.5 text-sm text-amber-300 backdrop-blur-sm">
+  {lang === 'zh' ? '无法获取最新版本信息，已链接到 GitHub Releases 页面' : 'Could not fetch latest release info, redirecting to GitHub Releases'}
+</div>
+
 <script>
   import { fetchDownloadUrls, formatBytes, detectPlatform } from '@/lib/download-urls';
+
+  function showToast() {
+    const toast = document.getElementById('download-toast');
+    if (!toast) return;
+    toast.classList.remove('hidden');
+    setTimeout(() => toast.classList.add('hidden'), 5000);
+  }
 
   async function updateDownloadButtons() {
     const state = await fetchDownloadUrls();
     if (state.loading) return;
+    if (state.error) showToast();
 
     const macBtn = document.getElementById('download-mac');
     const winBtn = document.getElementById('download-win');
