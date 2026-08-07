@@ -76,7 +76,7 @@ const tabs: { id: TabId; icon: IconKey; label: string }[] = [
 
 interface ToggleProps {
   checked: boolean;
-  onChange: (v: boolean) => void;
+  onChange: (_v: boolean) => void;
   label: string;
   description?: string;
 }

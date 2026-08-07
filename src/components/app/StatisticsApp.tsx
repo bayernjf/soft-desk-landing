@@ -9,12 +9,10 @@ interface StatisticsAppProps {
 }
 
 export default function StatisticsApp({ software, stats }: StatisticsAppProps) {
-  const [mounted, setMounted] = useState(false);
   const sectionRef = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {

@@ -1,5 +1,3 @@
-import type { Language } from '@/i18n/ui';
-
 export interface FeatureContent {
   slug: string;
   icon: string;

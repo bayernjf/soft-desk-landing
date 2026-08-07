@@ -79,7 +79,7 @@ function RadialMenuOverlay({
   software: Software[];
   workflows: Workflow[];
   open: boolean;
-  onOpenChange: (open: boolean) => void;
+  onOpenChange: (_open: boolean) => void;
 }) {
   const [activeSlot, setActiveSlot] = useState<number | null>(null);
   const [mounted, setMounted] = useState(false);
@@ -378,8 +378,6 @@ function polarP(r: number, deg: number) {
 }
 
 function sectorPathP(startDeg: number, endDeg: number, outerR = PREVIEW_OUTER) {
-  const cx = PREVIEW_SIZE / 2;
-  const cy = PREVIEW_SIZE / 2;
   const oStart = polarP(outerR, startDeg);
   const oEnd = polarP(outerR, endDeg);
   const iEnd = polarP(PREVIEW_INNER, endDeg);

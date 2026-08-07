@@ -91,25 +91,25 @@ const appSchema = softwareApplicationSchema(lang);
 
   <!-- Radial Menu Demo -->
   <RadialMenuSection
-    client:visible
+    client:only="react"
     software={mockSoftware}
     workflows={mockWorkflows}
   />
 
   <!-- AI Classification Demo -->
-  <AIClassifySection client:visible software={mockSoftware} />
+  <AIClassifySection client:only="react" software={mockSoftware} />
 
   <!-- Natural Language Search Demo -->
-  <SearchSection client:visible software={mockSoftware} />
+  <SearchSection client:only="react" software={mockSoftware} />
 
   <!-- Workflow Demo -->
-  <WorkflowSection client:visible software={mockSoftware} workflows={mockWorkflows} />
+  <WorkflowSection client:only="react" software={mockSoftware} workflows={mockWorkflows} />
 
   <!-- Favorites Demo -->
-  <FavoritesSection client:visible software={mockSoftware} workflows={mockWorkflows} />
+  <FavoritesSection client:only="react" software={mockSoftware} workflows={mockWorkflows} />
 
   <!-- Usage Statistics Demo -->
-  <StatisticsSection client:visible software={mockSoftware} />
+  <StatisticsSection client:only="react" software={mockSoftware} />
 
   <!-- FAQ -->
   <FAQ lang={lang} />

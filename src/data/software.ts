@@ -110,7 +110,7 @@ export const mockWorkflows: Workflow[] = [
     name: '修图工作流',
     description: 'Photoshop + Figma，图像处理与导出',
     color: '#f87171',
-    softwareIds: ['8', '2'],
+    softwareIds: ['6', '2'],
     isFavorite: false,
     usageCount: 12,
     lastUsed: new Date(Date.now() - 1000 * 60 * 60 * 24 * 3).toISOString(),
