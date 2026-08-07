@@ -1,65 +1,96 @@
 # SoftDesk (Web)
 
-SoftDesk 的纯网页版本,基于 React + Vite 构建,仅面向浏览器端运行。
+SoftDesk 的纯网页版本，基于 Astro 7 + React 19 构建，仅面向浏览器端运行。
 
-> **命名说明**:本仓库原名 `soft-desk`,因主名 `soft-desk` 已让位给 Electron 桌面版,故更名为 `soft-desk-web`,以 `-web` 后缀明确区分「网页版 / 桌面版」。两者共享同一套 React 源码;桌面版见 [soft-desk](https://github.com/bayernjf/soft-desk)。
+> **命名说明**：本仓库原名 `soft-desk`，因主名 `soft-desk` 已让位给 Electron 桌面版，故更名为 `soft-desk-web`，以 `-web` 后缀明确区分「网页版 / 桌面版」。桌面版见 [soft-desk](https://github.com/bayernjf/soft-desk)。
 
 ---
 
-# React + TypeScript + Vite
+## 项目简介
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+SoftDesk 落地页是 AI 驱动的桌面软件管理效率工具官方网站，包含：
 
-Currently, two official plugins are available:
+- **中英双语营销落地页**（SSG 静态预渲染，SEO 优化）
+- **在线演示 App**（React 岛屿，展示核心功能交互）
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 技术栈
 
-## Expanding the ESLint configuration
+| 技术 | 说明 |
+|------|------|
+| Astro 7 | 框架，SSG 预渲染 + React 岛屿 |
+| React 19 | 演示 App 交互组件 |
+| Tailwind CSS v4 | 样式方案 |
+| TypeScript | 类型安全 |
+| @astrojs/sitemap | Sitemap 自动生成 |
+| astro-icon + Lucide | 图标方案 |
+| zustand | 演示 App 状态管理 |
+| GA4 + Clarity | 隐私合规分析（Consent Mode v2） |
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## 快速开始
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+```bash
+# 安装依赖
+npm install
+
+# 配置环境变量（可选）
+cp .env.example .env.local
+
+# 启动开发服务器（默认 http://localhost:4321）
+npm run dev
+
+# 类型检查 + 构建
+npm run build
+
+# 预览构建产物
+npm run preview
+
+# ESLint
+npm run lint
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## 环境变量
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+所有 `.env*` 文件均被 `.gitignore` 忽略，仅 `.env.example` 可提交。
 
-export default tseslint.config({
-  extends: [
-    // other configs...
-    // Enable lint rules for React
-    reactX.configs['recommended-typescript'],
-    // Enable lint rules for React DOM
-    reactDom.configs.recommended,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+| 变量名 | 说明 | 必填 |
+|--------|------|------|
+| `PUBLIC_GA_MEASUREMENT_ID` | Google Analytics 4 衡量 ID | 生产环境 |
+| `PUBLIC_CLARITY_PROJECT_ID` | Microsoft Clarity 项目 ID | 生产环境 |
+
+## 路由结构
+
+| 路径 | 页面 | 说明 |
+|------|------|------|
+| `/` | Redirect | 重定向到 `/zh/` |
+| `/zh/` | HomePage | 中文首页 |
+| `/zh/features/[slug]` | FeaturePage | 中文特性页 |
+| `/zh/privacy` | PrivacyPage | 中文隐私政策 |
+| `/zh/download` | DownloadPage | 中文下载页 |
+| `/en/` | HomePage | 英文首页 |
+| `/en/features/[slug]` | FeaturePage | 英文特性页 |
+| `/en/privacy` | PrivacyPage | 英文隐私政策 |
+| `/en/download` | DownloadPage | 英文下载页 |
+| `/app/dashboard` | Dashboard | 演示 App 仪表盘 |
+| `/app/*` | ... | 其他演示页面 |
+
+## 提交前验证
+
+```bash
+npm run check && npm run build
 ```
+
+以上命令必须全部成功。
+
+## 部署
+
+- **平台**：Cloudflare Pages（Git 集成）
+- **Build command**：`npm run build`
+- **Build output**：`dist`
+- **Node version**：22
+- `main` 分支 → 生产域名
+- `dev` 分支 → 预览域名
+- PR → 自动 preview URL
+
+## 相关仓库
+
+- 桌面版（Electron）：[bayernjf/soft-desk](https://github.com/bayernjf/soft-desk)
