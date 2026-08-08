@@ -548,7 +548,7 @@ export default function RadialMenuSection({
             快捷交互
           </span>
           <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
-            径向菜单 — 鼠标中键即启
+            径向菜单：鼠标中键即启
           </h2>
           <p className="mt-4 leading-relaxed text-gray-400">
             不用切换窗口、不用翻找菜单。按下鼠标中键，软件、工作流全部呈现在眼前。

@@ -23,7 +23,7 @@ export const features: FeatureContent[] = [
     },
     description: {
       zh: 'SoftDesk 通过你配置的 AI 模型自动识别并分类所有已安装软件。无需手动整理，AI 会根据软件名称、描述和用途将其归入最合适的类别。',
-      en: 'SoftDesk uses your configured AI models to automatically identify and categorize all installed software. No manual sorting needed — AI assigns each app to the most appropriate category based on its name, description, and purpose.',
+      en: 'SoftDesk uses your configured AI models to automatically identify and categorize all installed software. No manual sorting needed: AI assigns each app to the most appropriate category based on its name, description, and purpose.',
     },
     sections: [
       {
