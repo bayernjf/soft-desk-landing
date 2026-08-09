@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+﻿import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { cn, formatNumber, formatTimeAgo, formatMinutes, formatSize } from '@/lib/utils';
 
 describe('cn()', () => {
@@ -7,7 +7,8 @@ describe('cn()', () => {
   });
 
   it('handles conditional classes', () => {
-    expect(cn('base', false && 'hidden', 'extra')).toBe('base extra');
+    const isHidden = false;
+    expect(cn('base', isHidden && 'hidden', 'extra')).toBe('base extra');
   });
 
   it('handles undefined/null inputs', () => {
