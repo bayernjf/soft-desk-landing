@@ -48,7 +48,7 @@ export default [
 
   // Config / Node files
   {
-    files: ['*.config.{js,mjs}', 'src/pages/robots.txt.ts'],
+    files: ['*.config.{js,mjs}', 'src/pages/robots.txt.ts', 'scripts/**/*.mjs'],
     languageOptions: {
       globals: globals.node,
     },
