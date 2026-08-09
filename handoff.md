@@ -33,6 +33,16 @@ SoftDesk（Electron 桌面软件管理工具）落地页，改动最多的仓库
 2. `git push`（dev 分支，推送前可先 `git pull --rebase`）。
 3. 部署后验证 robots.txt、sitemap、下载按钮 toast 与分析埋点。
 
+## 落地页预览图自动化方案（2026-08-10）
+- hub 站 bayjf 的产品卡片引用本站的 `https://soft-desk-landing.pages.dev/preview.png` 作为封面。
+- 本站现状：已有 `public/preview.png`，但为**手动放置**；建议改为方案 A 自动产出后删除手动图。
+  （本站将作为 14 站方案 A 的**试点**，验证构建命令内 Playwright 截图可行性。）
+- 14 个落地页均走 **Cloudflare Pages 平台自动部署**（push 即发，无部署 Action），故预览图需在
+  **构建命令内**用 Playwright 截图自动产出（方案 A），而非额外 GitHub Action。
+- 完整方案见 bayjf 仓库 `docs/PREVIEW_IMAGE_PIPELINE.md`。bayjf 自身零改动（URL 不变）。
+- 下一步：在 build 脚本追加 `node scripts/shot.mjs`（astro build 之后截图写 public/preview.png），
+  验证通过后向其余 13 站推广。
+
 ## taste-skill 设计审计（2026-08-08，本地未提交）
 按 taste-skill 反 AI-slop 方法论清理设计 Tell，仅动样式与文案，
 未改动内容 IA、URL、路由和功能逻辑。
