@@ -5,14 +5,15 @@
   "type": "module",
   "scripts": {
     "dev": "astro dev",
-    "build": "npm run generate:og && astro check && astro build",
+    "build": "npm run generate:og && astro check && astro build && node scripts/shot.mjs",
     "generate:og": "tsx scripts/generate-og.ts",
     "preview": "astro preview",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx,.astro",
     "check": "astro check",
     "test": "vitest run",
     "test:watch": "vitest",
-    "lighthouse": "lhci autorun"
+    "lighthouse": "lhci autorun",
+    "shot": "node scripts/shot.mjs"
   },
   "dependencies": {
     "@astrojs/cloudflare": "^14.1.7",
@@ -49,6 +50,7 @@
     "eslint-plugin-react-hooks": "^7.1.1",
     "globals": "^17.9.0",
     "jsdom": "^30.0.1",
+    "playwright": "^1.62.1",
     "tsx": "^4.23.11",
     "typescript": "^6.0.3",
     "vitest": "^3.2.7"
