@@ -194,8 +194,8 @@ src/lib/analytics.ts    # 统一埋点 SDK
 
 ```env
 # .env.local
-VITE_GA_MEASUREMENT_ID=G-XXXXXXXXXX
-VITE_CLARITY_PROJECT_ID=xxxxxxxxxxxx
+PUBLIC_GA_MEASUREMENT_ID=G-XXXXXXXXXX
+PUBLIC_CLARITY_PROJECT_ID=xxxxxxxxxxxx
 ```
 
 ### 7.3 调用示例

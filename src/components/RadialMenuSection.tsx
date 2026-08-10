@@ -79,7 +79,7 @@ function RadialMenuOverlay({
   software: Software[];
   workflows: Workflow[];
   open: boolean;
-  onOpenChange: (open: boolean) => void;
+  onOpenChange: (_open: boolean) => void;
 }) {
   const [activeSlot, setActiveSlot] = useState<number | null>(null);
   const [mounted, setMounted] = useState(false);
@@ -378,8 +378,6 @@ function polarP(r: number, deg: number) {
 }
 
 function sectorPathP(startDeg: number, endDeg: number, outerR = PREVIEW_OUTER) {
-  const cx = PREVIEW_SIZE / 2;
-  const cy = PREVIEW_SIZE / 2;
   const oStart = polarP(outerR, startDeg);
   const oEnd = polarP(outerR, endDeg);
   const iEnd = polarP(PREVIEW_INNER, endDeg);
@@ -550,7 +548,7 @@ export default function RadialMenuSection({
             快捷交互
           </span>
           <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
-            径向菜单 — 鼠标中键即启
+            径向菜单：鼠标中键即启
           </h2>
           <p className="mt-4 leading-relaxed text-gray-400">
             不用切换窗口、不用翻找菜单。按下鼠标中键，软件、工作流全部呈现在眼前。

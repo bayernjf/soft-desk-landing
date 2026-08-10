@@ -18,6 +18,7 @@ export interface DownloadUrlsState {
   version: string | null;
   publishedAt: string | null;
   loading: boolean;
+  error: boolean;
 }
 
 export function formatBytes(bytes: number): string {
@@ -53,8 +54,9 @@ export async function fetchDownloadUrls(): Promise<DownloadUrlsState> {
       version: release?.tag_name ?? null,
       publishedAt: release?.published_at ?? null,
       loading: false,
+      error: false,
     };
   } catch {
-    return { mac: null, win: null, version: null, publishedAt: null, loading: false };
+    return { mac: null, win: null, version: null, publishedAt: null, loading: false, error: true };
   }
 }

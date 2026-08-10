@@ -10,10 +10,10 @@ const LABEL_R = (INNER_R + OUTER_R) / 2;
 interface RadialMenuProps {
   software: Software[];
   workflows: Workflow[];
-  onLaunchSoftware?: (id: string) => void;
-  onLaunchWorkflow?: (id: string) => void;
+  onLaunchSoftware?: (_id: string) => void;
+  onLaunchWorkflow?: (_id: string) => void;
   open?: boolean;
-  onOpenChange?: (open: boolean) => void;
+  onOpenChange?: (_open: boolean) => void;
 }
 
 interface MenuItem {
@@ -26,13 +26,13 @@ interface MenuItem {
 }
 
 interface RadialStyleTokens {
-  sectorFill: (isActive: boolean, itemColor?: string) => string;
-  sectorStroke: (isActive: boolean) => string;
-  sectorStrokeWidth: (isActive: boolean) => number;
+  sectorFill: (_isActive: boolean, _itemColor?: string) => string;
+  sectorStroke: (_isActive: boolean) => string;
+  sectorStrokeWidth: (_isActive: boolean) => number;
   sectorGap: number;
   centerFill: string;
   centerStroke: string;
-  textFill: (isActive: boolean) => string;
+  textFill: (_isActive: boolean) => string;
   emptyMarkFill: string;
 }
 

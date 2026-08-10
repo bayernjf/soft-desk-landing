@@ -51,6 +51,7 @@ export type UIKey =
   | 'cta.view_github'
   | 'footer.copyright'
   | 'footer.privacy'
+  | 'footer.terms'
   | 'footer.made_with'
   | 'cookie.text'
   | 'cookie.accept'
@@ -118,6 +119,7 @@ export const ui: Record<Language, UIDict> = {
     'cta.view_github': '在 GitHub 查看',
     'footer.copyright': 'SoftDesk. 保留所有权利。',
     'footer.privacy': '隐私政策',
+    'footer.terms': '服务条款',
     'footer.made_with': '使用 Astro 构建',
     'cookie.text': '本网站使用 Cookie 进行分析以改善体验。继续浏览即表示你同意使用 Cookie。',
     'cookie.accept': '接受',
@@ -146,7 +148,7 @@ export const ui: Record<Language, UIDict> = {
     'nav.github': 'GitHub',
     'hero.badge': 'Open Source · Free · Cross-Platform',
     'hero.title': 'AI-Powered Desktop Software Manager',
-    'hero.subtitle': 'Smart classification, radial menu launcher, usage tracking, one-click workflows — launch at lightning speed',
+    'hero.subtitle': 'Smart classification, radial menu launcher, usage tracking, one-click workflows: launch at lightning speed',
     'hero.cta_primary': 'Download Free',
     'hero.cta_secondary': 'Try Live Demo',
     'hero.stat_apps': 'Supported Apps',
@@ -155,7 +157,7 @@ export const ui: Record<Language, UIDict> = {
     'features.title': 'Why SoftDesk',
     'features.subtitle': 'Four core capabilities that redefine desktop software management',
     'features.ai.title': 'AI Smart Classification',
-    'features.ai.desc': 'Automatically identify and categorize all installed software — no manual sorting needed',
+    'features.ai.desc': 'Automatically identify and categorize all installed software: no manual sorting needed',
     'features.radial.title': 'Radial Menu Launcher',
     'features.radial.desc': 'Middle-click to summon the radial menu and launch apps instantly',
     'features.usage.title': 'Usage Time Tracking',
@@ -182,6 +184,7 @@ export const ui: Record<Language, UIDict> = {
     'cta.view_github': 'View on GitHub',
     'footer.copyright': 'SoftDesk. All rights reserved.',
     'footer.privacy': 'Privacy Policy',
+    'footer.terms': 'Terms of Service',
     'footer.made_with': 'Built with Astro',
     'cookie.text': 'This website uses cookies for analytics to improve your experience. By continuing to browse, you agree to the use of cookies.',
     'cookie.accept': 'Accept',

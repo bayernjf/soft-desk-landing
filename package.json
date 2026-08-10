@@ -5,16 +5,23 @@
   "type": "module",
   "scripts": {
     "dev": "astro dev",
-    "build": "astro check && astro build",
+    "build": "npm run generate:og && astro check && astro build && node scripts/shot.mjs",
+    "generate:og": "tsx scripts/generate-og.ts",
     "preview": "astro preview",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx,.astro",
-    "check": "astro check"
+    "check": "astro check",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lighthouse": "lhci autorun",
+    "shot": "node scripts/shot.mjs"
   },
   "dependencies": {
     "@astrojs/cloudflare": "^14.1.7",
     "@astrojs/react": "^6.0.2",
     "@astrojs/sitemap": "^3.7.3",
+    "@bay/landing-ui": "github:bayernjf/landing-ui#v1.1.0",
     "@iconify-json/lucide": "^1.2.121",
+
     "@tailwindcss/vite": "^4.3.3",
     "astro": "^7.1.6",
     "astro-icon": "^1.1.5",
@@ -23,21 +30,33 @@
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "recharts": "^3.10.1",
+    "shiki": "^4.4.2",
     "tailwind-merge": "^3.6.0",
     "tailwindcss": "^4.3.3",
     "zustand": "^5.0.14"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.10",
+    "@eslint/js": "^10.0.1",
+    "@lhci/cli": "^0.15.1",
+    "@testing-library/jest-dom": "^7.0.0",
+    "@testing-library/react": "^16.3.2",
+    "@testing-library/user-event": "^14.6.3",
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.4",
     "@typescript-eslint/parser": "^8.66.0",
     "eslint": "^10.8.0",
     "eslint-plugin-astro": "^3.1.0",
     "eslint-plugin-react-hooks": "^7.1.1",
-    "typescript": "^6.0.3"
+    "globals": "^17.9.0",
+    "jsdom": "^30.0.1",
+    "playwright": "^1.62.1",
+    "tsx": "^4.23.11",
+    "typescript": "^6.0.3",
+    "vitest": "^3.2.7"
   },
   "optionalDependencies": {
-    "@rollup/rollup-linux-x64-gnu": "4.62.0"
+    "@rollup/rollup-win32-x64-msvc": "^4.62.4",
+    "@rollup/rollup-linux-x64-gnu": "^4.62.4"
   }
 }

@@ -6,7 +6,7 @@ import { track } from '@/lib/analytics';
 interface SoftwareCardProps {
   software: Software;
   index?: number;
-  onLaunch?: (id: string) => void;
+  onLaunch?: (_id: string) => void;
 }
 
 export default function SoftwareCard({ software, index = 0, onLaunch }: SoftwareCardProps) {

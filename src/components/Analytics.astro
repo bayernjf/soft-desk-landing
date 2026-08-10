@@ -1,10 +1,5 @@
 ---
 import { getStoredConsent } from "@/lib/analytics";
-import type { Language } from '@/i18n/ui';
-
-interface Props {
-  lang: Language;
-}
 
 const storedConsent = getStoredConsent();
 ---
@@ -25,17 +20,29 @@ const storedConsent = getStoredConsent();
   // Track page view
   trackPageView();
 
-  // Scroll depth tracking
-  let scrollTicking = false;
-  window.addEventListener('scroll', () => {
-    if (!scrollTicking) {
-      requestAnimationFrame(() => {
-        trackScrollDepth();
-        scrollTicking = false;
-      });
-      scrollTicking = true;
+  // Scroll depth tracking via IntersectionObserver sentinels
+  // (no window scroll listener: avoids per-frame work on the main thread)
+  const depthSentinelObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) trackScrollDepth();
+    });
+  }, { rootMargin: '0px 0px 20% 0px' });
+
+  const placeDepthSentinels = () => {
+    const scrollable = document.documentElement.scrollHeight - window.innerHeight;
+    if (scrollable <= 0) {
+      trackScrollDepth();
+      return;
     }
-  }, { passive: true });
+    [25, 50, 75, 100].forEach((milestone) => {
+      const sentinel = document.createElement('div');
+      sentinel.setAttribute('aria-hidden', 'true');
+      sentinel.style.cssText = `position:absolute;top:${Math.round((milestone / 100) * scrollable)}px;height:1px;width:1px;pointer-events:none;`;
+      document.body.appendChild(sentinel);
+      depthSentinelObserver.observe(sentinel);
+    });
+  };
+  placeDepthSentinels();
 
   // Section visibility tracking
   const sections = document.querySelectorAll('[data-analytics-section]');
