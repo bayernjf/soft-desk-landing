@@ -46,11 +46,13 @@ export default [
     },
   },
 
-  // Config / Node files
+  // Config / Node files. The build pipeline scripts under scripts/ also run
+  // browser-side callbacks via Playwright's page.evaluate, so they need both
+  // node and browser globals in scope.
   {
     files: ['*.config.{js,mjs}', 'src/pages/robots.txt.ts', 'scripts/**/*.mjs'],
     languageOptions: {
-      globals: globals.node,
+      globals: { ...globals.node, ...globals.browser },
     },
   },
 
