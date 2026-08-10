@@ -2,14 +2,26 @@ import { describe, it, expect } from 'vitest';
 import { buildCanonicalUrl, buildHreflangTags, baseSchema, softwareApplicationSchema, faqSchema, breadcrumbSchema } from '@/lib/seo';
 
 describe('buildCanonicalUrl()', () => {
-  it('builds root URL', () => {
+  it('builds zh root URL with /zh prefix', () => {
     const url = buildCanonicalUrl('/', 'zh');
     expect(url).toMatch(/\/zh\/$/);
   });
 
-  it('builds path URL', () => {
+  it('builds en root URL without prefix', () => {
+    const url = buildCanonicalUrl('/', 'en');
+    expect(url).toMatch(/\/$/);
+    expect(url).not.toMatch(/\/en\/$/);
+  });
+
+  it('builds zh path URL with /zh prefix', () => {
+    const url = buildCanonicalUrl('/privacy', 'zh');
+    expect(url).toMatch(/\/zh\/privacy\/$/);
+  });
+
+  it('builds en path URL without prefix', () => {
     const url = buildCanonicalUrl('/privacy', 'en');
-    expect(url).toMatch(/\/en\/privacy\/$/);
+    expect(url).toMatch(/\/privacy\/$/);
+    expect(url).not.toMatch(/\/en\//);
   });
 });
 
@@ -22,11 +34,23 @@ describe('buildHreflangTags()', () => {
     expect(tags.find((t) => t.hreflang === 'x-default')).toBeDefined();
   });
 
-  it('zh and x-default point to same URL', () => {
+  it('en and x-default point to same URL (en is default)', () => {
     const tags = buildHreflangTags('/features');
-    const zh = tags.find((t) => t.hreflang === 'zh-CN')!;
+    const en = tags.find((t) => t.hreflang === 'en')!;
     const xDefault = tags.find((t) => t.hreflang === 'x-default')!;
-    expect(zh.href).toBe(xDefault.href);
+    expect(en.href).toBe(xDefault.href);
+  });
+
+  it('zh URL has /zh prefix', () => {
+    const tags = buildHreflangTags('/');
+    const zh = tags.find((t) => t.hreflang === 'zh-CN')!;
+    expect(zh.href).toMatch(/\/zh\/$/);
+  });
+
+  it('en URL has no /en prefix', () => {
+    const tags = buildHreflangTags('/');
+    const en = tags.find((t) => t.hreflang === 'en')!;
+    expect(en.href).not.toMatch(/\/en\//);
   });
 });
 

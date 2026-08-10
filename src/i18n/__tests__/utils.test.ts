@@ -6,16 +6,20 @@ describe('getLangFromUrl()', () => {
     expect(getLangFromUrl(new URL('https://example.com/zh/'))).toBe('zh');
   });
 
-  it('extracts en from URL', () => {
-    expect(getLangFromUrl(new URL('https://example.com/en/features'))).toBe('en');
+  it('extracts zh from nested zh URL', () => {
+    expect(getLangFromUrl(new URL('https://example.com/zh/features'))).toBe('zh');
   });
 
-  it('falls back to zh for unknown language', () => {
-    expect(getLangFromUrl(new URL('https://example.com/fr/'))).toBe('zh');
+  it('returns en (default) for root URL', () => {
+    expect(getLangFromUrl(new URL('https://example.com/'))).toBe('en');
   });
 
-  it('falls back to zh for root URL', () => {
-    expect(getLangFromUrl(new URL('https://example.com/'))).toBe('zh');
+  it('returns en (default) for non-zh path', () => {
+    expect(getLangFromUrl(new URL('https://example.com/features'))).toBe('en');
+  });
+
+  it('falls back to en for unknown language', () => {
+    expect(getLangFromUrl(new URL('https://example.com/fr/'))).toBe('en');
   });
 });
 
@@ -49,27 +53,35 @@ describe('getAltLang()', () => {
 });
 
 describe('localizedPath()', () => {
-  it('builds zh path', () => {
+  it('builds zh path with prefix', () => {
     expect(localizedPath('/', 'zh')).toBe('/zh');
     expect(localizedPath('/features', 'zh')).toBe('/zh/features');
   });
 
-  it('builds en path', () => {
-    expect(localizedPath('/', 'en')).toBe('/en');
-    expect(localizedPath('/privacy', 'en')).toBe('/en/privacy');
+  it('builds en path without prefix (root)', () => {
+    expect(localizedPath('/', 'en')).toBe('/');
+    expect(localizedPath('/privacy', 'en')).toBe('/privacy');
   });
 });
 
 describe('getAltLangPath()', () => {
-  it('switches from zh to en', () => {
-    expect(getAltLangPath('/zh/features', 'en')).toBe('/en/features');
+  it('switches from zh to en (strips /zh prefix)', () => {
+    expect(getAltLangPath('/zh/features', 'en')).toBe('/features');
   });
 
-  it('switches from en to zh', () => {
-    expect(getAltLangPath('/en/privacy', 'zh')).toBe('/zh/privacy');
+  it('switches from en to zh (adds /zh prefix)', () => {
+    expect(getAltLangPath('/privacy', 'zh')).toBe('/zh/privacy');
   });
 
-  it('handles root path', () => {
-    expect(getAltLangPath('/zh', 'en')).toBe('/en');
+  it('handles zh root path to en root', () => {
+    expect(getAltLangPath('/zh', 'en')).toBe('/');
+  });
+
+  it('handles en root path to zh root', () => {
+    expect(getAltLangPath('/', 'zh')).toBe('/zh');
+  });
+
+  it('handles logical path (no prefix) from en to zh', () => {
+    expect(getAltLangPath('/features/ai-classification', 'zh')).toBe('/zh/features/ai-classification');
   });
 });

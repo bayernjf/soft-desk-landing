@@ -17,19 +17,27 @@ function withTrailingSlash(url: string): string {
   return url.endsWith('/') ? url : `${url}/`;
 }
 
+/**
+ * Build the canonical URL.
+ * Pattern B: en lives at root (no prefix), zh lives at /zh.
+ */
 export function buildCanonicalUrl(path: string, lang: string): string {
-  const base = `${SITE_URL}/${lang}`;
+  const base = lang === 'zh' ? `${SITE_URL}/zh` : SITE_URL;
   if (path === '/') return withTrailingSlash(base);
   return withTrailingSlash(`${base}${path}`);
 }
 
+/**
+ * Build hreflang alternate links.
+ * Pattern B: en at root (x-default), zh at /zh.
+ */
 export function buildHreflangTags(path: string) {
   const zhUrl = buildCanonicalUrl(path, 'zh');
   const enUrl = buildCanonicalUrl(path, 'en');
   return [
     { rel: 'alternate', hreflang: 'zh-CN', href: zhUrl },
     { rel: 'alternate', hreflang: 'en', href: enUrl },
-    { rel: 'alternate', hreflang: 'x-default', href: zhUrl },
+    { rel: 'alternate', hreflang: 'x-default', href: enUrl },
   ];
 }
 

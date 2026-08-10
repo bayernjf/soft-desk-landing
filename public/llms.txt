@@ -14,10 +14,10 @@ one-click workflows to launch multiple apps together.
 
 ## Key Features
 
-- [AI Smart Classification](/en/features/ai-classification) / [中文](/zh/features/ai-classification) - Automatically categorize apps using AI models
-- [Radial Menu Launcher](/en/features/radial-menu) / [中文](/zh/features/radial-menu) - Middle-click to summon radial menu for instant app launch
-- [Usage Time Tracking](/en/features/usage-tracking) / [中文](/zh/features/usage-tracking) - Track per-app usage time and productivity insights
-- [Cross-Platform](/en/features/cross-platform) / [中文](/zh/features/cross-platform) - Support for macOS (Intel/Apple Silicon) and Windows 10/11
+- [AI Smart Classification](/features/ai-classification) / [中文](/zh/features/ai-classification) - Automatically categorize apps using AI models
+- [Radial Menu Launcher](/features/radial-menu) / [中文](/zh/features/radial-menu) - Middle-click to summon radial menu for instant app launch
+- [Usage Time Tracking](/features/usage-tracking) / [中文](/zh/features/usage-tracking) - Track per-app usage time and productivity insights
+- [Cross-Platform](/features/cross-platform) / [中文](/zh/features/cross-platform) - Support for macOS (Intel/Apple Silicon) and Windows 10/11
 
 ## Download
 
@@ -27,7 +27,7 @@ one-click workflows to launch multiple apps together.
 
 ## Documentation
 
-- Privacy Policy: [English](/en/privacy) / [中文](/zh/privacy)
+- Privacy Policy: [English](/privacy) / [中文](/zh/privacy)
 - GitHub Repository: https://github.com/bayernjf/soft-desk
 - Full content for AI context: /llms-full.txt
 

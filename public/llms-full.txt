@@ -24,7 +24,7 @@ one-click workflows to launch multiple apps together.
 ## Feature: AI Smart Classification
 
 Slug: ai-classification
-Links: /en/features/ai-classification · /zh/features/ai-classification
+Links: /features/ai-classification · /zh/features/ai-classification
 
 Tagline: Let AI organize your software library automatically.
 
@@ -54,7 +54,7 @@ information is sent. Data is not stored by the AI provider after classification.
 ## Feature: Radial Menu Launcher
 
 Slug: radial-menu
-Links: /en/features/radial-menu · /zh/features/radial-menu
+Links: /features/radial-menu · /zh/features/radial-menu
 
 Tagline: Middle-click to launch instantly.
 
@@ -83,7 +83,7 @@ permissions.
 ## Feature: Usage Time Tracking
 
 Slug: usage-tracking
-Links: /en/features/usage-tracking · /zh/features/usage-tracking
+Links: /features/usage-tracking · /zh/features/usage-tracking
 
 Tagline: Know where your time goes.
 
@@ -110,7 +110,7 @@ rankings, category distribution, and trend changes.
 ## Feature: Cross-Platform Support
 
 Slug: cross-platform
-Links: /en/features/cross-platform · /zh/features/cross-platform
+Links: /features/cross-platform · /zh/features/cross-platform
 
 Tagline: macOS and Windows, consistent experience.
 
