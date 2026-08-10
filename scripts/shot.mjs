@@ -5,7 +5,7 @@ import { createServer } from 'node:http';
 import { readFileSync, existsSync } from 'node:fs';
 import { join, extname } from 'node:path';
 
-const PORT = 5173, DIST = './dist', PREVIEW_OUT = 'public/preview.png';
+const PORT = 5173, DIST = './dist', PREVIEW_OUT = 'dist/preview.png';
 
 const MIME = {
   '.html':'text/html; charset=utf-8','.css':'text/css','.js':'application/javascript',
