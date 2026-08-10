@@ -5,7 +5,7 @@ export const languages = {
 
 export type Language = keyof typeof languages;
 
-export const defaultLang: Language = 'zh';
+export const defaultLang: Language = 'en';
 
 export type UIKey =
   | 'nav.features'

@@ -61,15 +61,16 @@ npm run lint
 
 | 路径 | 页面 | 说明 |
 |------|------|------|
-| `/` | Redirect | 重定向到 `/zh/` |
+| `/` | HomePage | 英文首页（根路径） |
+| `/features/[slug]` | FeaturePage | 英文特性页 |
+| `/privacy` | PrivacyPage | 英文隐私政策 |
+| `/download` | DownloadPage | 英文下载页 |
+| `/terms` | TermsPage | 英文服务条款 |
 | `/zh/` | HomePage | 中文首页 |
 | `/zh/features/[slug]` | FeaturePage | 中文特性页 |
 | `/zh/privacy` | PrivacyPage | 中文隐私政策 |
 | `/zh/download` | DownloadPage | 中文下载页 |
-| `/en/` | HomePage | 英文首页 |
-| `/en/features/[slug]` | FeaturePage | 英文特性页 |
-| `/en/privacy` | PrivacyPage | 英文隐私政策 |
-| `/en/download` | DownloadPage | 英文下载页 |
+| `/zh/terms` | TermsPage | 中文服务条款 |
 | `/app/dashboard` | Dashboard | 演示 App 仪表盘 |
 | `/app/*` | ... | 其他演示页面 |
 

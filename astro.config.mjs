@@ -6,10 +6,6 @@ import tailwindcss from '@tailwindcss/vite';
 
 const SITE_URL = process.env.PUBLIC_SITE_URL || 'https://soft-desk-landing.pages.dev';
 
-function swapLocale(url, from, to) {
-  return url.replace(`/${from}/`, `/${to}/`);
-}
-
 // https://astro.build/config
 // Cloudflare adapter will be added in Phase 5 when demo app SSR pages are introduced.
 export default defineConfig({
@@ -19,29 +15,28 @@ export default defineConfig({
     sitemap({
       filter: (page) =>
         !page.includes('/app/') &&
-        !page.endsWith('/404') &&
-        page !== `${SITE_URL}/` &&
-        page !== `${SITE_URL}`,
+        !page.endsWith('/404'),
       serialize: (item) => {
         const url = item.url;
         const links = [];
         if (url.includes('/zh/')) {
+          // Chinese page: en equivalent lives at root (strip /zh/ prefix)
+          const enUrl = url.replace('/zh/', '/');
           links.push(
             { hreflang: 'zh-CN', url },
-            { hreflang: 'en', url: swapLocale(url, 'zh', 'en') },
+            { hreflang: 'en', url: enUrl },
+            { hreflang: 'x-default', url: enUrl }
+          );
+        } else {
+          // English page at root: zh equivalent lives at /zh/
+          const zhUrl = url.replace(`${SITE_URL}/`, `${SITE_URL}/zh/`);
+          links.push(
+            { hreflang: 'zh-CN', url: zhUrl },
+            { hreflang: 'en', url },
             { hreflang: 'x-default', url }
           );
-        } else if (url.includes('/en/')) {
-          links.push(
-            { hreflang: 'zh-CN', url: swapLocale(url, 'en', 'zh') },
-            { hreflang: 'en', url },
-            { hreflang: 'x-default', url: swapLocale(url, 'en', 'zh') }
-          );
         }
-        if (links.length > 0) {
-          return { ...item, links };
-        }
-        return item;
+        return { ...item, links };
       },
     }),
     icon(),
@@ -50,10 +45,10 @@ export default defineConfig({
     plugins: [tailwindcss()],
   },
   i18n: {
-    defaultLocale: 'zh',
-    locales: ['zh', 'en'],
+    defaultLocale: 'en',
+    locales: ['en', 'zh'],
     routing: {
-      prefixDefaultLocale: true,
+      prefixDefaultLocale: false,
     },
   },
 });

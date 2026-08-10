@@ -1,9 +1,12 @@
 import { ui, defaultLang, type Language, type UIKey } from './ui';
 
-/** Extract language code from URL path (e.g. /zh/features → zh) */
+/**
+ * Extract language code from URL path.
+ * Pattern B: root = en, /zh/* = zh.
+ */
 export function getLangFromUrl(url: URL): Language {
   const [, lang] = url.pathname.split('/');
-  if (lang in ui) return lang as Language;
+  if (lang === 'zh') return 'zh';
   return defaultLang;
 }
 
@@ -19,19 +22,39 @@ export function getAltLang(lang: Language): Language {
   return lang === 'zh' ? 'en' : 'zh';
 }
 
-/** Build a localized path. Pass path without locale prefix, e.g. '/features/ai' */
+/**
+ * Build a localized path.
+ * Pattern B: en has no prefix (root), zh gets /zh prefix.
+ * Pass path without locale prefix, e.g. '/features/ai'.
+ */
 export function localizedPath(path: string, lang: Language): string {
   const clean = path.startsWith('/') ? path : `/${path}`;
-  return `/${lang}${clean === '/' ? '' : clean}`;
+  if (lang === defaultLang) {
+    // English lives at root: '/' -> '/', '/features' -> '/features'
+    return clean;
+  }
+  // zh gets /zh prefix: '/' -> '/zh', '/features' -> '/zh/features'
+  return clean === '/' ? '/zh' : `/zh${clean}`;
 }
 
-/** Get the equivalent path in another language (for language switcher) */
+/**
+ * Get the equivalent path in another language (for language switcher).
+ * Pattern B: en root <-> /zh/*.
+ */
 export function getAltLangPath(pathname: string, targetLang: Language): string {
   const segments = pathname.split('/').filter(Boolean);
-  if (segments.length === 0) return `/${targetLang}`;
-  // Replace the first segment (current lang) with target lang
-  segments[0] = targetLang;
-  return `/${segments.join('/')}`;
+  const isZhPath = segments[0] === 'zh';
+
+  if (targetLang === 'zh') {
+    // Switching to zh: strip nothing (en has no prefix), prepend /zh
+    // If already on zh path, just replace the lang segment
+    const rest = isZhPath ? segments.slice(1) : segments;
+    return rest.length === 0 ? '/zh' : `/zh/${rest.join('/')}`;
+  }
+
+  // Switching to en: strip /zh prefix, root stays root
+  const rest = isZhPath ? segments.slice(1) : segments;
+  return rest.length === 0 ? '/' : `/${rest.join('/')}`;
 }
 
 export { defaultLang, type Language, type UIKey };

@@ -2,7 +2,7 @@
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import { useTranslations, localizedPath } from '@/i18n/utils';
 
-const lang = Astro.url.pathname.startsWith('/en') ? 'en' : 'zh';
+const lang = Astro.url.pathname.startsWith('/zh') ? 'zh' : 'en';
 const t = useTranslations(lang);
 ---
 

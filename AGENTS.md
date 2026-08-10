@@ -12,7 +12,7 @@ SoftDesk 落地页是 AI 驱动的桌面软件管理效率工具官方网站，�
 - **框架**：Astro 7 + TypeScript
 - **渲染模式**：SSG（落地页静态预渲染）+ React 岛屿（演示 App）
 - **样式**：Tailwind CSS v4（通过 @tailwindcss/vite 插件）
-- **i18n**：中英双语，URL 前缀路由（/zh/、/en/）
+- **i18n**：中英双语，URL 前缀路由（根路径为英文，/zh/ 为中文）
 - **SEO**：@astrojs/sitemap、结构化数据（JSON-LD）、llms.txt（GEO）
 - **演示 App**：React 19 岛屿（client:load）
 - **图标**：astro-icon + @iconify-json/lucide
@@ -61,15 +61,14 @@ soft-desk-landing/
 │   │   ├── seo.ts                  # SEO 工具函数（Schema、hreflang）
 │   │   └── utils.ts                # cn() 等工具函数
 │   ├── pages/
-│   │   ├── index.astro             # 根重定向到 /zh/
+│   │   ├── index.astro             # 英文首页（根路径）
 │   │   ├── 404.astro
 │   │   ├── robots.txt.ts           # 动态 robots.txt
+│   │   ├── download.astro          # 英文下载页
+│   │   ├── privacy.astro           # 英文隐私政策
+│   │   ├── terms.astro             # 英文服务条款
+│   │   ├── features/[slug].astro   # 英文特性详情页
 │   │   ├── zh/                     # 中文页面
-│   │   │   ├── index.astro
-│   │   │   ├── privacy.astro
-│   │   │   ├── download.astro
-│   │   │   └── features/[slug].astro
-│   │   ├── en/                     # 英文页面
 │   │   │   ├── index.astro
 │   │   │   ├── privacy.astro
 │   │   │   ├── download.astro
@@ -91,15 +90,16 @@ soft-desk-landing/
 
 | 路径 | 页面 | 说明 |
 |------|------|------|
-| `/` | Redirect | 重定向到 `/zh/` |
+| `/` | HomePage | 英文首页（根路径） |
+| `/features/[slug]` | FeaturePage | 英文特性页 |
+| `/privacy` | PrivacyPage | 英文隐私政策 |
+| `/download` | DownloadPage | 英文下载页 |
+| `/terms` | TermsPage | 英文服务条款 |
 | `/zh/` | HomePage | 中文首页 |
 | `/zh/features/[slug]` | FeaturePage | 中文特性页 |
 | `/zh/privacy` | PrivacyPage | 中文隐私政策 |
 | `/zh/download` | DownloadPage | 中文下载页 |
-| `/en/` | HomePage | 英文首页 |
-| `/en/features/[slug]` | FeaturePage | 英文特性页 |
-| `/en/privacy` | PrivacyPage | 英文隐私政策 |
-| `/en/download` | DownloadPage | 英文下载页 |
+| `/zh/terms` | TermsPage | 中文服务条款 |
 | `/app/dashboard` | Dashboard | 演示 App 仪表盘 |
 | `/app/library` | Library | 演示 App 软件库 |
 | `/app/*` | ... | 其他演示页面 |
@@ -144,7 +144,7 @@ npm run check && npm run build
 
 ## i18n 约定
 
-- 默认语言：中文（`/zh/`）
+- 默认语言：英文（根路径 `/`），中文在 `/zh/`
 - 所有 UI 字符串集中在 `src/i18n/ui.ts`
 - 新增字符串时必须同时添加中英两个版本
 - 使用 `useTranslations(lang)` 获取翻译函数
