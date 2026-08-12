@@ -9,10 +9,11 @@ import SearchSection from '@/components/SearchSection.tsx';
 import WorkflowSection from '@/components/WorkflowSection.tsx';
 import FavoritesSection from '@/components/FavoritesSection.tsx';
 import StatisticsSection from '@/components/StatisticsSection.tsx';
-import { useTranslations } from '@/i18n/utils';
+import { useTranslations, localizedPath } from '@/i18n/utils';
 import type { Language } from '@/i18n/ui';
 import { softwareApplicationSchema } from '@/lib/seo';
-import { mockSoftware, mockWorkflows } from '@/data/software';
+import { getCategories, getMockSoftware, getMockWorkflows } from '@/data/software';
+import { homeStrings } from '@/i18n/home';
 
 interface Props {
   lang: Language;
@@ -20,6 +21,10 @@ interface Props {
 
 const { lang } = Astro.props;
 const t = useTranslations(lang);
+const s = homeStrings[lang];
+const software = getMockSoftware(lang);
+const workflows = getMockWorkflows(lang);
+const categories = getCategories(lang);
 
 const features = [
   { feature: 'ai' as const, icon: 'AI', color: '#00d4aa' },
@@ -59,7 +64,7 @@ const appSchema = softwareApplicationSchema(lang);
       <div class="mt-10 flex flex-col items-center gap-4">
         <DownloadButtons lang={lang} />
         <a
-          href="/app/dashboard"
+          href={localizedPath('/app/dashboard', lang)}
           class="text-sm text-gray-400 transition-colors hover:text-white"
         >
           {t('hero.cta_secondary')} →
@@ -92,24 +97,25 @@ const appSchema = softwareApplicationSchema(lang);
   <!-- Radial Menu Demo -->
   <RadialMenuSection
     client:only="react"
-    software={mockSoftware}
-    workflows={mockWorkflows}
+    software={software}
+    workflows={workflows}
+    strings={s.radial}
   />
 
   <!-- AI Classification Demo -->
-  <AIClassifySection client:only="react" software={mockSoftware} />
+  <AIClassifySection client:only="react" software={software} categories={categories} strings={s.aiClassify} />
 
   <!-- Natural Language Search Demo -->
-  <SearchSection client:only="react" software={mockSoftware} />
+  <SearchSection client:only="react" software={software} categories={categories} strings={s.search} />
 
   <!-- Workflow Demo -->
-  <WorkflowSection client:only="react" software={mockSoftware} workflows={mockWorkflows} />
+  <WorkflowSection client:only="react" software={software} workflows={workflows} strings={s.workflow} />
 
   <!-- Favorites Demo -->
-  <FavoritesSection client:only="react" software={mockSoftware} workflows={mockWorkflows} />
+  <FavoritesSection client:only="react" software={software} workflows={workflows} strings={s.favorites} />
 
   <!-- Usage Statistics Demo -->
-  <StatisticsSection client:only="react" software={mockSoftware} />
+  <StatisticsSection client:only="react" software={software} categories={categories} strings={s.statistics} />
 
   <!-- FAQ -->
   <FAQ lang={lang} />

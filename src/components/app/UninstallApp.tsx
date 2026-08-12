@@ -3,11 +3,34 @@ import type { Software } from '@/data/types';
 import { formatMinutes, formatTimeAgo, formatSize, cn } from '@/lib/utils';
 import { track } from '@/lib/analytics';
 
-interface UninstallAppProps {
-  software: Software[];
+export interface UninstallStrings {
+  lang: 'en' | 'zh';
+  pageTitle: string;
+  pageSubtitle: string;
+  totalSpaceLabel: string;
+  reclaimableSpaceLabel: string;
+  largestSectionTitle: string;
+  topCountLabel: string;
+  lastUsedSuffix: string;
+  uninstallButton: string;
+  unusedSectionTitle: string;
+  unusedSectionMeta: string;
+  lastUsedPrefix: string;
+  allActiveMessage: string;
+  suggestionTitle: string;
+  suggestionBody: string;
+  largeAppsTitle: string;
+  largeAppsMeta: string;
+  cleanUpAllButton: string;
+  nothingToCleanButton: string;
 }
 
-export default function UninstallApp({ software }: UninstallAppProps) {
+interface UninstallAppProps {
+  software: Software[];
+  strings: UninstallStrings;
+}
+
+export default function UninstallApp({ software, strings }: UninstallAppProps) {
   const [removedIds, setRemovedIds] = useState<string[]>([]);
 
   const activeSoftware = useMemo(
@@ -40,25 +63,25 @@ export default function UninstallApp({ software }: UninstallAppProps) {
     <div className="space-y-8">
       <div className="flex items-start justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-white tracking-tight">软件清理</h1>
-          <p className="text-sm text-gray-500 mt-1">快速识别和移除不常用的软件，释放磁盘空间</p>
+          <h1 className="text-2xl font-bold text-white tracking-tight">{strings.pageTitle}</h1>
+          <p className="text-sm text-gray-500 mt-1">{strings.pageSubtitle}</p>
         </div>
         <div className="flex items-center gap-4">
           <div className="text-right">
             <div className="text-2xl font-bold text-white tabular-nums">{formatSize(totalSize)}</div>
-            <div className="text-xs text-gray-500">占用总空间</div>
+            <div className="text-xs text-gray-500">{strings.totalSpaceLabel}</div>
           </div>
           <div className="w-px h-10 bg-gray-800" />
           <div className="text-right">
             <div className="text-2xl font-bold text-amber-400 tabular-nums">{formatSize(potentialFree)}</div>
-            <div className="text-xs text-gray-500">可释放空间</div>
+            <div className="text-xs text-gray-500">{strings.reclaimableSpaceLabel}</div>
           </div>
         </div>
       </div>
 
       <div className="grid lg:grid-cols-3 gap-4">
         <div className="lg:col-span-2 space-y-4">
-          {/* 占用空间最大 */}
+          {/* Largest disk footprint */}
           <section className="p-5 rounded-2xl bg-gray-900/40 border border-gray-800/60">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2.5">
@@ -68,9 +91,9 @@ export default function UninstallApp({ software }: UninstallAppProps) {
                   <line x1="6" y1="16" x2="6.01" y2="16" />
                   <line x1="10" y1="16" x2="10.01" y2="16" />
                 </svg>
-                <h2 className="text-sm font-semibold text-gray-200">占用空间最大</h2>
+                <h2 className="text-sm font-semibold text-gray-200">{strings.largestSectionTitle}</h2>
               </div>
-              <span className="text-xs text-gray-500">Top {bySize.length}</span>
+              <span className="text-xs text-gray-500">{strings.topCountLabel.replace('{n}', String(bySize.length))}</span>
             </div>
             <div className="space-y-2.5">
               {bySize.map((sw) => (
@@ -87,21 +110,21 @@ export default function UninstallApp({ software }: UninstallAppProps) {
                   <div className="flex-1 min-w-0">
                     <div className="text-sm font-medium text-gray-200 truncate">{sw.name}</div>
                     <div className="text-xs text-gray-500 mt-0.5">
-                      {formatSize(sw.size)} · {formatMinutes(sw.usageMinutes)} · {formatTimeAgo(sw.lastUsed)} 使用
+                      {formatSize(sw.size)} · {formatMinutes(sw.usageMinutes, strings.lang)} · {formatTimeAgo(sw.lastUsed, strings.lang)}{strings.lastUsedSuffix}
                     </div>
                   </div>
                   <button
                     onClick={() => uninstallSoftware(sw.id)}
                     className="px-3 py-1.5 rounded-lg text-xs font-medium bg-rose-500/10 text-rose-400 hover:bg-rose-500/20 transition-colors opacity-0 group-hover:opacity-100"
                   >
-                    卸载
+                    {strings.uninstallButton}
                   </button>
                 </div>
               ))}
             </div>
           </section>
 
-          {/* 最近未使用 */}
+          {/* Recently unused */}
           <section className="p-5 rounded-2xl bg-gray-900/40 border border-gray-800/60">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2.5">
@@ -109,9 +132,9 @@ export default function UninstallApp({ software }: UninstallAppProps) {
                   <circle cx="11" cy="11" r="8" />
                   <line x1="21" y1="21" x2="16.65" y2="16.65" />
                 </svg>
-                <h2 className="text-sm font-semibold text-gray-200">最近未使用</h2>
+                <h2 className="text-sm font-semibold text-gray-200">{strings.unusedSectionTitle}</h2>
               </div>
-              <span className="text-xs text-gray-500">{unused.length} 个软件 · 7+ 天未使用</span>
+              <span className="text-xs text-gray-500">{strings.unusedSectionMeta.replace('{n}', String(unused.length))}</span>
             </div>
             <div className="space-y-2.5">
               {unused.length > 0 ? (
@@ -129,20 +152,20 @@ export default function UninstallApp({ software }: UninstallAppProps) {
                     <div className="flex-1 min-w-0">
                       <div className="text-sm font-medium text-gray-200 truncate">{sw.name}</div>
                       <div className="text-xs text-gray-500 mt-0.5">
-                        上次使用：{formatTimeAgo(sw.lastUsed)}
+                        {strings.lastUsedPrefix}{formatTimeAgo(sw.lastUsed, strings.lang)}
                       </div>
                     </div>
                     <button
                       onClick={() => uninstallSoftware(sw.id)}
                       className="px-3 py-1.5 rounded-lg text-xs font-medium bg-rose-500/10 text-rose-400 hover:bg-rose-500/20 transition-colors opacity-0 group-hover:opacity-100"
                     >
-                      卸载
+                      {strings.uninstallButton}
                     </button>
                   </div>
                 ))
               ) : (
                 <div className="py-12 text-center text-sm text-gray-500">
-                  ✅ 所有软件都很活跃，继续保持！
+                  {strings.allActiveMessage}
                 </div>
               )}
             </div>
@@ -150,7 +173,7 @@ export default function UninstallApp({ software }: UninstallAppProps) {
         </div>
 
         <aside className="space-y-4">
-          {/* 清理建议 */}
+          {/* Cleanup suggestion */}
           <section className="p-5 rounded-2xl bg-gradient-to-br from-amber-500/10 via-gray-900/40 to-gray-900/40 border border-amber-500/20">
             <div className="flex items-start gap-2.5">
               <svg className="h-4 w-4 text-amber-400 shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -159,15 +182,15 @@ export default function UninstallApp({ software }: UninstallAppProps) {
                 <line x1="12" y1="16" x2="12.01" y2="16" />
               </svg>
               <div>
-                <h3 className="text-sm font-semibold text-gray-200">清理建议</h3>
+                <h3 className="text-sm font-semibold text-gray-200">{strings.suggestionTitle}</h3>
                 <p className="text-xs text-gray-400 mt-1.5 leading-relaxed">
-                  检测到 {unused.length} 个软件超过一周未使用，建议优先清理大型应用以释放更多空间。
+                  {strings.suggestionBody.replace('{n}', String(unused.length))}
                 </p>
               </div>
             </div>
           </section>
 
-          {/* 大体积应用 */}
+          {/* Large apps */}
           <section className="p-5 rounded-2xl bg-gray-900/40 border border-gray-800/60">
             <div className="flex items-center gap-2 mb-3">
               <svg className="h-4 w-4 text-rose-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -176,10 +199,10 @@ export default function UninstallApp({ software }: UninstallAppProps) {
                 <path d="M10 11v6M14 11v6" />
                 <path d="M9 6V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2" />
               </svg>
-              <h3 className="text-sm font-semibold text-gray-200">大体积应用</h3>
+              <h3 className="text-sm font-semibold text-gray-200">{strings.largeAppsTitle}</h3>
             </div>
             <div className="text-xs text-gray-500 mb-3">
-              {largeSize.length} 个应用 ≥ 500MB
+              {strings.largeAppsMeta.replace('{n}', String(largeSize.length))}
             </div>
             <div className="space-y-2">
               {largeSize.map((sw) => (
@@ -209,7 +232,9 @@ export default function UninstallApp({ software }: UninstallAppProps) {
               'hover:shadow-lg hover:shadow-brand/20 active:scale-[0.99]',
             )}
           >
-            {unused.length > 0 ? `一键清理 ${unused.length} 个未使用应用` : '暂无待清理项'}
+            {unused.length > 0
+              ? strings.cleanUpAllButton.replace('{n}', String(unused.length))
+              : strings.nothingToCleanButton}
           </button>
         </aside>
       </div>

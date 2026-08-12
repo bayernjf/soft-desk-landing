@@ -4,6 +4,7 @@ import { SITE_URL } from '@/lib/seo';
 const robots = `User-agent: *
 Allow: /
 Disallow: /app/
+Disallow: /zh/app/
 
 Sitemap: ${SITE_URL}/sitemap-index.xml
 `;

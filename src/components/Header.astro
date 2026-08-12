@@ -16,7 +16,7 @@ const t = useTranslations(lang);
 const navLinks = [
   { key: 'nav.features' as const, href: `${localizedPath('/', lang)}#features` },
   { key: 'nav.download' as const, href: localizedPath('/download', lang) },
-  { key: 'nav.demo' as const, href: '/app/dashboard' },
+  { key: 'nav.demo' as const, href: localizedPath('/app/dashboard', lang) },
   { key: 'nav.privacy' as const, href: localizedPath('/privacy', lang) },
 ];
 ---

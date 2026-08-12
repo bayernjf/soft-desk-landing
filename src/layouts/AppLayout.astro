@@ -1,33 +1,41 @@
 ---
 import '@/styles/global.css';
-import { CATEGORIES, mockSoftware } from '@/data/software';
+import { getCategories, getMockSoftware } from '@/data/software';
+import { shellStrings } from '@/i18n/app';
+import LanguageSwitcher from '@/components/LanguageSwitcher.astro';
+import { localizedPath, type Language } from '@/i18n/utils';
 
 interface Props {
-  title?: string;
+  lang: Language;
+  title: string;
   activePage?: string;
 }
 
-const { title = 'SoftDesk Demo', activePage = 'dashboard' } = Astro.props;
+const { lang, title, activePage = 'dashboard' } = Astro.props;
+const t = shellStrings[lang];
+const htmlLang = lang === 'zh' ? 'zh-CN' : 'en';
+const categories = getCategories(lang);
+const software = getMockSoftware(lang);
 
 const navItems = [
-  { key: 'dashboard', label: '工作台', href: '/app/dashboard', icon: 'M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z' },
-  { key: 'library', label: '软件库', href: '/app/library', icon: 'M4 6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z M16 2v4M8 2v4M4 10h16' },
-  { key: 'favorites', label: '收藏夹', href: '/app/favorites', icon: 'M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z' },
-  { key: 'workflows', label: '工作流', href: '/app/workflows', icon: 'M13 10V3L4 14h7v7l9-11h-7z' },
-  { key: 'radial', label: '径向菜单', href: '#', isButton: true, badge: '中键' },
-  { key: 'shares', label: '我的分享', href: '/app/shares', icon: 'M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8M16 6l-4-4-4 4M12 2v13' },
-  { key: 'statistics', label: '统计分析', href: '/app/statistics', icon: 'M18 20V10M12 20V4M6 20v-6' },
-  { key: 'uninstall', label: '软件清理', href: '/app/uninstall', icon: 'M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2' },
+  { key: 'dashboard', label: t.nav.dashboard, href: localizedPath('/app/dashboard', lang), icon: 'M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z' },
+  { key: 'library', label: t.nav.library, href: localizedPath('/app/library', lang), icon: 'M4 6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z M16 2v4M8 2v4M4 10h16' },
+  { key: 'favorites', label: t.nav.favorites, href: localizedPath('/app/favorites', lang), icon: 'M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z' },
+  { key: 'workflows', label: t.nav.workflows, href: localizedPath('/app/workflows', lang), icon: 'M13 10V3L4 14h7v7l9-11h-7z' },
+  { key: 'radial', label: t.nav.radial, href: '#', isButton: true, badge: t.nav.radialBadge },
+  { key: 'shares', label: t.nav.shares, href: localizedPath('/app/shares', lang), icon: 'M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8M16 6l-4-4-4 4M12 2v13' },
+  { key: 'statistics', label: t.nav.statistics, href: localizedPath('/app/statistics', lang), icon: 'M18 20V10M12 20V4M6 20v-6' },
+  { key: 'uninstall', label: t.nav.uninstall, href: localizedPath('/app/uninstall', lang), icon: 'M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2' },
 ];
 
 const categoryCount = new Map<string, number>();
-for (const sw of mockSoftware) {
+for (const sw of software) {
   categoryCount.set(sw.category, (categoryCount.get(sw.category) || 0) + 1);
 }
 ---
 
 <!doctype html>
-<html lang="zh-CN" class="dark">
+<html lang={htmlLang} class="dark">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -73,7 +81,7 @@ for (const sw of mockSoftware) {
             </div>
             <div class="min-w-0 flex-1">
               <h1 class="text-base font-semibold tracking-tight text-white">SoftDesk</h1>
-              <p class="text-xs text-slate-500">AI 智能软件工作台</p>
+              <p class="text-xs text-slate-500">{t.brandTagline}</p>
             </div>
             <svg class="h-4 w-4 text-accent-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M12 3l1.9 5.8a2 2 0 0 0 1.3 1.3L21 12l-5.8 1.9a2 2 0 0 0-1.3 1.3L12 21l-1.9-5.8a2 2 0 0 0-1.3-1.3L3 12l5.8-1.9a2 2 0 0 0 1.3-1.3z" />
@@ -145,16 +153,16 @@ for (const sw of mockSoftware) {
           <!-- Categories -->
           <div>
             <div class="mb-2 flex items-center justify-between px-3.5">
-              <h3 class="text-[11px] font-semibold uppercase tracking-wider text-slate-500">分类</h3>
-              <span class="text-[10px] text-slate-600">{mockSoftware.length} 个软件</span>
+              <h3 class="text-[11px] font-semibold uppercase tracking-wider text-slate-500">{t.categoriesHeading}</h3>
+              <span class="text-[10px] text-slate-600">{t.softwareCount.replace('{n}', String(software.length))}</span>
             </div>
             <div class="space-y-0.5">
-              {CATEGORIES.slice(0, 5).map((cat) => {
+              {categories.slice(0, 5).map((cat) => {
                 const count = categoryCount.get(cat.id) || 0;
                 if (count === 0) return null;
                 return (
                   <a
-                    href={`/app/library?category=${cat.id}`}
+                    href={localizedPath(`/app/library?category=${cat.id}`, lang)}
                     class="flex items-center gap-3 rounded-xl px-3.5 py-2 text-sm text-slate-500 transition-all duration-200 hover:bg-slate-800/40 hover:text-slate-200"
                   >
                     <div class="h-1.5 w-1.5 rounded-full shrink-0" style={{ backgroundColor: cat.color }} />
@@ -170,17 +178,17 @@ for (const sw of mockSoftware) {
         <!-- Bottom -->
         <div class="space-y-2 border-t border-slate-800/60 p-3">
           <a
-            href="/"
+            href={localizedPath('/', lang)}
             class="flex w-full items-center justify-center gap-2 rounded-xl bg-primary-500 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-primary-500/20 transition-colors hover:bg-primary-600"
           >
-            免费下载
+            {t.downloadCta}
             <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <line x1="5" y1="12" x2="19" y2="12" />
               <polyline points="12 5 19 12 12 19" />
             </svg>
           </a>
           <a
-            href="/app/settings"
+            href={localizedPath('/app/settings', lang)}
             class={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-200 ${
               activePage === 'settings' ? 'bg-slate-800/60 text-white' : 'text-slate-400 hover:bg-slate-800/40 hover:text-slate-200'
             }`}
@@ -189,15 +197,16 @@ for (const sw of mockSoftware) {
               <circle cx="12" cy="12" r="3" />
               <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
             </svg>
-            <span>设置</span>
+            <span>{t.nav.settings}</span>
           </a>
         </div>
       </aside>
 
       <!-- Main content -->
       <main class="flex-1 md:ml-72">
-        <div class="border-b border-slate-800 px-6 py-4 md:px-8">
+        <div class="flex items-center justify-between gap-4 border-b border-slate-800 px-6 py-4 md:px-8">
           <h1 class="text-xl font-semibold text-white">{title}</h1>
+          <LanguageSwitcher lang={lang} path={Astro.url.pathname} />
         </div>
         <div class="p-6 md:p-8">
           <slot />

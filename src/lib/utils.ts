@@ -30,7 +30,7 @@ const timeAgoLabels: Record<Language, { justNow: string; minAgo: (_n: number) =>
   },
 };
 
-export function formatTimeAgo(dateStr: string, lang: Language = 'zh'): string {
+export function formatTimeAgo(dateStr: string, lang: Language): string {
   const now = new Date().getTime();
   const then = new Date(dateStr).getTime();
   const diff = now - then;
@@ -51,7 +51,7 @@ const minuteLabels: Record<Language, { min: string; hr: string; day: string; hrM
   en: { min: 'min', hr: 'h', day: 'd', hrMin: 'h', dayHr: 'h' },
 };
 
-export function formatMinutes(mins: number, lang: Language = 'zh'): string {
+export function formatMinutes(mins: number, lang: Language): string {
   const l = minuteLabels[lang];
   if (lang === 'en') {
     if (mins < 60) return `${mins}${l.min}`;

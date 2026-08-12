@@ -1,14 +1,71 @@
 import { useState, useMemo } from 'react';
-import type { Software, Workflow } from '@/data/types';
-import { CATEGORIES } from '@/data/software';
+import type { CategoryMeta, Software, Workflow } from '@/data/types';
 import { formatMinutes } from '@/lib/utils';
 import { track } from '@/lib/analytics';
-import SoftwareCard from './SoftwareCard';
-import { RadialMenu } from './RadialMenu';
+import SoftwareCard, { type SoftwareCardStrings } from './SoftwareCard';
+import { RadialMenu, type RadialMenuStrings } from './RadialMenu';
+
+export interface DashboardStrings {
+  /** BCP-47 locale used for date formatting, e.g. "en-US" / "zh-CN". */
+  locale: string;
+  /** Language key passed to shared formatters (formatMinutes). */
+  lang: 'en' | 'zh';
+
+  // Header
+  greetingMorning: string;
+  greetingAfternoon: string;
+  greetingEvening: string;
+  /** Contains "{greeting}", replaced by one of the greeting fields. */
+  headerTitle: string;
+  headerSubtitle: string;
+  aiBadge: string;
+
+  // Stat cards
+  statTotalAppsTitle: string;
+  statTotalAppsHint: string;
+  statWeeklyUsageTitle: string;
+  /** Contains "{n}" — average minutes per day. */
+  statWeeklyUsageHint: string;
+  statWorkflowsTitle: string;
+  /** Contains "{n}" — total workflow runs. */
+  statWorkflowsHint: string;
+  statRecentActiveTitle: string;
+  statRecentActiveHint: string;
+
+  // Top / recent apps
+  topAppsTitle: string;
+  topAppsSubtitle: string;
+  recentAppsTitle: string;
+  /** Fallback shown when a app has no last-used date. */
+  unknownDate: string;
+
+  // Category overview
+  categoryOverviewTitle: string;
+  /** Contains "{n}" — number of apps in the category. */
+  categoryCount: string;
+
+  // AI suggestions
+  aiSuggestionsTitle: string;
+  aiSuggestionTitle: string;
+  aiSuggestionBody: string;
+  aiSuggestionCta: string;
+  tipLabel: string;
+  tipBody: string;
+
+  // Radial menu trigger
+  radialTriggerLabel: string;
+  radialTriggerHint: string;
+
+  // Nested child component strings
+  softwareCard: SoftwareCardStrings;
+  radialMenu: RadialMenuStrings;
+}
 
 interface DashboardAppProps {
   software: Software[];
   workflows: Workflow[];
+  categories: CategoryMeta[];
+  strings: DashboardStrings;
 }
 
 function StatCard({
@@ -42,7 +99,7 @@ function StatCard({
   );
 }
 
-export default function DashboardApp({ software, workflows }: DashboardAppProps) {
+export default function DashboardApp({ software, workflows, categories, strings }: DashboardAppProps) {
   const [radialOpen, setRadialOpen] = useState(false);
 
   const topApps = useMemo(
@@ -76,7 +133,12 @@ export default function DashboardApp({ software, workflows }: DashboardAppProps)
   };
 
   const hour = new Date().getHours();
-  const greeting = hour < 12 ? '早上好' : hour < 18 ? '下午好' : '晚上好';
+  const greeting =
+    hour < 12
+      ? strings.greetingMorning
+      : hour < 18
+        ? strings.greetingAfternoon
+        : strings.greetingEvening;
 
   return (
     <div className="space-y-8">
@@ -84,27 +146,27 @@ export default function DashboardApp({ software, workflows }: DashboardAppProps)
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-white">
-            {greeting}，欢迎回来 <span className="inline-block">👋</span>
+            {strings.headerTitle.replace('{greeting}', greeting)} <span className="inline-block">👋</span>
           </h1>
-          <p className="mt-1.5 text-sm text-slate-500">这是你的软件使用概览</p>
+          <p className="mt-1.5 text-sm text-slate-500">{strings.headerSubtitle}</p>
         </div>
         <div className="flex items-center gap-2 rounded-xl border border-brand/20 bg-brand/10 px-3 py-1.5 text-brand">
           <svg className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
             <path d="M13 10V3L4 14h7v7l9-11h-7z" />
           </svg>
-          <span className="text-xs font-medium">AI 分析已更新</span>
+          <span className="text-xs font-medium">{strings.aiBadge}</span>
         </div>
       </div>
 
       {/* Stat Cards */}
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-        <StatCard title="总应用数" value={String(software.length)} hint="个已安装应用" color="#7c3aed" />
-        <StatCard title="本周使用时长" value={`${(totalMinutes / 60).toFixed(1)}h`} hint={`${perDay} 分钟 / 天`} color="#ec4899" />
-        <StatCard title="智能工作流" value={String(workflows.length)} hint={`已使用 ${workflows.reduce((s, w) => s + w.usageCount, 0)} 次`} color="#f59e0b" />
+        <StatCard title={strings.statTotalAppsTitle} value={String(software.length)} hint={strings.statTotalAppsHint} color="#7c3aed" />
+        <StatCard title={strings.statWeeklyUsageTitle} value={`${(totalMinutes / 60).toFixed(1)}h`} hint={strings.statWeeklyUsageHint.replace('{n}', String(perDay))} color="#ec4899" />
+        <StatCard title={strings.statWorkflowsTitle} value={String(workflows.length)} hint={strings.statWorkflowsHint.replace('{n}', String(workflows.reduce((s, w) => s + w.usageCount, 0)))} color="#f59e0b" />
         <StatCard
-          title="最近活跃"
+          title={strings.statRecentActiveTitle}
           value={`${Math.round((software.filter((s) => new Date(s.lastUsed).getTime() > Date.now() - 3 * 24 * 60 * 60 * 1000).length / Math.max(1, software.length)) * 100)}%`}
-          hint="3 天内使用过"
+          hint={strings.statRecentActiveHint}
           color="#10b981"
         />
       </div>
@@ -115,12 +177,19 @@ export default function DashboardApp({ software, workflows }: DashboardAppProps)
           {/* Top Apps */}
           <section>
             <div className="mb-4 flex items-center justify-between">
-              <h2 className="text-sm font-semibold text-slate-200">常用软件</h2>
-              <div className="text-xs text-slate-500">按使用时长排序</div>
+              <h2 className="text-sm font-semibold text-slate-200">{strings.topAppsTitle}</h2>
+              <div className="text-xs text-slate-500">{strings.topAppsSubtitle}</div>
             </div>
             <div className="grid gap-3 md:grid-cols-2">
               {topApps.map((sw, i) => (
-                <SoftwareCard key={sw.id} software={sw} index={i} onLaunch={handleLaunchSoftware} />
+                <SoftwareCard
+                  key={sw.id}
+                  software={sw}
+                  categories={categories}
+                  strings={strings.softwareCard}
+                  index={i}
+                  onLaunch={handleLaunchSoftware}
+                />
               ))}
             </div>
           </section>
@@ -128,7 +197,7 @@ export default function DashboardApp({ software, workflows }: DashboardAppProps)
           {/* Recent Apps */}
           <section>
             <div className="mb-4 flex items-center justify-between">
-              <h2 className="text-sm font-semibold text-slate-200">最近使用</h2>
+              <h2 className="text-sm font-semibold text-slate-200">{strings.recentAppsTitle}</h2>
             </div>
             <div className="rounded-2xl border border-slate-800/60 bg-slate-900/40 p-5">
               <div className="space-y-2">
@@ -150,7 +219,7 @@ export default function DashboardApp({ software, workflows }: DashboardAppProps)
                       <div className="min-w-0 flex-1">
                         <div className="truncate text-sm font-medium text-slate-200">{sw.name}</div>
                         <div className="text-xs text-slate-500">
-                          {formatMinutes(sw.usageMinutes)} · {sw.lastUsed ? new Date(sw.lastUsed).toLocaleDateString('zh-CN') : '未知'}
+                          {formatMinutes(sw.usageMinutes, strings.lang)} · {sw.lastUsed ? new Date(sw.lastUsed).toLocaleDateString(strings.locale) : strings.unknownDate}
                         </div>
                       </div>
                       <div className="text-xs tabular-nums text-slate-500">{percent}%</div>
@@ -166,9 +235,9 @@ export default function DashboardApp({ software, workflows }: DashboardAppProps)
         <aside className="space-y-6">
           {/* Category Overview */}
           <section>
-            <h2 className="mb-4 text-sm font-semibold text-slate-200">分类概览</h2>
+            <h2 className="mb-4 text-sm font-semibold text-slate-200">{strings.categoryOverviewTitle}</h2>
             <div className="space-y-3 rounded-2xl border border-slate-800/60 bg-slate-900/40 p-4">
-              {CATEGORIES.slice(0, 6).map((cat) => {
+              {categories.slice(0, 6).map((cat) => {
                 const count = software.filter((s) => s.category === cat.id).length;
                 const usage = software
                   .filter((s) => s.category === cat.id)
@@ -180,7 +249,7 @@ export default function DashboardApp({ software, workflows }: DashboardAppProps)
                     <div className="mb-1.5 flex items-center justify-between">
                       <span className="text-xs text-slate-400">{cat.name}</span>
                       <span className="text-xs tabular-nums text-slate-500">
-                        {percent}% · {count} 个
+                        {percent}% · {strings.categoryCount.replace('{n}', String(count))}
                       </span>
                     </div>
                     <div className="h-1.5 overflow-hidden rounded-full bg-slate-800/60">
@@ -197,27 +266,27 @@ export default function DashboardApp({ software, workflows }: DashboardAppProps)
 
           {/* AI Suggestions */}
           <section>
-            <h2 className="mb-4 text-sm font-semibold text-slate-200">AI 建议</h2>
+            <h2 className="mb-4 text-sm font-semibold text-slate-200">{strings.aiSuggestionsTitle}</h2>
             <div className="rounded-2xl border border-brand/20 bg-gradient-to-br from-brand/10 via-slate-900/40 to-accent/5 p-4">
               <div className="mb-3 flex items-start gap-2.5">
                 <svg className="mt-0.5 h-4 w-4 shrink-0 text-brand" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M13 10V3L4 14h7v7l9-11h-7z" />
                 </svg>
                 <div>
-                  <h3 className="text-sm font-semibold text-slate-200">优化你的工作流</h3>
+                  <h3 className="text-sm font-semibold text-slate-200">{strings.aiSuggestionTitle}</h3>
                   <p className="mt-1 text-xs leading-relaxed text-slate-400">
-                    Chrome、Notion、飞书在过去一周多次同时使用，建议创建组合工作流。
+                    {strings.aiSuggestionBody}
                   </p>
                 </div>
               </div>
               <button className="w-full rounded-xl bg-brand/15 py-2.5 text-xs font-medium text-brand transition-colors hover:bg-brand/25">
-                创建工作流 +
+                {strings.aiSuggestionCta}
               </button>
             </div>
 
             <div className="mt-3 rounded-2xl border border-slate-800/60 bg-slate-900/40 p-4">
               <div className="text-xs leading-relaxed text-slate-400">
-                💡 <span className="text-slate-300">提示</span>：你的生产力在周四早 9-11 点达到峰值，建议将重要任务安排在这个时段。
+                💡 <span className="text-slate-300">{strings.tipLabel}</span>{strings.tipBody}
               </div>
             </div>
           </section>
@@ -239,8 +308,8 @@ export default function DashboardApp({ software, workflows }: DashboardAppProps)
                 <circle cx="5.64" cy="18.36" r="1.5" />
                 <circle cx="18.36" cy="5.64" r="1.5" />
               </svg>
-              <span>打开径向菜单</span>
-              <span className="ml-auto rounded bg-slate-800 px-2 py-0.5 text-[10px] text-slate-500">中键</span>
+              <span>{strings.radialTriggerLabel}</span>
+              <span className="ml-auto rounded bg-slate-800 px-2 py-0.5 text-[10px] text-slate-500">{strings.radialTriggerHint}</span>
             </button>
           </section>
         </aside>
@@ -250,6 +319,7 @@ export default function DashboardApp({ software, workflows }: DashboardAppProps)
       <RadialMenu
         software={software}
         workflows={workflows}
+        strings={strings.radialMenu}
         open={radialOpen}
         onOpenChange={setRadialOpen}
         onLaunchSoftware={handleLaunchSoftware}

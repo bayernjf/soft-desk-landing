@@ -1,0 +1,23 @@
+---
+import AppLayout from '@/layouts/AppLayout.astro';
+import LibraryApp from './LibraryApp.tsx';
+import { getCategories, getMockSoftware } from '@/data/software';
+import { appStrings } from '@/i18n/app';
+import type { Language } from '@/i18n/ui';
+
+interface Props {
+  lang: Language;
+}
+
+const { lang } = Astro.props;
+const t = appStrings[lang];
+---
+
+<AppLayout lang={lang} title={t.shell.pageTitles.library} activePage="library">
+  <LibraryApp
+    client:load
+    software={getMockSoftware(lang)}
+    categories={getCategories(lang)}
+    strings={t.library}
+  />
+</AppLayout>

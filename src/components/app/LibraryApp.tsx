@@ -1,24 +1,31 @@
 import { useState, useMemo } from 'react';
-import type { Software, SoftwareCategory } from '@/data/types';
-import { CATEGORIES } from '@/data/software';
+import type { CategoryMeta, Software, SoftwareCategory } from '@/data/types';
 import { track } from '@/lib/analytics';
 import { cn } from '@/lib/utils';
-import SoftwareCard from './SoftwareCard';
+import SoftwareCard, { type SoftwareCardStrings } from './SoftwareCard';
 
-const sortOptions = [
-  { id: 'recent', label: '最近使用' },
-  { id: 'usage', label: '使用时长' },
-  { id: 'name', label: '软件名称' },
-  { id: 'size', label: '大小排序' },
-] as const;
+const sortIds = ['recent', 'usage', 'name', 'size'] as const;
 
-type SortId = (typeof sortOptions)[number]['id'];
+type SortId = (typeof sortIds)[number];
+
+export interface LibraryStrings {
+  title: string;
+  subtitle: string;
+  countLabel: string;
+  searchPlaceholder: string;
+  allCategories: string;
+  sortLabels: Record<SortId, string>;
+  emptyResults: string;
+  softwareCard: SoftwareCardStrings;
+}
 
 interface LibraryAppProps {
   software: Software[];
+  categories: CategoryMeta[];
+  strings: LibraryStrings;
 }
 
-export default function LibraryApp({ software }: LibraryAppProps) {
+export default function LibraryApp({ software, categories, strings }: LibraryAppProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<SoftwareCategory | 'all'>('all');
   const [sortBy, setSortBy] = useState<SortId>('recent');
@@ -67,19 +74,19 @@ export default function LibraryApp({ software }: LibraryAppProps) {
     }
   };
 
-  const availableCategories = CATEGORIES.filter((c) => software.some((s) => s.category === c.id));
+  const availableCategories = categories.filter((c) => software.some((s) => s.category === c.id));
 
   return (
     <div className="space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-white">软件库</h1>
-          <p className="mt-1 text-sm text-slate-500">管理和启动你已安装的所有软件</p>
+          <h1 className="text-2xl font-bold tracking-tight text-white">{strings.title}</h1>
+          <p className="mt-1 text-sm text-slate-500">{strings.subtitle}</p>
         </div>
         <div className="text-right">
           <div className="text-2xl font-bold tabular-nums text-white">{filtered.length}</div>
-          <div className="text-xs text-slate-500">应用</div>
+          <div className="text-xs text-slate-500">{strings.countLabel}</div>
         </div>
       </div>
 
@@ -95,7 +102,7 @@ export default function LibraryApp({ software }: LibraryAppProps) {
         <input
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          placeholder="搜索软件名称、描述或标签..."
+          placeholder={strings.searchPlaceholder}
           className={cn(
             'w-full rounded-2xl border border-slate-800 bg-slate-900/60 py-3.5 pl-11 pr-10',
             'text-sm text-slate-100 placeholder:text-slate-600',
@@ -126,7 +133,7 @@ export default function LibraryApp({ software }: LibraryAppProps) {
                 : 'border-slate-800/60 bg-slate-800/50 text-slate-400 hover:bg-slate-800 hover:text-slate-300',
             )}
           >
-            全部
+            {strings.allCategories}
           </button>
           {availableCategories.map((cat) => (
             <button
@@ -150,16 +157,16 @@ export default function LibraryApp({ software }: LibraryAppProps) {
             <line x1="4" y1="12" x2="14" y2="12" />
             <line x1="4" y1="18" x2="10" y2="18" />
           </svg>
-          {sortOptions.map((opt) => (
+          {sortIds.map((id) => (
             <button
-              key={opt.id}
-              onClick={() => setSortBy(opt.id)}
+              key={id}
+              onClick={() => setSortBy(id)}
               className={cn(
                 'rounded-lg px-2.5 py-1 text-xs transition-all',
-                sortBy === opt.id ? 'bg-slate-700 text-slate-200' : 'text-slate-500 hover:text-slate-300',
+                sortBy === id ? 'bg-slate-700 text-slate-200' : 'text-slate-500 hover:text-slate-300',
               )}
             >
-              {opt.label}
+              {strings.sortLabels[id]}
             </button>
           ))}
         </div>
@@ -168,11 +175,18 @@ export default function LibraryApp({ software }: LibraryAppProps) {
       {/* Software grid */}
       <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
         {filtered.map((sw, i) => (
-          <SoftwareCard key={sw.id} software={sw} index={i} onLaunch={handleLaunchSoftware} />
+          <SoftwareCard
+            key={sw.id}
+            software={sw}
+            categories={categories}
+            strings={strings.softwareCard}
+            index={i}
+            onLaunch={handleLaunchSoftware}
+          />
         ))}
         {filtered.length === 0 && (
           <div className="col-span-full py-20 text-center">
-            <div className="text-sm text-slate-600">没有找到匹配的软件</div>
+            <div className="text-sm text-slate-600">{strings.emptyResults}</div>
           </div>
         )}
       </div>

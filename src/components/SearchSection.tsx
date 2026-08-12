@@ -1,6 +1,5 @@
 import { useState } from 'react';
-import type { Software } from '@/data/types';
-import { CATEGORIES } from '@/data/software';
+import type { CategoryMeta, Software, SoftwareCategory } from '@/data/types';
 import { track } from '@/lib/analytics';
 
 interface SearchResult {
@@ -8,14 +7,29 @@ interface SearchResult {
   reason: string;
 }
 
-const predefinedQueries = [
-  { text: '截屏', reason: '匹配到截图与贴图工具' },
-  { text: '修图', reason: '识别到设计类软件，适合图片编辑' },
-  { text: '做表格', reason: '找到办公效率类软件，支持表格处理' },
-  { text: '写代码', reason: '定位到开发工具类，适合编程环境' },
-];
+export interface SearchPredefinedQuery {
+  /** Localized query text, also used as the quick-pick chip label. */
+  text: string;
+  /** Localized explanation shown above the results. */
+  reason: string;
+  /** Non-localized category hint used by the matcher. */
+  category: SoftwareCategory;
+}
 
-function useNaturalSearch(software: Software[]) {
+export interface SearchSectionStrings {
+  badge: string;
+  title: string;
+  subtitle: string;
+  inputPlaceholder: string;
+  /** Shown while the fake AI search spinner runs. */
+  searching: string;
+  /** Fallback reason for free-text queries; `{n}` = number of matches. */
+  matchCount: string;
+  emptyResult: string;
+  predefinedQueries: SearchPredefinedQuery[];
+}
+
+function useNaturalSearch(software: Software[], strings: SearchSectionStrings) {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<SearchResult[]>([]);
   const [isSearching, setIsSearching] = useState(false);
@@ -25,19 +39,16 @@ function useNaturalSearch(software: Software[]) {
     setQuery(text);
     setIsSearching(true);
     setTimeout(() => {
+      const q = strings.predefinedQueries.find((item) => item.text === text);
       const matched = software.filter(
         (s) =>
           s.name.toLowerCase().includes(text.toLowerCase()) ||
           s.description.toLowerCase().includes(text.toLowerCase()) ||
           s.tags.some((t) => t.toLowerCase().includes(text.toLowerCase())) ||
-          (text.includes('截屏') && s.category === 'utilities') ||
-          (text.includes('修图') && s.category === 'design') ||
-          (text.includes('表格') && s.category === 'productivity') ||
-          (text.includes('代码') && s.category === 'dev-tools')
+          (q !== undefined && q.category === s.category)
       );
 
-      const reasonData = predefinedQueries.find((q) => q.text === text);
-      const reason = reasonData?.reason || `找到 ${matched.length} 个匹配软件`;
+      const reason = q?.reason || strings.matchCount.replace('{n}', String(matched.length));
 
       setResults(matched.slice(0, 4).map((app) => ({ app, reason })));
       setSearchReason(reason);
@@ -54,9 +65,20 @@ function useNaturalSearch(software: Software[]) {
   return { query, results, isSearching, searchReason, search, clear };
 }
 
-export default function SearchSection({ software }: { software: Software[] }) {
-  const { query, results, isSearching, searchReason, search, clear } = useNaturalSearch(software);
-  const quickQueries = ['截屏', '修图', '做表格', '写代码'];
+export default function SearchSection({
+  software,
+  categories,
+  strings,
+}: {
+  software: Software[];
+  categories: CategoryMeta[];
+  strings: SearchSectionStrings;
+}) {
+  const { query, results, isSearching, searchReason, search, clear } = useNaturalSearch(
+    software,
+    strings,
+  );
+  const quickQueries = strings.predefinedQueries.map((q) => q.text);
 
   return (
     <section
@@ -71,13 +93,13 @@ export default function SearchSection({ software }: { software: Software[] }) {
               <circle cx="11" cy="11" r="8" />
               <path d="m21 21-4.3-4.3" />
             </svg>
-            自然语言搜索
+            {strings.badge}
           </span>
           <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
-            用描述找到软件
+            {strings.title}
           </h2>
           <p className="mt-4 leading-relaxed text-gray-400">
-            输入"截屏""修图""做表格"等描述性语言，AI 理解语义后精准定位。
+            {strings.subtitle}
           </p>
         </div>
 
@@ -98,7 +120,7 @@ export default function SearchSection({ software }: { software: Software[] }) {
                   track('search_demo_start');
                 }
               }}
-              placeholder="输入描述来搜索软件，如「截屏工具」「修图」..."
+              placeholder={strings.inputPlaceholder}
               className="w-full rounded-xl border border-slate-700 bg-slate-800/50 py-4 pl-12 pr-10 text-sm text-slate-100 transition-all placeholder:text-slate-500 focus:border-brand/50 focus:ring-2 focus:ring-brand/20"
             />
             {query && (
@@ -132,7 +154,7 @@ export default function SearchSection({ software }: { software: Software[] }) {
             <div className="flex items-center justify-center py-12">
               <div className="flex items-center gap-3">
                 <div className="h-5 w-5 animate-spin rounded-full border-2 border-brand border-t-transparent" />
-                <span className="text-sm text-slate-400">AI 正在理解语义...</span>
+                <span className="text-sm text-slate-400">{strings.searching}</span>
               </div>
             </div>
           )}
@@ -161,7 +183,7 @@ export default function SearchSection({ software }: { software: Software[] }) {
                     <div className="mt-0.5 truncate text-xs text-slate-500">{app.description}</div>
                   </div>
                   <div className="rounded-md bg-brand/10 px-2 py-1 text-xs text-brand">
-                    {CATEGORIES.find((c) => c.id === app.category)?.name}
+                    {categories.find((c) => c.id === app.category)?.name}
                   </div>
                 </div>
               ))}
@@ -170,7 +192,7 @@ export default function SearchSection({ software }: { software: Software[] }) {
 
           {!isSearching && query && results.length === 0 && (
             <div className="py-12 text-center">
-              <p className="text-sm text-slate-500">未找到匹配的软件</p>
+              <p className="text-sm text-slate-500">{strings.emptyResult}</p>
             </div>
           )}
         </div>

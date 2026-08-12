@@ -3,12 +3,30 @@ import type { Software, Workflow } from '@/data/types';
 import { formatMinutes } from '@/lib/utils';
 import { track } from '@/lib/analytics';
 
+export interface FavoritesSectionStrings {
+  lang: 'en' | 'zh';
+  badge: string;
+  title: string;
+  subtitle: string;
+  /** `{n}` = number of favorite apps. */
+  favoriteSoftwareLabel: string;
+  /** `{n}` = number of favorite workflows. */
+  favoriteWorkflowsLabel: string;
+  /** `{n}` = launch count. */
+  launchCount: string;
+  /** `{n}` = usage count. */
+  usageCount: string;
+  launchButton: string;
+}
+
 export default function FavoritesSection({
   software,
   workflows,
+  strings,
 }: {
   software: Software[];
   workflows: Workflow[];
+  strings: FavoritesSectionStrings;
 }) {
   const favoriteSoftware = useMemo(() => software.filter((s) => s.launchCount > 300), [software]);
   const favoriteWorkflows = useMemo(() => workflows.filter((w) => w.isFavorite), [workflows]);
@@ -25,13 +43,13 @@ export default function FavoritesSection({
             <svg className="h-3.5 w-3.5 fill-amber-500" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
               <path d="M12 2l3 7h7l-5.5 4 2 7L12 16l-6.5 4 2-7L2 9h7z" />
             </svg>
-            收藏夹
+            {strings.badge}
           </span>
           <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
-            快捷访问你的高频工具
+            {strings.title}
           </h2>
           <p className="mt-4 leading-relaxed text-gray-400">
-            收藏的软件和工作流置顶显示，一键启动，零查找成本。
+            {strings.subtitle}
           </p>
         </div>
 
@@ -40,7 +58,7 @@ export default function FavoritesSection({
             <svg className="h-4 w-4 fill-amber-500 text-amber-500" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
               <path d="M12 2l3 7h7l-5.5 4 2 7L12 16l-6.5 4 2-7L2 9h7z" />
             </svg>
-            收藏软件 ({favoriteSoftware.length})
+            {strings.favoriteSoftwareLabel.replace('{n}', String(favoriteSoftware.length))}
           </h3>
           <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
             {favoriteSoftware.slice(0, 6).map((app) => (
@@ -57,7 +75,8 @@ export default function FavoritesSection({
                 <div className="min-w-0 flex-1">
                   <div className="truncate text-sm font-medium text-slate-200">{app.name}</div>
                   <div className="mt-0.5 text-xs text-slate-500">
-                    {formatMinutes(app.usageMinutes)} · {app.launchCount} 次启动
+                    {formatMinutes(app.usageMinutes, strings.lang)} ·{' '}
+                    {strings.launchCount.replace('{n}', String(app.launchCount))}
                   </div>
                 </div>
                 <button
@@ -78,7 +97,7 @@ export default function FavoritesSection({
             <svg className="h-4 w-4 fill-amber-500 text-amber-500" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
               <path d="M12 2l3 7h7l-5.5 4 2 7L12 16l-6.5 4 2-7L2 9h7z" />
             </svg>
-            收藏工作流 ({favoriteWorkflows.length})
+            {strings.favoriteWorkflowsLabel.replace('{n}', String(favoriteWorkflows.length))}
           </h3>
           <div className="grid gap-3 md:grid-cols-2">
             {favoriteWorkflows.map((wf) => {
@@ -105,7 +124,9 @@ export default function FavoritesSection({
                   </div>
                   <div className="min-w-0 flex-1">
                     <div className="truncate text-sm font-medium text-slate-200">{wf.name}</div>
-                    <div className="mt-0.5 text-xs text-slate-500">{wf.usageCount} 次使用</div>
+                    <div className="mt-0.5 text-xs text-slate-500">
+                      {strings.usageCount.replace('{n}', String(wf.usageCount))}
+                    </div>
                   </div>
                   <button
                     onClick={() => track('favorite_workflow_launch', { workflow_id: wf.id, workflow_name: wf.name })}
@@ -114,7 +135,7 @@ export default function FavoritesSection({
                     <svg className="h-3 w-3 fill-current" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
                       <path d="M8 5v14l11-7z" />
                     </svg>
-                    启动
+                    {strings.launchButton}
                   </button>
                 </div>
               );

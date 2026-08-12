@@ -1,8 +1,28 @@
 import { useMemo } from 'react';
-import type { Software } from '@/data/types';
-import { CATEGORIES } from '@/data/software';
+import type { CategoryMeta, Software } from '@/data/types';
 
-export default function StatisticsSection({ software }: { software: Software[] }) {
+export interface StatisticsSectionStrings {
+  badge: string;
+  title: string;
+  subtitle: string;
+  totalTimeLabel: string;
+  /** `{apps}` = number of apps, `{launches}` = number of launches. */
+  totalSummary: string;
+  topAppsLabel: string;
+  categoryShareLabel: string;
+  /** `{n}` = number of apps in the category. */
+  categoryCount: string;
+}
+
+export default function StatisticsSection({
+  software,
+  categories,
+  strings,
+}: {
+  software: Software[];
+  categories: CategoryMeta[];
+  strings: StatisticsSectionStrings;
+}) {
   const totalMinutes = software.reduce((sum, s) => sum + s.usageMinutes, 0);
   const totalLaunches = software.reduce((sum, s) => sum + s.launchCount, 0);
 
@@ -13,7 +33,7 @@ export default function StatisticsSection({ software }: { software: Software[] }
 
   const categoryStats = useMemo(
     () =>
-      CATEGORIES.filter((cat) => software.some((s) => s.category === cat.id))
+      categories.filter((cat) => software.some((s) => s.category === cat.id))
         .map((cat) => {
           const apps = software.filter((s) => s.category === cat.id);
           const usage = apps.reduce((sum, s) => sum + s.usageMinutes, 0);
@@ -25,7 +45,7 @@ export default function StatisticsSection({ software }: { software: Software[] }
           };
         })
         .sort((a, b) => b.usage - a.usage),
-    [software, totalMinutes],
+    [categories, software, totalMinutes],
   );
 
   return (
@@ -37,31 +57,33 @@ export default function StatisticsSection({ software }: { software: Software[] }
               <path d="M3 3v18h18" />
               <path d="M18 17V9M13 17V5M8 17v-3" />
             </svg>
-            使用时长统计
+            {strings.badge}
           </span>
           <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
-            数据驱动的效率洞察
+            {strings.title}
           </h2>
           <p className="mt-4 leading-relaxed text-gray-400">
-            追踪每款软件的启动次数、使用时长、活跃时段，生成你的个人软件使用画像。
+            {strings.subtitle}
           </p>
         </div>
 
         <div className="grid gap-6 lg:grid-cols-3">
-          {/* 总览 */}
+          {/* Overview */}
           <div className="rounded-2xl border border-slate-800/60 bg-slate-900/40 p-6">
             <div className="mb-4 flex items-center gap-2">
               <svg className="h-4 w-4 text-pink-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <circle cx="12" cy="12" r="10" />
                 <path d="M12 6v6l4 2" />
               </svg>
-              <span className="text-sm font-semibold text-slate-200">本周使用总时长</span>
+              <span className="text-sm font-semibold text-slate-200">{strings.totalTimeLabel}</span>
             </div>
             <div className="mb-2 text-4xl font-bold text-white">
               {(totalMinutes / 60).toFixed(1)}h
             </div>
             <div className="text-xs text-slate-500">
-              共 {software.length} 个软件，{totalLaunches} 次启动
+              {strings.totalSummary
+                .replace('{apps}', String(software.length))
+                .replace('{launches}', String(totalLaunches))}
             </div>
           </div>
 
@@ -71,7 +93,7 @@ export default function StatisticsSection({ software }: { software: Software[] }
               <svg className="h-4 w-4 text-amber-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
               </svg>
-              <span className="text-sm font-semibold text-slate-200">高频软件 TOP 5</span>
+              <span className="text-sm font-semibold text-slate-200">{strings.topAppsLabel}</span>
             </div>
             <div className="space-y-2.5">
               {topApps.map((app, idx) => (
@@ -94,7 +116,7 @@ export default function StatisticsSection({ software }: { software: Software[] }
             </div>
           </div>
 
-          {/* 分类分布 */}
+          {/* Category distribution */}
           <div className="rounded-2xl border border-slate-800/60 bg-slate-900/40 p-6">
             <div className="mb-4 flex items-center gap-2">
               <svg className="h-4 w-4 text-brand" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -103,7 +125,7 @@ export default function StatisticsSection({ software }: { software: Software[] }
                 <rect x="3" y="14" width="7" height="7" rx="1" />
                 <rect x="14" y="14" width="7" height="7" rx="1" />
               </svg>
-              <span className="text-sm font-semibold text-slate-200">分类使用占比</span>
+              <span className="text-sm font-semibold text-slate-200">{strings.categoryShareLabel}</span>
             </div>
             <div className="space-y-3">
               {categoryStats.slice(0, 6).map((cat) => (
@@ -111,7 +133,7 @@ export default function StatisticsSection({ software }: { software: Software[] }
                   <div className="mb-1.5 flex items-center justify-between">
                     <span className="text-xs text-slate-400">{cat.name}</span>
                     <span className="text-xs tabular-nums text-slate-500">
-                      {cat.percent}% · {cat.count} 个
+                      {cat.percent}% · {strings.categoryCount.replace('{n}', String(cat.count))}
                     </span>
                   </div>
                   <div className="h-1.5 overflow-hidden rounded-full bg-slate-800">

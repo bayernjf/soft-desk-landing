@@ -1,7 +1,18 @@
 import { useState, useMemo } from 'react';
-import type { Software } from '@/data/types';
-import { CATEGORIES } from '@/data/software';
+import type { CategoryMeta, Software } from '@/data/types';
 import { track } from '@/lib/analytics';
+
+export interface AIClassifySectionStrings {
+  badge: string;
+  title: string;
+  subtitle: string;
+  analyzing: string;
+  /** `{n}` = number of apps in the category group. */
+  appCount: string;
+  demoButton: string;
+  /** `{n}` = progress percentage. */
+  classifyingButton: string;
+}
 
 function useClassifyProgress(software: Software[]) {
   const [progress, setProgress] = useState(0);
@@ -29,15 +40,23 @@ function useClassifyProgress(software: Software[]) {
   return { progress, isClassifying, classifiedCount, startClassify };
 }
 
-export default function AIClassifySection({ software }: { software: Software[] }) {
+export default function AIClassifySection({
+  software,
+  categories,
+  strings,
+}: {
+  software: Software[];
+  categories: CategoryMeta[];
+  strings: AIClassifySectionStrings;
+}) {
   const { progress, isClassifying, classifiedCount, startClassify } = useClassifyProgress(software);
 
   const categoryGroups = useMemo(() => {
-    return CATEGORIES.filter((cat) => software.some((s) => s.category === cat.id)).map((cat) => ({
+    return categories.filter((cat) => software.some((s) => s.category === cat.id)).map((cat) => ({
       ...cat,
       apps: software.filter((s) => s.category === cat.id).slice(0, 3),
     }));
-  }, [software]);
+  }, [categories, software]);
 
   return (
     <section id="ai-classify" className="px-4 py-24 sm:px-6" data-analytics-section="ai">
@@ -47,13 +66,13 @@ export default function AIClassifySection({ software }: { software: Software[] }
             <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M12 2a4 4 0 0 1 4 4v1h1a4 4 0 0 1 4 4 4 4 0 0 1-4 4h-1v1a4 4 0 0 1-4 4 4 4 0 0 1-4-4v-1H7a4 4 0 0 1-4-4 4 4 0 0 1 4-4h1V6a4 4 0 0 1 4-4z" />
             </svg>
-            MVP 核心功能
+            {strings.badge}
           </span>
           <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
-            AI 自动识别与分类
+            {strings.title}
           </h2>
           <p className="mt-4 leading-relaxed text-gray-400">
-            基于软件功能语义理解自动归类，告别手动建文件夹。装再多软件也不会乱。
+            {strings.subtitle}
           </p>
         </div>
 
@@ -65,7 +84,7 @@ export default function AIClassifySection({ software }: { software: Software[] }
                   <svg className="h-4 w-4 animate-pulse text-brand" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <path d="M12 2a4 4 0 0 1 4 4v1h1a4 4 0 0 1 4 4 4 4 0 0 1-4 4h-1v1a4 4 0 0 1-4 4 4 4 0 0 1-4-4v-1H7a4 4 0 0 1-4-4 4 4 0 0 1 4-4h1V6a4 4 0 0 1 4-4z" />
                   </svg>
-                  <span className="text-sm font-medium text-slate-200">AI 正在分析软件用途...</span>
+                  <span className="text-sm font-medium text-slate-200">{strings.analyzing}</span>
                 </div>
                 <span className="text-xs tabular-nums text-slate-500">
                   {classifiedCount} / {software.length}
@@ -93,7 +112,7 @@ export default function AIClassifySection({ software }: { software: Software[] }
                   />
                   <span className="text-sm font-semibold text-slate-200">{group.name}</span>
                   <span className="ml-auto text-xs tabular-nums text-slate-500">
-                    {group.apps.length} 个
+                    {strings.appCount.replace('{n}', String(group.apps.length))}
                   </span>
                 </div>
                 <div className="space-y-2">
@@ -130,7 +149,9 @@ export default function AIClassifySection({ software }: { software: Software[] }
               <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M12 2a4 4 0 0 1 4 4v1h1a4 4 0 0 1 4 4 4 4 0 0 1-4 4h-1v1a4 4 0 0 1-4 4 4 4 0 0 1-4-4v-1H7a4 4 0 0 1-4-4 4 4 0 0 1 4-4h1V6a4 4 0 0 1 4-4z" />
               </svg>
-              {isClassifying ? `正在分类 ${progress}%` : '演示 AI 分类过程'}
+              {isClassifying
+                ? strings.classifyingButton.replace('{n}', String(progress))
+                : strings.demoButton}
             </button>
           </div>
         </div>

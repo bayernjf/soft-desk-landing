@@ -1,16 +1,45 @@
 import { useState } from 'react';
-import type { Software, Workflow } from '@/data/types';
+import type { CategoryMeta, Software, Workflow } from '@/data/types';
 import { formatTimeAgo } from '@/lib/utils';
 import { track } from '@/lib/analytics';
-import SoftwareCard from './SoftwareCard';
+import SoftwareCard, { type SoftwareCardStrings } from './SoftwareCard';
 import { cn } from '@/lib/utils';
+
+export interface FavoritesStrings {
+  /** Language key passed to shared formatters (formatTimeAgo). */
+  lang: 'en' | 'zh';
+  title: string;
+  /** e.g. "{n} apps" */
+  softwareCount: string;
+  /** e.g. "{n} workflows" */
+  workflowCount: string;
+  softwareSectionTitle: string;
+  workflowSectionTitle: string;
+  removeFavorite: string;
+  emptySoftwareTitle: string;
+  emptySoftwareHint: string;
+  emptyWorkflowTitle: string;
+  /** e.g. "{n} apps" shown on a workflow card */
+  workflowAppCount: string;
+  /** e.g. "{n} runs" */
+  workflowRunCount: string;
+  launch: string;
+  softwareCard: SoftwareCardStrings;
+}
 
 interface FavoritesAppProps {
   software: Software[];
   workflows: Workflow[];
+  categories: CategoryMeta[];
+  strings: FavoritesStrings;
 }
 
-export default function FavoritesApp({ software, workflows }: FavoritesAppProps) {
+export default function FavoritesApp({
+  software,
+  workflows,
+  categories,
+  strings,
+}: FavoritesAppProps) {
   const [favSoftwareIds, setFavSoftwareIds] = useState<string[]>(
     () => [...software].sort((a, b) => b.launchCount - a.launchCount).slice(0, 3).map((s) => s.id),
   );
@@ -50,7 +79,7 @@ export default function FavoritesApp({ software, workflows }: FavoritesAppProps)
 
   return (
     <div className="space-y-8">
-      {/* 页头 */}
+      {/* Header */}
       <div className="flex items-center gap-3">
         <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-amber-500/30 bg-gradient-to-br from-amber-500/20 to-rose-500/20">
           <svg className="h-5 w-5 text-amber-400" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" strokeWidth="2">
@@ -58,31 +87,38 @@ export default function FavoritesApp({ software, workflows }: FavoritesAppProps)
           </svg>
         </div>
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-white">收藏夹</h1>
+          <h1 className="text-2xl font-bold tracking-tight text-white">{strings.title}</h1>
           <p className="mt-0.5 text-sm text-slate-500">
-            {favoriteSoftware.length} 个软件 · {favoriteWorkflows.length} 个工作流
+            {strings.softwareCount.replace('{n}', String(favoriteSoftware.length))} ·{' '}
+            {strings.workflowCount.replace('{n}', String(favoriteWorkflows.length))}
           </p>
         </div>
       </div>
 
-      {/* 收藏的软件 */}
+      {/* Favorite software */}
       <section>
         <h2 className="mb-4 flex items-center gap-2 text-sm font-semibold text-slate-300">
           <svg className="h-4 w-4 text-amber-400" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" strokeWidth="2">
             <path d="M12 2l3 7h7l-5.5 4 2 7L12 16l-6.5 4 2-7L2 9h7z" />
           </svg>
-          收藏的软件
+          {strings.softwareSectionTitle}
         </h2>
 
         {favoriteSoftware.length > 0 ? (
           <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
             {favoriteSoftware.map((app, i) => (
               <div key={app.id} className="group relative">
-                <SoftwareCard software={app} index={i} onLaunch={handleLaunchSoftware} />
+                <SoftwareCard
+                  software={app}
+                  categories={categories}
+                  strings={strings.softwareCard}
+                  index={i}
+                  onLaunch={handleLaunchSoftware}
+                />
                 <button
                   onClick={() => handleToggleSoftwareFav(app.id, app.name)}
                   className="absolute right-2 top-2 z-10 flex h-7 w-7 items-center justify-center rounded-lg bg-slate-900/80 text-rose-400 opacity-0 backdrop-blur-sm transition-opacity hover:bg-rose-500/20 group-hover:opacity-100"
-                  title="取消收藏"
+                  title={strings.removeFavorite}
                 >
                   <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M18 6 6 18M6 6l12 12" />
@@ -98,19 +134,19 @@ export default function FavoritesApp({ software, workflows }: FavoritesAppProps)
                 <path d="M12 2l3 7h7l-5.5 4 2 7L12 16l-6.5 4 2-7L2 9h7z" />
               </svg>
             </div>
-            <p className="text-sm text-slate-500">还没有收藏的软件</p>
-            <p className="mt-1 text-xs text-slate-600">在软件库中点击星标即可收藏</p>
+            <p className="text-sm text-slate-500">{strings.emptySoftwareTitle}</p>
+            <p className="mt-1 text-xs text-slate-600">{strings.emptySoftwareHint}</p>
           </div>
         )}
       </section>
 
-      {/* 收藏的工作流 */}
+      {/* Favorite workflows */}
       <section>
         <h2 className="mb-4 flex items-center gap-2 text-sm font-semibold text-slate-300">
           <svg className="h-4 w-4 text-rose-400" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" strokeWidth="2">
             <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
           </svg>
-          收藏的工作流
+          {strings.workflowSectionTitle}
         </h2>
 
         {favoriteWorkflows.length > 0 ? (
@@ -140,7 +176,7 @@ export default function FavoritesApp({ software, workflows }: FavoritesAppProps)
                       <button
                         onClick={() => handleToggleWfFav(wf.id, wf.name)}
                         className="rounded-lg p-1.5 text-amber-400 hover:bg-amber-500/10"
-                        title="取消收藏"
+                        title={strings.removeFavorite}
                       >
                         <svg className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" strokeWidth="2">
                           <path d="M12 2l3 7h7l-5.5 4 2 7L12 16l-6.5 4 2-7L2 9h7z" />
@@ -162,7 +198,10 @@ export default function FavoritesApp({ software, workflows }: FavoritesAppProps)
                         ))}
                         {wfApps.length > 0 && (
                           <div className="ml-3 border-l border-slate-700/80 pl-3 text-xs text-slate-500">
-                            {wf.softwareIds.length} 个应用
+                            {strings.workflowAppCount.replace(
+                              '{n}',
+                              String(wf.softwareIds.length),
+                            )}
                           </div>
                         )}
                       </div>
@@ -172,7 +211,8 @@ export default function FavoritesApp({ software, workflows }: FavoritesAppProps)
                             <circle cx="12" cy="12" r="10" />
                             <path d="M12 6v6l4 2" />
                           </svg>
-                          {formatTimeAgo(wf.lastUsed)} · {wf.usageCount} 次使用
+                          {formatTimeAgo(wf.lastUsed, strings.lang)} ·{' '}
+                          {strings.workflowRunCount.replace('{n}', String(wf.usageCount))}
                         </span>
                         <button
                           onClick={() => handleLaunchWorkflow(wf.id)}
@@ -181,7 +221,7 @@ export default function FavoritesApp({ software, workflows }: FavoritesAppProps)
                           <svg className="h-3 w-3 fill-current" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
                             <path d="M8 5v14l11-7z" />
                           </svg>
-                          启动
+                          {strings.launch}
                         </button>
                       </div>
                     </div>
@@ -197,7 +237,7 @@ export default function FavoritesApp({ software, workflows }: FavoritesAppProps)
                 <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
               </svg>
             </div>
-            <p className="text-sm text-slate-500">还没有收藏的工作流</p>
+            <p className="text-sm text-slate-500">{strings.emptyWorkflowTitle}</p>
           </div>
         )}
       </section>

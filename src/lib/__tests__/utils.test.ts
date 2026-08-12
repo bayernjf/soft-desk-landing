@@ -46,27 +46,27 @@ describe('formatTimeAgo()', () => {
 
   it('returns "刚刚" for very recent times (zh)', () => {
     vi.setSystemTime(now);
-    expect(formatTimeAgo(new Date(now - 10_000).toISOString())).toBe('刚刚');
+    expect(formatTimeAgo(new Date(now - 10_000).toISOString(), 'zh')).toBe('刚刚');
   });
 
   it('returns minutes ago (zh)', () => {
     vi.setSystemTime(now);
-    expect(formatTimeAgo(new Date(now - 5 * 60_000).toISOString())).toBe('5 分钟前');
+    expect(formatTimeAgo(new Date(now - 5 * 60_000).toISOString(), 'zh')).toBe('5 分钟前');
   });
 
   it('returns hours ago (zh)', () => {
     vi.setSystemTime(now);
-    expect(formatTimeAgo(new Date(now - 3 * 3600_000).toISOString())).toBe('3 小时前');
+    expect(formatTimeAgo(new Date(now - 3 * 3600_000).toISOString(), 'zh')).toBe('3 小时前');
   });
 
   it('returns days ago (zh)', () => {
     vi.setSystemTime(now);
-    expect(formatTimeAgo(new Date(now - 7 * 86400_000).toISOString())).toBe('7 天前');
+    expect(formatTimeAgo(new Date(now - 7 * 86400_000).toISOString(), 'zh')).toBe('7 天前');
   });
 
   it('returns months ago (zh)', () => {
     vi.setSystemTime(now);
-    expect(formatTimeAgo(new Date(now - 90 * 86400_000).toISOString())).toBe('3 个月前');
+    expect(formatTimeAgo(new Date(now - 90 * 86400_000).toISOString(), 'zh')).toBe('3 个月前');
   });
 
   it('returns English labels', () => {
@@ -80,15 +80,15 @@ describe('formatTimeAgo()', () => {
 
 describe('formatMinutes()', () => {
   it('formats minutes only (zh)', () => {
-    expect(formatMinutes(30)).toBe('30 分钟');
+    expect(formatMinutes(30, 'zh')).toBe('30 分钟');
   });
 
   it('formats hours and minutes (zh)', () => {
-    expect(formatMinutes(90)).toBe('1 小时 30 分');
+    expect(formatMinutes(90, 'zh')).toBe('1 小时 30 分');
   });
 
   it('formats days and hours (zh)', () => {
-    expect(formatMinutes(1500)).toBe('1 天 1 小时');
+    expect(formatMinutes(1500, 'zh')).toBe('1 天 1 小时');
   });
 
   it('formats English short form', () => {

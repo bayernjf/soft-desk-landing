@@ -1,0 +1,22 @@
+---
+import AppLayout from '@/layouts/AppLayout.astro';
+import UninstallApp from './UninstallApp.tsx';
+import { getMockSoftware } from '@/data/software';
+import { appStrings } from '@/i18n/app';
+import type { Language } from '@/i18n/ui';
+
+interface Props {
+  lang: Language;
+}
+
+const { lang } = Astro.props;
+const t = appStrings[lang];
+---
+
+<AppLayout lang={lang} title={t.shell.pageTitles.uninstall} activePage="uninstall">
+  <UninstallApp
+    client:load
+    software={getMockSoftware(lang)}
+    strings={t.uninstall}
+  />
+</AppLayout>
