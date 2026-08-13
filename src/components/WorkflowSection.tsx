@@ -2,12 +2,24 @@ import type { Software, Workflow } from '@/data/types';
 import { formatTimeAgo } from '@/lib/utils';
 import { track } from '@/lib/analytics';
 
+export interface WorkflowSectionStrings {
+  lang: 'en' | 'zh';
+  badge: string;
+  title: string;
+  subtitle: string;
+  launchButton: string;
+  /** `{n}` = usage count. */
+  usageCount: string;
+}
+
 export default function WorkflowSection({
   workflows,
   software,
+  strings,
 }: {
   workflows: Workflow[];
   software: Software[];
+  strings: WorkflowSectionStrings;
 }) {
   return (
     <section id="workflow" className="px-4 py-24 sm:px-6" data-analytics-section="workflow">
@@ -20,13 +32,13 @@ export default function WorkflowSection({
               <rect x="3" y="14" width="7" height="7" rx="1" />
               <path d="M14 17h7" />
             </svg>
-            智能工作流编排
+            {strings.badge}
           </span>
           <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
-            一键启动你的工作组合
+            {strings.title}
           </h2>
           <p className="mt-4 leading-relaxed text-gray-400">
-            根据使用习惯自动推荐软件组合，一键启动 IDE + 终端 + 浏览器等场景套件。
+            {strings.subtitle}
           </p>
         </div>
 
@@ -68,7 +80,7 @@ export default function WorkflowSection({
                       <svg className="h-3.5 w-3.5 fill-current" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
                         <path d="M8 5v14l11-7z" />
                       </svg>
-                      启动
+                      {strings.launchButton}
                     </button>
                   </div>
 
@@ -90,7 +102,8 @@ export default function WorkflowSection({
                         <circle cx="12" cy="12" r="10" />
                         <path d="M12 6v6l4 2" />
                       </svg>
-                      {formatTimeAgo(wf.lastUsed)} · {wf.usageCount} 次使用
+                      {formatTimeAgo(wf.lastUsed, strings.lang)} ·{' '}
+                      {strings.usageCount.replace('{n}', String(wf.usageCount))}
                     </div>
                   </div>
                 </div>

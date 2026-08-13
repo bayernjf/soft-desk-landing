@@ -66,13 +66,112 @@ type IconKey = keyof typeof icons;
 
 type TabId = 'appearance' | 'notifications' | 'data' | 'privacy' | 'ai';
 
-const tabs: { id: TabId; icon: IconKey; label: string }[] = [
-  { id: 'appearance', icon: 'Monitor', label: '外观' },
-  { id: 'notifications', icon: 'Bell', label: '通知' },
-  { id: 'data', icon: 'Database', label: '数据与存储' },
-  { id: 'privacy', icon: 'Shield', label: '隐私安全' },
-  { id: 'ai', icon: 'Sparkles', label: 'AI 功能' },
+const tabs: { id: TabId; icon: IconKey }[] = [
+  { id: 'appearance', icon: 'Monitor' },
+  { id: 'notifications', icon: 'Bell' },
+  { id: 'data', icon: 'Database' },
+  { id: 'privacy', icon: 'Shield' },
+  { id: 'ai', icon: 'Sparkles' },
 ];
+
+// ── Strings ───────────────────────────────────────────────────────────────────
+
+export interface SettingsTabsStrings {
+  appearance: string;
+  notifications: string;
+  data: string;
+  privacy: string;
+  ai: string;
+}
+
+export interface SettingsAppearanceStrings {
+  title: string;
+  subtitle: string;
+  themeLabel: string;
+  themeLight: string;
+  themeDark: string;
+  themeSystem: string;
+  startMinimized: string;
+  startMinimizedDesc: string;
+  minimizeToTray: string;
+  minimizeToTrayDesc: string;
+}
+
+export interface SettingsNotificationsStrings {
+  title: string;
+  subtitle: string;
+  launchNotifications: string;
+  launchNotificationsDesc: string;
+  weeklyReport: string;
+  weeklyReportDesc: string;
+}
+
+export interface SettingsDataStrings {
+  title: string;
+  subtitle: string;
+  scanOnStartup: string;
+  scanOnStartupDesc: string;
+  autoUpdates: string;
+  autoUpdatesDesc: string;
+  localStorageLabel: string;
+  openStorageLocation: string;
+}
+
+export interface SettingsPrivacyStrings {
+  title: string;
+  subtitle: string;
+  anonymizeData: string;
+  anonymizeDataDesc: string;
+  sendAnalytics: string;
+  sendAnalyticsDesc: string;
+}
+
+export interface SettingsAiModelsStrings {
+  title: string;
+  subtitle: string;
+  addModel: string;
+  privacyNoticeBefore: string;
+  privacyNoticeHighlight: string;
+  privacyNoticeAfter: string;
+  emptyState: string;
+  statusActive: string;
+  statusInactive: string;
+  modelLabel: string;
+  modelUnset: string;
+  apiKeyLabel: string;
+  apiKeyUnset: string;
+  endpointLabel: string;
+  disable: string;
+  enable: string;
+  edit: string;
+  delete: string;
+  confirmTitle: string;
+  /** Uses `{n}` as a placeholder for the provider config name. */
+  confirmBody: string;
+  cancel: string;
+  confirmDelete: string;
+}
+
+export interface SettingsAiStrings {
+  title: string;
+  subtitle: string;
+  smartGrouping: string;
+  smartGroupingDesc: string;
+  workflowSuggestions: string;
+  workflowSuggestionsDesc: string;
+  models: SettingsAiModelsStrings;
+}
+
+export interface SettingsStrings {
+  title: string;
+  subtitle: string;
+  tabs: SettingsTabsStrings;
+  appearance: SettingsAppearanceStrings;
+  notifications: SettingsNotificationsStrings;
+  data: SettingsDataStrings;
+  privacy: SettingsPrivacyStrings;
+  ai: SettingsAiStrings;
+}
 
 interface ToggleProps {
   checked: boolean;
@@ -140,7 +239,7 @@ const initialProviders: AiProviderConfig[] = [
   },
 ];
 
-function AiModelsSection() {
+function AiModelsSection({ strings }: { strings: SettingsAiModelsStrings }) {
   const [providers, setProviders] = useState<AiProviderConfig[]>(initialProviders);
   const [confirmDelete, setConfirmDelete] = useState<AiProviderConfig | null>(null);
 
@@ -169,25 +268,25 @@ function AiModelsSection() {
     <div className="mt-8 pt-6 border-t border-gray-800/80">
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h3 className="text-sm font-semibold text-gray-200">AI 模型</h3>
-          <p className="text-xs text-gray-500 mt-0.5">配置用于智能功能的 AI 服务商与模型</p>
+          <h3 className="text-sm font-semibold text-gray-200">{strings.title}</h3>
+          <p className="text-xs text-gray-500 mt-0.5">{strings.subtitle}</p>
         </div>
         <button
           className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-violet-500/15 text-violet-300 text-xs font-medium hover:bg-violet-500/25 transition-colors"
         >
           <icons.Plus className="w-3.5 h-3.5" />
-          添加模型
+          {strings.addModel}
         </button>
       </div>
 
       <div className="mb-4 flex items-start gap-2.5 rounded-xl border border-amber-500/20 bg-amber-500/10 px-3.5 py-3">
         <icons.ShieldAlert className="w-4 h-4 shrink-0 mt-0.5 text-amber-400" />
         <p className="text-[11px] leading-relaxed text-amber-200/80">
-          隐私提示：启用 AI 功能后,智能分类、工作流推荐、语义搜索等会把你的
+          {strings.privacyNoticeBefore}
           <span className="font-semibold text-amber-200">
-            已安装软件清单、使用时长与使用习惯
+            {strings.privacyNoticeHighlight}
           </span>
-          发送到你配置的 AI 服务商进行处理。这些数据不含密码等凭证,且仅发往你选择的服务商；不配置或停用 AI 模型时不会发送任何数据。
+          {strings.privacyNoticeAfter}
         </p>
       </div>
 
@@ -195,7 +294,7 @@ function AiModelsSection() {
         <div className="p-6 rounded-2xl bg-gray-900/40 border border-dashed border-gray-800 text-center">
           <icons.Sparkles className="w-6 h-6 text-gray-600 mx-auto mb-2" />
           <p className="text-xs text-gray-500 leading-relaxed">
-            还没有配置 AI 模型。点击「添加模型」配置 OpenAI、Anthropic、Gemini 或自定义服务商。
+            {strings.emptyState}
           </p>
         </div>
       ) : (
@@ -221,22 +320,22 @@ function AiModelsSection() {
                         : 'bg-gray-800 text-gray-500',
                     )}
                   >
-                    {m.isActive ? '已启用' : '未启用'}
+                    {m.isActive ? strings.statusActive : strings.statusInactive}
                   </span>
                 </div>
 
                 <div className="pt-3 border-t border-gray-800/80 space-y-2">
                   <div className="flex justify-between gap-3 text-[11px]">
-                    <span className="text-gray-500">模型</span>
-                    <span className="font-medium text-gray-300 text-right truncate">{m.model || '未配置'}</span>
+                    <span className="text-gray-500">{strings.modelLabel}</span>
+                    <span className="font-medium text-gray-300 text-right truncate">{m.model || strings.modelUnset}</span>
                   </div>
                   <div className="flex justify-between gap-3 text-[11px]">
-                    <span className="text-gray-500">API Key</span>
-                    <span className="font-mono text-gray-400">{m.apiKeyHint || '未设置'}</span>
+                    <span className="text-gray-500">{strings.apiKeyLabel}</span>
+                    <span className="font-mono text-gray-400">{m.apiKeyHint || strings.apiKeyUnset}</span>
                   </div>
                   {m.endpoint && (
                     <div className="flex justify-between gap-3 text-[11px]">
-                      <span className="text-gray-500">Endpoint</span>
+                      <span className="text-gray-500">{strings.endpointLabel}</span>
                       <span className="font-mono text-gray-400 text-right break-all">{m.endpoint}</span>
                     </div>
                   )}
@@ -253,21 +352,21 @@ function AiModelsSection() {
                       : 'bg-violet-500/15 text-violet-300 hover:bg-violet-500/25',
                   )}
                 >
-                  {m.isActive ? '停用' : '启用'}
+                  {m.isActive ? strings.disable : strings.enable}
                 </button>
                 <div className="grid grid-cols-2 gap-2">
                   <button
                     className="inline-flex items-center justify-center gap-1.5 py-2 rounded-xl bg-gray-800 text-gray-300 text-xs font-semibold hover:bg-gray-700 transition-colors"
                   >
                     <icons.Pencil className="w-3.5 h-3.5" />
-                    编辑
+                    {strings.edit}
                   </button>
                   <button
                     onClick={() => setConfirmDelete(m)}
                     className="inline-flex items-center justify-center gap-1.5 py-2 rounded-xl border border-rose-500/20 bg-rose-500/5 text-rose-400 text-xs font-semibold hover:bg-rose-500/10 transition-colors"
                   >
                     <icons.Trash2 className="w-3.5 h-3.5" />
-                    删除
+                    {strings.delete}
                   </button>
                 </div>
               </div>
@@ -288,16 +387,16 @@ function AiModelsSection() {
             aria-modal="true"
             className="relative w-full max-w-sm rounded-2xl bg-gray-900 border border-gray-800 shadow-2xl shadow-slate-950/50 p-6"
           >
-            <h3 className="text-base font-semibold text-white">删除模型配置</h3>
+            <h3 className="text-base font-semibold text-white">{strings.confirmTitle}</h3>
             <p className="mt-2 text-xs text-gray-400 leading-relaxed">
-              确定删除「{confirmDelete.name}」？删除后该 API Key 配置会从本地移除，AI 功能将不再使用它。
+              {strings.confirmBody.replace('{n}', confirmDelete.name)}
             </p>
             <div className="mt-5 flex gap-2">
               <button
                 onClick={() => setConfirmDelete(null)}
                 className="flex-1 py-2 rounded-xl bg-gray-800 text-gray-300 text-xs font-semibold hover:bg-gray-700 transition-colors"
               >
-                取消
+                {strings.cancel}
               </button>
               <button
                 onClick={() => {
@@ -306,7 +405,7 @@ function AiModelsSection() {
                 }}
                 className="flex-1 py-2 rounded-xl bg-rose-500 text-white text-xs font-semibold hover:bg-rose-600 transition-colors"
               >
-                确认删除
+                {strings.confirmDelete}
               </button>
             </div>
           </div>
@@ -318,7 +417,7 @@ function AiModelsSection() {
 
 // ── Settings App ──────────────────────────────────────────────────────────────
 
-export default function SettingsApp() {
+export default function SettingsApp({ strings }: { strings: SettingsStrings }) {
   const [activeTab, setActiveTab] = useState<TabId>('appearance');
   const [theme, setTheme] = useState('dark');
   const [prefs, setPrefs] = useState({
@@ -348,8 +447,8 @@ export default function SettingsApp() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-2xl font-bold text-white tracking-tight">设置</h1>
-        <p className="text-sm text-gray-500 mt-1">管理 SoftDesk 的偏好设置与功能选项</p>
+        <h1 className="text-2xl font-bold text-white tracking-tight">{strings.title}</h1>
+        <p className="text-sm text-gray-500 mt-1">{strings.subtitle}</p>
       </div>
 
       <div className="grid lg:grid-cols-[200px_1fr] gap-6">
@@ -371,7 +470,7 @@ export default function SettingsApp() {
                 )}
               >
                 <Icon className="w-4 h-4" />
-                {tab.label}
+                {strings.tabs[tab.id]}
               </button>
             );
           })}
@@ -380,16 +479,16 @@ export default function SettingsApp() {
         <main className="p-6 rounded-2xl bg-gray-900/40 border border-gray-800/60">
           {activeTab === 'appearance' && (
             <div className="space-y-1 max-w-lg">
-              <h2 className="text-base font-semibold text-gray-100 mb-1">外观</h2>
-              <p className="text-sm text-gray-500 mb-6">自定义 SoftDesk 的视觉风格</p>
+              <h2 className="text-base font-semibold text-gray-100 mb-1">{strings.appearance.title}</h2>
+              <p className="text-sm text-gray-500 mb-6">{strings.appearance.subtitle}</p>
 
               <div className="space-y-1">
-                <div className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">主题</div>
+                <div className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">{strings.appearance.themeLabel}</div>
                 <div className="grid grid-cols-3 gap-2 p-1 bg-gray-800/40 rounded-xl w-fit">
                   {[
-                    { id: 'light', label: '浅色' },
-                    { id: 'dark', label: '深色' },
-                    { id: 'system', label: '跟随系统' },
+                    { id: 'light', label: strings.appearance.themeLight },
+                    { id: 'dark', label: strings.appearance.themeDark },
+                    { id: 'system', label: strings.appearance.themeSystem },
                   ].map((t) => (
                     <button
                       key={t.id}
@@ -409,14 +508,14 @@ export default function SettingsApp() {
                 <Toggle
                   checked={prefs.startMinimized}
                   onChange={() => togglePref('startMinimized')}
-                  label="启动时最小化"
-                  description="软件启动后直接最小化至系统托盘"
+                  label={strings.appearance.startMinimized}
+                  description={strings.appearance.startMinimizedDesc}
                 />
                 <Toggle
                   checked={prefs.minimizeToTray}
                   onChange={() => togglePref('minimizeToTray')}
-                  label="最小化到系统托盘"
-                  description="关闭窗口时不退出程序，而是最小化到托盘"
+                  label={strings.appearance.minimizeToTray}
+                  description={strings.appearance.minimizeToTrayDesc}
                 />
               </div>
             </div>
@@ -424,44 +523,44 @@ export default function SettingsApp() {
 
           {activeTab === 'notifications' && (
             <div className="space-y-0 max-w-lg border-t border-gray-800/80">
-              <h2 className="text-base font-semibold text-gray-100 mb-1 pt-0">通知</h2>
-              <p className="text-sm text-gray-500 mb-6">配置你希望接收的通知类型</p>
+              <h2 className="text-base font-semibold text-gray-100 mb-1 pt-0">{strings.notifications.title}</h2>
+              <p className="text-sm text-gray-500 mb-6">{strings.notifications.subtitle}</p>
               <Toggle
                 checked={prefs.launchNotifications}
                 onChange={() => togglePref('launchNotifications')}
-                label="启动通知"
-                description="工作流启动完成后显示通知"
+                label={strings.notifications.launchNotifications}
+                description={strings.notifications.launchNotificationsDesc}
               />
               <Toggle
                 checked={prefs.weeklyReport}
                 onChange={() => togglePref('weeklyReport')}
-                label="每周使用报告"
-                description="每周一上午显示你的软件使用洞察报告"
+                label={strings.notifications.weeklyReport}
+                description={strings.notifications.weeklyReportDesc}
               />
             </div>
           )}
 
           {activeTab === 'data' && (
             <div className="space-y-0 max-w-lg border-t border-gray-800/80">
-              <h2 className="text-base font-semibold text-gray-100 mb-1 pt-0">数据与存储</h2>
-              <p className="text-sm text-gray-500 mb-6">管理扫描设置与数据存储位置</p>
+              <h2 className="text-base font-semibold text-gray-100 mb-1 pt-0">{strings.data.title}</h2>
+              <p className="text-sm text-gray-500 mb-6">{strings.data.subtitle}</p>
               <Toggle
                 checked={prefs.scanOnStartup}
                 onChange={() => togglePref('scanOnStartup')}
-                label="启动时扫描"
-                description="启动 SoftDesk 时自动扫描系统中的所有软件"
+                label={strings.data.scanOnStartup}
+                description={strings.data.scanOnStartupDesc}
               />
               <Toggle
                 checked={prefs.autoUpdates}
                 onChange={() => togglePref('autoUpdates')}
-                label="自动更新"
-                description="在后台自动下载并安装更新"
+                label={strings.data.autoUpdates}
+                description={strings.data.autoUpdatesDesc}
               />
               <div className="p-4 rounded-xl bg-gray-800/40 mt-4">
-                <div className="text-xs font-semibold text-gray-300 mb-1">本地存储</div>
+                <div className="text-xs font-semibold text-gray-300 mb-1">{strings.data.localStorageLabel}</div>
                 <div className="text-xs text-gray-500 font-mono">~/Library/Application Support/SoftDesk</div>
                 <button className="mt-3 px-3 py-1.5 rounded-lg bg-gray-700/70 text-gray-300 text-xs font-medium hover:bg-gray-700 transition-colors">
-                  打开存储位置
+                  {strings.data.openStorageLocation}
                 </button>
               </div>
             </div>
@@ -469,42 +568,42 @@ export default function SettingsApp() {
 
           {activeTab === 'privacy' && (
             <div className="space-y-0 max-w-lg border-t border-gray-800/80">
-              <h2 className="text-base font-semibold text-gray-100 mb-1 pt-0">隐私安全</h2>
-              <p className="text-sm text-gray-500 mb-6">数据隐私由你掌控，默认不上传</p>
+              <h2 className="text-base font-semibold text-gray-100 mb-1 pt-0">{strings.privacy.title}</h2>
+              <p className="text-sm text-gray-500 mb-6">{strings.privacy.subtitle}</p>
               <Toggle
                 checked={prefs.anonymizeData}
                 onChange={() => togglePref('anonymizeData')}
-                label="数据匿名化"
-                description="在发送任何数据前，删除可识别的个人信息"
+                label={strings.privacy.anonymizeData}
+                description={strings.privacy.anonymizeDataDesc}
               />
               <Toggle
                 checked={prefs.sendAnalytics}
                 onChange={() => togglePref('sendAnalytics')}
-                label="使用数据统计"
-                description="匿名的使用数据帮助我们改进产品"
+                label={strings.privacy.sendAnalytics}
+                description={strings.privacy.sendAnalyticsDesc}
               />
             </div>
           )}
 
           {activeTab === 'ai' && (
             <div className="space-y-0 max-w-2xl border-t border-gray-800/80">
-              <h2 className="text-base font-semibold text-gray-100 mb-1 pt-0">AI 功能</h2>
-              <p className="text-sm text-gray-500 mb-6">基于 AI 的智能建议与自动化</p>
+              <h2 className="text-base font-semibold text-gray-100 mb-1 pt-0">{strings.ai.title}</h2>
+              <p className="text-sm text-gray-500 mb-6">{strings.ai.subtitle}</p>
               <div className="max-w-lg">
                 <Toggle
                   checked={prefs.smartGrouping}
                   onChange={() => togglePref('smartGrouping')}
-                  label="智能分类"
-                  description="AI 自动将同类软件分组到合适的分类"
+                  label={strings.ai.smartGrouping}
+                  description={strings.ai.smartGroupingDesc}
                 />
                 <Toggle
                   checked={prefs.aiSuggestions}
                   onChange={() => togglePref('aiSuggestions')}
-                  label="工作流建议"
-                  description="基于使用习惯，为你推荐常用的软件组合"
+                  label={strings.ai.workflowSuggestions}
+                  description={strings.ai.workflowSuggestionsDesc}
                 />
               </div>
-              <AiModelsSection />
+              <AiModelsSection strings={strings.ai.models} />
             </div>
           )}
         </main>

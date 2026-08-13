@@ -1,14 +1,35 @@
 import { useMemo, useState, useEffect, useRef } from 'react';
-import type { Software, Stats } from '@/data/types';
-import { CATEGORIES } from '@/data/software';
+import type { CategoryMeta, Software, Stats } from '@/data/types';
 import { formatMinutes } from '@/lib/utils';
+
+export interface StatisticsStrings {
+  lang: 'en' | 'zh';
+  pageTitle: string;
+  pageSubtitle: string;
+  statTotalUsageLabel: string;
+  statAvgPerAppLabel: string;
+  statTotalLaunchesLabel: string;
+  hoursValue: string;
+  minutesValue: string;
+  softwareCountSub: string;
+  launchesSub: string;
+  dailyChartTitle: string;
+  dailyChartSubtitle: string;
+  categoryChartTitle: string;
+  categoryChartSubtitle: string;
+  donutTotalLabel: string;
+  leaderboardTitle: string;
+  leaderboardSubtitle: string;
+}
 
 interface StatisticsAppProps {
   software: Software[];
   stats: Stats;
+  categories: CategoryMeta[];
+  strings: StatisticsStrings;
 }
 
-export default function StatisticsApp({ software, stats }: StatisticsAppProps) {
+export default function StatisticsApp({ software, stats, categories, strings }: StatisticsAppProps) {
   const sectionRef = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
 
@@ -27,7 +48,7 @@ export default function StatisticsApp({ software, stats }: StatisticsAppProps) {
   }, []);
 
   const categoryData = useMemo(() => {
-    return CATEGORIES.map((cat) => {
+    return categories.map((cat) => {
       const items = software.filter((s) => s.category === cat.id);
       return {
         name: cat.name,
@@ -36,7 +57,7 @@ export default function StatisticsApp({ software, stats }: StatisticsAppProps) {
         color: cat.color,
       };
     }).filter((d) => d.count > 0);
-  }, [software]);
+  }, [software, categories]);
 
   const topApps = useMemo(
     () => [...software].sort((a, b) => b.usageMinutes - a.usageMinutes).slice(0, 8),
@@ -94,15 +115,27 @@ export default function StatisticsApp({ software, stats }: StatisticsAppProps) {
       `}</style>
 
       <div>
-        <h1 className="text-2xl font-bold text-white tracking-tight">统计分析</h1>
-        <p className="text-sm text-gray-500 mt-1">深入了解你的软件使用习惯与效率趋势</p>
+        <h1 className="text-2xl font-bold text-white tracking-tight">{strings.pageTitle}</h1>
+        <p className="text-sm text-gray-500 mt-1">{strings.pageSubtitle}</p>
       </div>
 
       <div className="grid grid-cols-3 gap-3">
         {[
-          { label: '总使用时长', value: `${Math.round(totalUsage / 60)} 小时`, sub: `${software.length} 个软件` },
-          { label: '平均每个软件', value: `${Math.round(avgPerApp / 60)} 小时`, sub: `${avgPerApp % 60} 分钟` },
-          { label: '总启动次数', value: `${totalLaunches}`, sub: '次启动' },
+          {
+            label: strings.statTotalUsageLabel,
+            value: strings.hoursValue.replace('{n}', String(Math.round(totalUsage / 60))),
+            sub: strings.softwareCountSub.replace('{n}', String(software.length)),
+          },
+          {
+            label: strings.statAvgPerAppLabel,
+            value: strings.hoursValue.replace('{n}', String(Math.round(avgPerApp / 60))),
+            sub: strings.minutesValue.replace('{n}', String(avgPerApp % 60)),
+          },
+          {
+            label: strings.statTotalLaunchesLabel,
+            value: `${totalLaunches}`,
+            sub: strings.launchesSub,
+          },
         ].map((stat, i) => (
           <div
             key={stat.label}
@@ -122,8 +155,8 @@ export default function StatisticsApp({ software, stats }: StatisticsAppProps) {
       <div className="grid lg:grid-cols-2 gap-6">
         {/* Bar chart */}
         <section className="p-6 rounded-2xl bg-gray-900/40 border border-gray-800/60">
-          <h2 className="text-sm font-semibold text-gray-200 mb-1">每日使用分布</h2>
-          <p className="text-xs text-gray-500 mb-4">过去 7 天的使用时长（小时）</p>
+          <h2 className="text-sm font-semibold text-gray-200 mb-1">{strings.dailyChartTitle}</h2>
+          <p className="text-xs text-gray-500 mb-4">{strings.dailyChartSubtitle}</p>
           <div className="h-64 flex items-center justify-center">
             <svg width="100%" height="100%" viewBox={`0 0 ${CHART_W} ${CHART_H}`} preserveAspectRatio="xMidYMid meet">
               {weeklyData.map((d, i) => {
@@ -146,7 +179,7 @@ export default function StatisticsApp({ software, stats }: StatisticsAppProps) {
                         transition: `transform 0.6s cubic-bezier(0.22, 1, 0.36, 1) ${i * 80}ms, opacity 0.3s ease-out ${i * 80}ms`,
                       }}
                     >
-                      <title>{`${d.hours} 小时`}</title>
+                      <title>{strings.hoursValue.replace('{n}', String(d.hours))}</title>
                     </rect>
                     <text
                       x={x + BAR_W / 2}
@@ -168,8 +201,8 @@ export default function StatisticsApp({ software, stats }: StatisticsAppProps) {
 
         {/* Donut chart */}
         <section className="p-6 rounded-2xl bg-gray-900/40 border border-gray-800/60">
-          <h2 className="text-sm font-semibold text-gray-200 mb-1">分类使用占比</h2>
-          <p className="text-xs text-gray-500 mb-4">按累计使用时长统计</p>
+          <h2 className="text-sm font-semibold text-gray-200 mb-1">{strings.categoryChartTitle}</h2>
+          <p className="text-xs text-gray-500 mb-4">{strings.categoryChartSubtitle}</p>
           <div className="h-64 flex items-center justify-center">
             <svg width="100%" height="100%" viewBox="0 0 200 200" preserveAspectRatio="xMidYMid meet">
               <g transform="rotate(-90 100 100)">
@@ -189,7 +222,7 @@ export default function StatisticsApp({ software, stats }: StatisticsAppProps) {
                       transition: `stroke-dasharray 0.8s cubic-bezier(0.22, 1, 0.36, 1) ${i * 120}ms`,
                     }}
                   >
-                    <title>{`${slice.name}: ${formatMinutes(slice.value)}`}</title>
+                    <title>{`${slice.name}: ${formatMinutes(slice.value, strings.lang)}`}</title>
                   </circle>
                 ))}
               </g>
@@ -202,7 +235,7 @@ export default function StatisticsApp({ software, stats }: StatisticsAppProps) {
                 opacity={visible ? 1 : 0}
                 style={{ transition: `opacity 0.5s ease-out 0.6s` }}
               >
-                总计
+                {strings.donutTotalLabel}
               </text>
               <text
                 x="100"
@@ -239,8 +272,8 @@ export default function StatisticsApp({ software, stats }: StatisticsAppProps) {
 
       {/* Top apps leaderboard */}
       <section className="p-6 rounded-2xl bg-gray-900/40 border border-gray-800/60">
-        <h2 className="text-sm font-semibold text-gray-200 mb-1">软件使用排行榜</h2>
-        <p className="text-xs text-gray-500 mb-6">按使用时长排序 · 全部软件</p>
+        <h2 className="text-sm font-semibold text-gray-200 mb-1">{strings.leaderboardTitle}</h2>
+        <p className="text-xs text-gray-500 mb-6">{strings.leaderboardSubtitle}</p>
         <div className="space-y-3">
           {topApps.map((sw, idx) => {
             const percent = topApps[0].usageMinutes > 0
@@ -266,7 +299,7 @@ export default function StatisticsApp({ software, stats }: StatisticsAppProps) {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between mb-1.5">
                     <span className="text-sm font-medium text-gray-200 truncate">{sw.name}</span>
-                    <span className="text-xs text-gray-500 tabular-nums">{formatMinutes(sw.usageMinutes)}</span>
+                    <span className="text-xs text-gray-500 tabular-nums">{formatMinutes(sw.usageMinutes, strings.lang)}</span>
                   </div>
                   <div className="h-1 bg-gray-800/60 rounded-full overflow-hidden">
                     <div

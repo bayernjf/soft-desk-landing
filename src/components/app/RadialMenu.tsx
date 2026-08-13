@@ -7,9 +7,19 @@ const OUTER_R = 140;
 const ACTIVE_OUTER_R = 152;
 const LABEL_R = (INNER_R + OUTER_R) / 2;
 
+export interface RadialMenuStrings {
+  /** Center label while page 1 of 2 is shown. */
+  pageFirst: string;
+  /** Center label while page 2 of 2 is shown. */
+  pageSecond: string;
+  /** Center label when there is only a single page (close hint, e.g. "ESC"). */
+  closeHint: string;
+}
+
 interface RadialMenuProps {
   software: Software[];
   workflows: Workflow[];
+  strings: RadialMenuStrings;
   onLaunchSoftware?: (_id: string) => void;
   onLaunchWorkflow?: (_id: string) => void;
   open?: boolean;
@@ -86,6 +96,7 @@ function sectorPath(
 export function RadialMenu({
   software,
   workflows,
+  strings,
   onLaunchSoftware,
   onLaunchWorkflow,
   open: controlledOpen,
@@ -420,7 +431,8 @@ export function RadialMenu({
   const animOpacity = animPhase === 'out' || animPhase === 'switch' ? 0.12 : 1;
   const animScale = animPhase === 'out' || animPhase === 'switch' ? 0.9 : 1;
 
-  const pageLabel = totalPages > 1 ? (page === 0 ? '第一页' : '第二页') : 'ESC';
+  const pageLabel =
+    totalPages > 1 ? (page === 0 ? strings.pageFirst : strings.pageSecond) : strings.closeHint;
 
   return (
     <div

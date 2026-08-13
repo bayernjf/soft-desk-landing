@@ -1,0 +1,23 @@
+---
+import AppLayout from '@/layouts/AppLayout.astro';
+import WorkflowsApp from './WorkflowsApp.tsx';
+import { getMockSoftware, getMockWorkflows } from '@/data/software';
+import { appStrings } from '@/i18n/app';
+import type { Language } from '@/i18n/ui';
+
+interface Props {
+  lang: Language;
+}
+
+const { lang } = Astro.props;
+const t = appStrings[lang];
+---
+
+<AppLayout lang={lang} title={t.shell.pageTitles.workflows} activePage="workflows">
+  <WorkflowsApp
+    client:load
+    software={getMockSoftware(lang)}
+    workflows={getMockWorkflows(lang)}
+    strings={t.workflows}
+  />
+</AppLayout>

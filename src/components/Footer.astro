@@ -1,4 +1,5 @@
 ---
+import BayjfLink from '@bay/landing-ui/components/BayjfLink.astro';
 import { useTranslations, localizedPath } from '@/i18n/utils';
 import type { Language } from '@/i18n/ui';
 import LanguageSwitcher from './LanguageSwitcher.astro';
@@ -41,14 +42,10 @@ const year = new Date().getFullYear();
       >
         GitHub
       </a>
-      <a
-        href="https://bayjf.com"
-        target="_blank"
-        rel="noopener noreferrer"
+      <BayjfLink
+        size={16}
         class="text-sm text-gray-400 transition-colors hover:text-white"
-      >
-        BayJF
-      </a>
+      />
       <LanguageSwitcher lang={lang} path={Astro.url.pathname} />
       <span class="text-xs text-gray-600">{t('footer.made_with')}</span>
     </div>

@@ -1,16 +1,28 @@
-import type { Software } from '@/data/types';
-import { CATEGORIES } from '@/data/software';
+import type { CategoryMeta, Software } from '@/data/types';
 import { formatMinutes } from '@/lib/utils';
 import { track } from '@/lib/analytics';
 
+export interface SoftwareCardStrings {
+  /** Language key passed to shared formatters (formatMinutes). */
+  lang: 'en' | 'zh';
+}
+
 interface SoftwareCardProps {
   software: Software;
+  categories: CategoryMeta[];
+  strings: SoftwareCardStrings;
   index?: number;
   onLaunch?: (_id: string) => void;
 }
 
-export default function SoftwareCard({ software, index = 0, onLaunch }: SoftwareCardProps) {
-  const categoryMeta = CATEGORIES.find((c) => c.id === software.category);
+export default function SoftwareCard({
+  software,
+  categories,
+  strings,
+  index = 0,
+  onLaunch,
+}: SoftwareCardProps) {
+  const categoryMeta = categories.find((c) => c.id === software.category);
 
   const handleClick = () => {
     track('software_launch', {
@@ -49,7 +61,7 @@ export default function SoftwareCard({ software, index = 0, onLaunch }: Software
               <span>{categoryMeta.name}</span>
             )}
             <span className="text-slate-700">·</span>
-            <span>{formatMinutes(software.usageMinutes)}</span>
+            <span>{formatMinutes(software.usageMinutes, strings.lang)}</span>
           </div>
         </div>
 

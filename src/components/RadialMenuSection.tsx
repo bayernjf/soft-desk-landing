@@ -10,6 +10,26 @@ const OUTER_R = 140;
 const ACTIVE_OUTER_R = 152;
 const LABEL_R = (INNER_R + OUTER_R) / 2;
 
+export interface RadialMenuFeature {
+  title: string;
+  desc: string;
+}
+
+export interface RadialMenuSectionStrings {
+  badge: string;
+  title: string;
+  subtitle: string;
+  /** Exactly four entries, matching the four feature icons. */
+  features: RadialMenuFeature[];
+  tryButton: string;
+  tryHint: string;
+  pageOne: string;
+  pageTwo: string;
+  scrollHint: string;
+  /** Center label of the live overlay when only one page exists. */
+  escHint: string;
+}
+
 interface MenuItem {
   slot: number;
   name: string;
@@ -73,11 +93,13 @@ const styleTokens = {
 function RadialMenuOverlay({
   software,
   workflows,
+  strings,
   open,
   onOpenChange,
 }: {
   software: Software[];
   workflows: Workflow[];
+  strings: RadialMenuSectionStrings;
   open: boolean;
   onOpenChange: (_open: boolean) => void;
 }) {
@@ -290,7 +312,7 @@ function RadialMenuOverlay({
   const animRotate = animPhase === 'out' ? wheelDirRef.current * sectorAngle : animPhase === 'switch' ? -wheelDirRef.current * sectorAngle : 0;
   const animOpacity = animPhase === 'out' || animPhase === 'switch' ? 0.12 : 1;
   const animScale = animPhase === 'out' || animPhase === 'switch' ? 0.9 : 1;
-  const pageLabel = totalPages > 1 ? (page === 0 ? '第一页' : '第二页') : 'ESC';
+  const pageLabel = totalPages > 1 ? (page === 0 ? strings.pageOne : strings.pageTwo) : strings.escHint;
 
   return (
     <div
@@ -402,9 +424,11 @@ interface PreviewItem {
 export default function RadialMenuSection({
   software,
   workflows,
+  strings,
 }: {
   software: Software[];
   workflows: Workflow[];
+  strings: RadialMenuSectionStrings;
 }) {
   const [demoOpen, setDemoOpen] = useState(false);
   const [previewPage, setPreviewPage] = useState<0 | 1>(0);
@@ -532,12 +556,17 @@ export default function RadialMenuSection({
   const animOpacity = animPhase === 'out' || animPhase === 'switch' ? 0.12 : 1;
   const animScale = animPhase === 'out' || animPhase === 'switch' ? 0.9 : 1;
 
-  const features = [
-    { icon: 'M11 4a7 7 0 1 0 14 0 7 7 0 0 0-14 0', color: '#ec4899', title: '多页滚轮切换', desc: '滚轮上下滑动，在第一页和第二页间流畅切换' },
-    { icon: 'M12 6v6l4 2', color: '#f59e0b', title: '最近使用', desc: '按最近使用时间排序，高频软件触手可得' },
-    { icon: 'M12 2l3 7h7l-5.5 4 2 7L12 16l-6.5 4 2-7L2 9h7z', color: '#7c3aed', title: '收藏夹', desc: '收藏的软件和工作流置顶，零查找成本' },
-    { icon: 'M3 7h18M3 12h18M3 17h18', color: '#00d4aa', title: '工作流', desc: '一键启动软件组合，快速进入工作状态' },
+  const featureVisuals = [
+    { icon: 'M11 4a7 7 0 1 0 14 0 7 7 0 0 0-14 0', color: '#ec4899' },
+    { icon: 'M12 6v6l4 2', color: '#f59e0b' },
+    { icon: 'M12 2l3 7h7l-5.5 4 2 7L12 16l-6.5 4 2-7L2 9h7z', color: '#7c3aed' },
+    { icon: 'M3 7h18M3 12h18M3 17h18', color: '#00d4aa' },
   ];
+  const features = featureVisuals.map((visual, idx) => ({
+    ...visual,
+    title: strings.features[idx]?.title ?? '',
+    desc: strings.features[idx]?.desc ?? '',
+  }));
 
   return (
     <section id="radial-menu" className="px-4 py-24 sm:px-6" data-analytics-section="radial_menu">
@@ -545,13 +574,13 @@ export default function RadialMenuSection({
         <div className="mx-auto mb-16 max-w-2xl text-center">
           <span className="mb-4 inline-flex items-center gap-2 rounded-full bg-brand/10 px-3 py-1 text-xs font-medium text-brand">
             <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10" /><circle cx="12" cy="12" r="3" /></svg>
-            快捷交互
+            {strings.badge}
           </span>
           <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
-            径向菜单：鼠标中键即启
+            {strings.title}
           </h2>
           <p className="mt-4 leading-relaxed text-gray-400">
-            不用切换窗口、不用翻找菜单。按下鼠标中键，软件、工作流全部呈现在眼前。
+            {strings.subtitle}
           </p>
         </div>
 
@@ -586,10 +615,10 @@ export default function RadialMenuSection({
               className="mt-2 flex w-full items-center justify-center gap-2 rounded-xl bg-brand px-6 py-3.5 text-sm font-medium text-white shadow-[0_0_20px_-5px_rgba(0,212,170,0.5)] transition-all hover:bg-brand-dark"
             >
               <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10" /><circle cx="12" cy="12" r="3" /></svg>
-              点击体验径向菜单
+              {strings.tryButton}
             </button>
             <p className="text-center text-xs text-slate-600">
-              或在页面任意位置点击鼠标中键唤起
+              {strings.tryHint}
             </p>
           </div>
 
@@ -616,7 +645,7 @@ export default function RadialMenuSection({
                   previewPage === 0 ? 'bg-brand/20 text-brand' : 'text-slate-400 hover:text-slate-300'
                 )}
               >
-                第一页
+                {strings.pageOne}
               </button>
               <button
                 onClick={() => {
@@ -631,7 +660,7 @@ export default function RadialMenuSection({
                   previewPage === 1 ? 'bg-brand/20 text-brand' : 'text-slate-400 hover:text-slate-300'
                 )}
               >
-                第二页
+                {strings.pageTwo}
               </button>
             </div>
 
@@ -690,12 +719,12 @@ export default function RadialMenuSection({
                   fontSize={11} fontWeight={600}
                   fill="rgba(148,163,184,0.7)"
                 >
-                  {previewPage === 0 ? '第一页' : '第二页'}
+                  {previewPage === 0 ? strings.pageOne : strings.pageTwo}
                 </text>
               </g>
             </svg>
 
-            <p className="mt-4 text-xs text-slate-500">滚动滚轮切换页面 ↕</p>
+            <p className="mt-4 text-xs text-slate-500">{strings.scrollHint}</p>
           </div>
         </div>
       </div>
@@ -705,6 +734,7 @@ export default function RadialMenuSection({
         <RadialMenuOverlay
           software={software}
           workflows={workflows}
+          strings={strings}
           open={demoOpen}
           onOpenChange={setDemoOpen}
         />

@@ -3,12 +3,28 @@ import { formatTimeAgo } from '@/lib/utils';
 import { track } from '@/lib/analytics';
 import { cn } from '@/lib/utils';
 
+export interface WorkflowsStrings {
+  /** Language key passed to shared formatters (formatTimeAgo). */
+  lang: 'en' | 'zh';
+  title: string;
+  subtitle: string;
+  createWorkflow: string;
+  favoritesSectionTitle: string;
+  allSectionTitle: string;
+  launch: string;
+  /** e.g. "{n} apps" */
+  appCount: string;
+  /** e.g. "{n} runs" */
+  runCount: string;
+}
+
 interface WorkflowsAppProps {
   software: Software[];
   workflows: Workflow[];
+  strings: WorkflowsStrings;
 }
 
-export default function WorkflowsApp({ software, workflows }: WorkflowsAppProps) {
+export default function WorkflowsApp({ software, workflows, strings }: WorkflowsAppProps) {
   const favorite = workflows.filter((w) => w.isFavorite);
   const rest = workflows.filter((w) => !w.isFavorite);
 
@@ -72,7 +88,7 @@ export default function WorkflowsApp({ software, workflows }: WorkflowsAppProps)
               <svg className="h-3.5 w-3.5 fill-current" viewBox="0 0 24 24">
                 <path d="M8 5v14l11-7z" />
               </svg>
-              启动
+              {strings.launch}
             </button>
           </div>
 
@@ -90,7 +106,7 @@ export default function WorkflowsApp({ software, workflows }: WorkflowsAppProps)
               ))}
               {wfApps.length > 0 && (
                 <div className="ml-3 border-l border-slate-700/80 pl-3 text-xs text-slate-500">
-                  {workflow.softwareIds.length} 个应用
+                  {strings.appCount.replace('{n}', String(workflow.softwareIds.length))}
                 </div>
               )}
             </div>
@@ -99,7 +115,8 @@ export default function WorkflowsApp({ software, workflows }: WorkflowsAppProps)
                 <circle cx="12" cy="12" r="10" />
                 <path d="M12 6v6l4 2" />
               </svg>
-              {formatTimeAgo(workflow.lastUsed)} · {workflow.usageCount} 次使用
+              {formatTimeAgo(workflow.lastUsed, strings.lang)} ·{' '}
+              {strings.runCount.replace('{n}', String(workflow.usageCount))}
             </div>
           </div>
         </div>
@@ -111,21 +128,21 @@ export default function WorkflowsApp({ software, workflows }: WorkflowsAppProps)
     <div className="space-y-8">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-white">工作流</h1>
-          <p className="mt-1 text-sm text-slate-500">一键启动你的高效工作组合</p>
+          <h1 className="text-2xl font-bold tracking-tight text-white">{strings.title}</h1>
+          <p className="mt-1 text-sm text-slate-500">{strings.subtitle}</p>
         </div>
         <button
           onClick={() => track('workflow_create_start')}
           className="rounded-xl border border-brand/30 bg-brand/20 px-4 py-2 text-sm font-medium text-brand hover:bg-brand/30 transition-colors"
         >
-          + 创建工作流
+          + {strings.createWorkflow}
         </button>
       </div>
 
       {favorite.length > 0 && (
         <div>
           <h2 className="mb-3 text-xs font-semibold uppercase tracking-wider text-slate-400">
-            ★ 收藏
+            ★ {strings.favoritesSectionTitle}
           </h2>
           <div className="grid gap-3 lg:grid-cols-2">
             {favorite.map((w) => renderCard(w))}
@@ -135,7 +152,7 @@ export default function WorkflowsApp({ software, workflows }: WorkflowsAppProps)
 
       <div>
         <h2 className="mb-3 text-xs font-semibold uppercase tracking-wider text-slate-400">
-          全部工作流
+          {strings.allSectionTitle}
         </h2>
         <div className="grid gap-3 lg:grid-cols-2">
           {rest.map((w) => renderCard(w))}
