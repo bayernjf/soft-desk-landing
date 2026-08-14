@@ -1,5 +1,6 @@
 ---
 import BayjfLink from '@bay/landing-ui/components/BayjfLink.astro';
+import StarOnGithub from '@bay/landing-ui/components/StarOnGithub.astro';
 import { useTranslations, localizedPath } from '@/i18n/utils';
 import type { Language } from '@/i18n/ui';
 import LanguageSwitcher from './LanguageSwitcher.astro';
@@ -34,18 +35,11 @@ const year = new Date().getFullYear();
       >
         {t('footer.terms')}
       </a>
-      <a
-        href="https://github.com/bayernjf/soft-desk"
-        target="_blank"
-        rel="noopener noreferrer"
-        class="text-sm text-gray-400 transition-colors hover:text-white"
-      >
-        GitHub
-      </a>
       <BayjfLink
         size={16}
         class="text-sm text-gray-400 transition-colors hover:text-white"
       />
+      <StarOnGithub href="https://github.com/bayernjf/soft-desk" size={14} class="text-gray-400" />
       <LanguageSwitcher lang={lang} path={Astro.url.pathname} />
       <span class="text-xs text-gray-600">{t('footer.made_with')}</span>
     </div>
