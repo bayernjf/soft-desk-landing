@@ -65,6 +65,16 @@ export type UIKey =
   | 'download.latest_release'
   | 'download.loading'
   | 'download.fallback'
+  | 'macguide.title'
+  | 'macguide.subtitle'
+  | 'macguide.desc'
+  | 'macguide.terminal_label'
+  | 'macguide.copy'
+  | 'macguide.copied'
+  | 'macguide.copy_cta'
+  | 'macguide.copied_cta'
+  | 'macguide.hint'
+  | 'macguide.close'
   | 'error.404.title'
   | 'error.404.desc'
   | 'error.404.back'
@@ -133,6 +143,17 @@ export const ui: Record<Language, UIDict> = {
     'download.latest_release': '最新发布',
     'download.loading': '正在获取最新版本信息…',
     'download.fallback': '前往 GitHub Releases 页面',
+    'macguide.title': 'macOS 安装引导',
+    'macguide.subtitle': '下载完成后的必经操作',
+    'macguide.desc':
+      '由于 SoftDesk 暂未进行 Apple 代码签名，首次打开时系统可能提示「已损坏」或「无法验证开发者」。在终端粘贴运行以下命令即可解除限制：',
+    'macguide.terminal_label': '终端 — bash',
+    'macguide.copy': '复制',
+    'macguide.copied': '已复制',
+    'macguide.copy_cta': '一键复制命令',
+    'macguide.copied_cta': '已复制到剪贴板',
+    'macguide.hint': '复制后打开「终端」app（Spotlight 搜索 terminal），粘贴并回车。之后即可正常启动 SoftDesk。',
+    'macguide.close': '关闭',
     'error.404.title': '页面未找到',
     'error.404.desc': '你访问的页面不存在或已被移动。',
     'error.404.back': '返回首页',
@@ -198,6 +219,17 @@ export const ui: Record<Language, UIDict> = {
     'download.latest_release': 'Latest release',
     'download.loading': 'Fetching latest release info…',
     'download.fallback': 'Go to GitHub Releases',
+    'macguide.title': 'macOS install guide',
+    'macguide.subtitle': 'One step you need after downloading',
+    'macguide.desc':
+      'SoftDesk is not Apple code-signed yet, so macOS may say the app is "damaged" or that the developer cannot be verified the first time you open it. Paste this command in Terminal to lift the restriction:',
+    'macguide.terminal_label': 'Terminal — bash',
+    'macguide.copy': 'Copy',
+    'macguide.copied': 'Copied',
+    'macguide.copy_cta': 'Copy command',
+    'macguide.copied_cta': 'Copied to clipboard',
+    'macguide.hint': 'Open Terminal (search for "terminal" in Spotlight), paste the command and press Enter. SoftDesk will then launch normally.',
+    'macguide.close': 'Close',
     'error.404.title': 'Page Not Found',
     'error.404.desc': 'The page you are looking for does not exist or has been moved.',
     'error.404.back': 'Back to home',

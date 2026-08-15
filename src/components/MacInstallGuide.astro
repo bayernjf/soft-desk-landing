@@ -1,0 +1,166 @@
+---
+import { useTranslations } from '@/i18n/utils';
+import type { Language } from '@/i18n/ui';
+
+interface Props {
+  lang: Language;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+const INSTALL_COMMAND = 'xattr -cr /Applications/SoftDesk.app';
+---
+
+<div
+  id="mac-guide"
+  class="fixed inset-0 z-[100] hidden items-center justify-center p-4"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="mac-guide-title"
+>
+  <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" data-mac-guide-dismiss></div>
+
+  <div class="relative w-full max-w-md rounded-2xl border border-slate-700/60 bg-slate-900 p-6 shadow-2xl">
+    <button
+      type="button"
+      class="absolute right-4 top-4 rounded-lg p-1.5 text-slate-500 transition-colors hover:bg-slate-800"
+      aria-label={t('macguide.close')}
+      data-mac-guide-dismiss
+    >
+      <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+
+    <div class="mb-4 flex items-center gap-3">
+      <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-500/15">
+        <svg class="h-5 w-5 text-amber-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M7 9l3 3-3 3M13 15h4"/></svg>
+      </div>
+      <div>
+        <h3 id="mac-guide-title" class="text-base font-semibold text-white">{t('macguide.title')}</h3>
+        <p class="mt-0.5 text-xs text-slate-400">{t('macguide.subtitle')}</p>
+      </div>
+    </div>
+
+    <p class="mb-4 text-sm leading-relaxed text-slate-300">{t('macguide.desc')}</p>
+
+    <div class="overflow-hidden rounded-xl border border-slate-700/60 bg-slate-950">
+      <div class="flex items-center gap-2 border-b border-slate-700/60 px-4 py-2.5">
+        <div class="flex gap-1.5">
+          <div class="h-3 w-3 rounded-full bg-red-500/80"></div>
+          <div class="h-3 w-3 rounded-full bg-amber-500/80"></div>
+          <div class="h-3 w-3 rounded-full bg-green-500/80"></div>
+        </div>
+        <span class="ml-2 text-xs text-slate-500">{t('macguide.terminal_label')}</span>
+      </div>
+      <div class="flex items-center justify-between gap-3 px-4 py-3">
+        <code class="break-all font-mono text-sm text-green-400">
+          <span class="select-none text-slate-500">$ </span>{INSTALL_COMMAND}
+        </code>
+        <button
+          type="button"
+          class="shrink-0 rounded-lg bg-slate-700 px-3 py-1.5 text-xs font-medium text-slate-200 transition-colors hover:bg-slate-600"
+          data-mac-guide-copy
+        >
+          {t('macguide.copy')}
+        </button>
+      </div>
+    </div>
+
+    <p class="mt-4 rounded-lg bg-slate-800/40 p-3 text-xs leading-relaxed text-slate-400">
+      {t('macguide.hint')}
+    </p>
+
+    <div class="mt-5 flex gap-3">
+      <button
+        type="button"
+        class="flex-1 rounded-xl bg-brand px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-brand-dark"
+        data-mac-guide-copy
+      >
+        {t('macguide.copy_cta')}
+      </button>
+      <button
+        type="button"
+        class="rounded-xl border border-slate-700 px-4 py-2.5 text-sm font-medium text-slate-300 transition-colors hover:bg-slate-800"
+        data-mac-guide-dismiss
+      >
+        {t('macguide.close')}
+      </button>
+    </div>
+  </div>
+</div>
+
+<script
+  is:inline
+  define:vars={{
+    command: INSTALL_COMMAND,
+    labels: {
+      copy: t('macguide.copy'),
+      copied: t('macguide.copied'),
+      copyCta: t('macguide.copy_cta'),
+      copiedCta: t('macguide.copied_cta'),
+    },
+  }}
+>
+  (() => {
+    const modal = document.getElementById('mac-guide');
+    if (!modal) return;
+
+    const copyButtons = Array.from(modal.querySelectorAll('[data-mac-guide-copy]'));
+    let resetTimer = 0;
+
+    function setCopiedState(copied) {
+      copyButtons.forEach((btn, i) => {
+        btn.textContent = i === 0
+          ? (copied ? labels.copied : labels.copy)
+          : (copied ? labels.copiedCta : labels.copyCta);
+      });
+      copyButtons[0]?.classList.toggle('bg-green-500/20', copied);
+      copyButtons[0]?.classList.toggle('text-green-400', copied);
+      copyButtons[0]?.classList.toggle('bg-slate-700', !copied);
+      copyButtons[0]?.classList.toggle('text-slate-200', !copied);
+    }
+
+    function close() {
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+      document.body.style.overflow = '';
+      window.clearTimeout(resetTimer);
+      setCopiedState(false);
+    }
+
+    function open() {
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+      document.body.style.overflow = 'hidden';
+    }
+
+    async function copy() {
+      try {
+        await navigator.clipboard.writeText(command);
+      } catch {
+        const textarea = document.createElement('textarea');
+        textarea.value = command;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
+      }
+      setCopiedState(true);
+      window.clearTimeout(resetTimer);
+      resetTimer = window.setTimeout(() => setCopiedState(false), 2000);
+    }
+
+    modal.querySelectorAll('[data-mac-guide-dismiss]').forEach((el) => {
+      el.addEventListener('click', close);
+    });
+    copyButtons.forEach((btn) => btn.addEventListener('click', copy));
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && !modal.classList.contains('hidden')) close();
+    });
+
+    document.addEventListener('click', (event) => {
+      if (event.target instanceof Element && event.target.closest('[data-download-mac]')) open();
+    });
+  })();
+</script>

@@ -5,6 +5,7 @@ import Header from '@/components/Header.astro';
 import Footer from '@/components/Footer.astro';
 import Analytics from '@/components/Analytics.astro';
 import CookieBanner from '@/components/CookieBanner.astro';
+import MacInstallGuide from '@/components/MacInstallGuide.astro';
 import { baseSchema } from '@/lib/seo';
 import type { Language } from '@/i18n/ui';
 
@@ -42,6 +43,7 @@ const orgSchema = baseSchema(lang);
     </main>
     <Footer lang={lang} />
     <CookieBanner lang={lang} />
+    <MacInstallGuide lang={lang} />
     <Analytics lang={lang} />
   </body>
 </html>
