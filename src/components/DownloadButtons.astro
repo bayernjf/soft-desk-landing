@@ -14,7 +14,6 @@ const t = useTranslations(lang);
 
 <div class="flex flex-col gap-3 sm:flex-row sm:gap-4" id="download-buttons">
   <a
-    id="download-mac"
     data-download-mac
     href={FALLBACK_URL}
     class="inline-flex items-center justify-center gap-2 rounded-lg bg-brand px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-brand-dark"
@@ -23,7 +22,7 @@ const t = useTranslations(lang);
     <span>{t('cta.download_mac')}</span>
   </a>
   <a
-    id="download-win"
+    data-download-win
     href={FALLBACK_URL}
     class="inline-flex items-center justify-center gap-2 rounded-lg border border-gray-700 bg-[#161b22] px-6 py-3 text-sm font-medium text-gray-200 transition-colors hover:border-gray-600 hover:bg-[#1c2330]"
   >
@@ -47,32 +46,42 @@ const t = useTranslations(lang);
     setTimeout(() => toast.classList.add('hidden'), 5000);
   }
 
+  const PRIMARY = ['bg-brand', 'text-white', 'hover:bg-brand-dark', 'ring-2', 'ring-brand', 'ring-offset-2', 'ring-offset-[#0d1117]'];
+  const SECONDARY = ['border', 'border-gray-700', 'bg-[#161b22]', 'text-gray-200', 'hover:border-gray-600', 'hover:bg-[#1c2330]'];
+
+  function setEmphasis(el: Element, primary: boolean) {
+    el.classList.remove(...(primary ? SECONDARY : PRIMARY));
+    el.classList.add(...(primary ? PRIMARY : SECONDARY));
+  }
+
   async function updateDownloadButtons() {
     const state = await fetchDownloadUrls();
     if (state.loading) return;
     if (state.error) showToast();
 
-    const macBtn = document.getElementById('download-mac');
-    const winBtn = document.getElementById('download-win');
+    const macBtns = document.querySelectorAll('[data-download-mac]');
+    const winBtns = document.querySelectorAll('[data-download-win]');
 
-    if (macBtn && state.mac) {
-      macBtn.setAttribute('href', state.mac.url);
-      const sizeLabel = formatBytes(state.mac.size);
-      macBtn.setAttribute('title', sizeLabel);
+    if (state.mac) {
+      const { url, size } = state.mac;
+      macBtns.forEach((btn) => {
+        btn.setAttribute('href', url);
+        btn.setAttribute('title', formatBytes(size));
+      });
     }
-    if (winBtn && state.win) {
-      winBtn.setAttribute('href', state.win.url);
-      const sizeLabel = formatBytes(state.win.size);
-      winBtn.setAttribute('title', sizeLabel);
+    if (state.win) {
+      const { url, size } = state.win;
+      winBtns.forEach((btn) => {
+        btn.setAttribute('href', url);
+        btn.setAttribute('title', formatBytes(size));
+      });
     }
 
-    // Auto-highlight preferred platform
+    // Emphasize the visitor's platform, de-emphasize the other one
     const preferred = detectPlatform();
-    if (preferred === 'mac' && macBtn) {
-      macBtn.classList.add('ring-2', 'ring-brand', 'ring-offset-2', 'ring-offset-[#0d1117]');
-    } else if (preferred === 'win' && winBtn) {
-      winBtn.classList.add('ring-2', 'ring-brand', 'ring-offset-2', 'ring-offset-[#0d1117]');
-    }
+    if (preferred !== 'mac' && preferred !== 'win') return;
+    macBtns.forEach((btn) => setEmphasis(btn, preferred === 'mac'));
+    winBtns.forEach((btn) => setEmphasis(btn, preferred === 'win'));
   }
 
   updateDownloadButtons();
