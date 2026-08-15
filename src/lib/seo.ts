@@ -1,4 +1,4 @@
-const SITE_URL = (import.meta.env.PUBLIC_SITE_URL || 'https://soft-desk-landing.pages.dev').replace(/\/$/, '');
+const SITE_URL = (import.meta.env.PUBLIC_SITE_URL || 'https://soft-desk.bayjf.com').replace(/\/$/, '');
 
 const GITHUB_REPO = 'https://github.com/bayernjf/soft-desk';
 const GITHUB_RELEASES = `${GITHUB_REPO}/releases`;

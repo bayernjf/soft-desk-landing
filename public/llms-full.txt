@@ -13,7 +13,7 @@ It scans installed applications, uses AI to automatically classify them, provide
 menu for quick launching via mouse middle-click, tracks usage time per app, and supports
 one-click workflows to launch multiple apps together.
 
-- Website: https://soft-desk-landing.pages.dev
+- Website: https://soft-desk.bayjf.com
 - Repository: https://github.com/bayernjf/soft-desk
 - Download: https://github.com/bayernjf/soft-desk/releases
 - License: Open Source

@@ -4,7 +4,7 @@ import sitemap from '@astrojs/sitemap';
 import icon from 'astro-icon';
 import tailwindcss from '@tailwindcss/vite';
 
-const SITE_URL = process.env.PUBLIC_SITE_URL || 'https://soft-desk-landing.pages.dev';
+const SITE_URL = process.env.PUBLIC_SITE_URL || 'https://soft-desk.bayjf.com';
 
 // https://astro.build/config
 // Cloudflare adapter will be added in Phase 5 when demo app SSR pages are introduced.
