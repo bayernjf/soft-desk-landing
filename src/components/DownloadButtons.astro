@@ -55,22 +55,21 @@ const t = useTranslations(lang);
   }
 
   async function updateDownloadButtons() {
-    const state = await fetchDownloadUrls();
-    if (state.loading) return;
-    if (state.error) showToast();
+    const { assets, error } = await fetchDownloadUrls();
+    if (error) showToast();
 
     const macBtns = document.querySelectorAll('[data-download-mac]');
     const winBtns = document.querySelectorAll('[data-download-win]');
 
-    if (state.mac) {
-      const { url, size } = state.mac;
+    if (assets.mac) {
+      const { url, size } = assets.mac;
       macBtns.forEach((btn) => {
         btn.setAttribute('href', url);
         btn.setAttribute('title', formatBytes(size));
       });
     }
-    if (state.win) {
-      const { url, size } = state.win;
+    if (assets.win) {
+      const { url, size } = assets.win;
       winBtns.forEach((btn) => {
         btn.setAttribute('href', url);
         btn.setAttribute('title', formatBytes(size));
